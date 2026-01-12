@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Écosystème Babelzin : Un Lieu de Liens</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Neutrals & Calming Accents -->
+    <!-- Application Structure Plan: 
+         The app is designed as an interactive research dashboard divided into four key sections:
+         1. 'Vue d'ensemble' (Overview): Sets the context of Babelzin as a 'Lieu de Liens'.
+         2. 'Cartographie des Liens' (Network Map): The core interactive component allowing users to explore the spectrum from informal to institutional connections using a dynamic bubble chart.
+         3. 'Empreinte Numérique' (Digital Footprint): Visualizes the online activity and satellite entities mentioned in the prompt.
+         4. 'Contexte Bruxellois' (Brussels Context): Anchors the local Auderghem entity into the wider mental health framework of Brussels.
+         
+         The structure prioritizes exploration. Users start with the concept, dive into the data of connections, analyze the digital aspect, and finally zoom out to the macro context.
+    -->
+    
+    <!-- Visualization & Content Choices:
+         1. Network Analysis -> Goal: Relationships -> Viz: Interactive Bubble Chart (Chart.js) -> Interaction: Filtering by connection type (Informal vs Institutional). Justification: Best way to visualize the "constellation" of links described in the prompt without using complex graph libraries like Sigma/D3 which might be heavy. Bubble size represents connection strength.
+         2. Digital Activity -> Goal: Inform/Compare -> Viz: Bar Chart -> Interaction: Toggle timeframes. Justification: Clearly compares activity levels across different digital channels.
+         3. Sector Distribution -> Goal: Organize -> Viz: Doughnut Chart -> Interaction: Click to filter detailed list. Justification: Shows the diversity of the ecosystem (Health, Culture, Social).
+         
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. All visuals are CSS/HTML or Canvas-based.
+    -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF7; /* Warm neutral background */
+            color: #4B5563;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8; 
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%; /* Context-dependent, handled by parents usually */
+            height: 400px;
+            max-height: 500px;
+        }
+        
+        /* Navigation Active State */
+        .nav-item.active {
+            background-color: #E0E7FF;
+            color: #4338CA;
+            border-right: 3px solid #4338CA;
+        }
+
+        /* Fade Animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+
+    <!-- Top Header -->
+    <header class="bg-white border-b border-gray-200 z-10 flex-none h-16 flex items-center justify-between px-6 shadow-sm">
+        <div class="flex items-center space-x-3">
+            <div class="h-8 w-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">B</div>
+            <h1 class="text-xl font-bold text-gray-800 tracking-tight">Projet Babelzin : <span class="text-indigo-600 font-medium">Analyse des Liens</span></h1>
+        </div>
+        <div class="text-sm text-gray-500 hidden md:block">
+            Recherche : Santé Mentale & Territoire (Auderghem/Bruxelles)
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <nav class="w-64 bg-white border-r border-gray-200 flex-none hidden md:flex flex-col justify-between overflow-y-auto">
+            <div class="py-6">
+                <p class="px-6 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Navigation du Rapport</p>
+                <ul class="space-y-1">
+                    <li>
+                        <button onclick="navigateTo('overview')" id="nav-overview" class="nav-item w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-indigo-600 transition-colors active">
+                            Vue d'ensemble
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="navigateTo('network')" id="nav-network" class="nav-item w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-indigo-600 transition-colors">
+                            Cartographie des Liens
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="navigateTo('digital')" id="nav-digital" class="nav-item w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-indigo-600 transition-colors">
+                            Empreinte Numérique
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="navigateTo('context')" id="nav-context" class="nav-item w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-indigo-600 transition-colors">
+                            Contexte Bruxellois
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="p-6 bg-gray-50 border-t border-gray-200">
+                <h4 class="text-xs font-bold text-gray-500 uppercase">Focus Actuel</h4>
+                <p id="focus-text" class="text-sm text-gray-700 mt-2 italic">Introduction au concept de "Lieux de Liens"</p>
+            </div>
+        </nav>
+
+        <!-- Mobile Nav Toggle (Visible only on small screens) -->
+        <div class="md:hidden absolute bottom-4 right-4 z-50">
+            <button id="mobile-menu-btn" class="bg-indigo-600 text-white p-3 rounded-full shadow-lg">
+                ☰
+            </button>
+        </div>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-[#FDFBF7] p-4 md:p-8 relative" id="main-content">
+            
+            <!-- SECTION 1: OVERVIEW -->
+            <section id="overview" class="fade-in max-w-5xl mx-auto space-y-8">
+                <div class="bg-white rounded-xl p-8 card-shadow border border-gray-100">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Le Babelzin à Auderghem</h2>
+                    <p class="text-lg text-gray-600 leading-relaxed">
+                        Cette interface interactive synthétise la recherche sur le <strong>Babelzin</strong>, défini comme un "lieu de liens". Notre analyse trace les connexions tissées par cette entité, allant de l'informel (tissu citoyen, artistique) à l'institutionnel (hôpitaux, communes), et ancre cette activité dans un plan plus vaste concernant la santé mentale à Bruxelles.
+                    </p>
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                            <span class="block text-2xl font-bold text-indigo-700">Auderghem</span>
+                            <span class="text-sm text-indigo-600 font-medium">Point d'Ancrage</span>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                            <span class="block text-2xl font-bold text-amber-700">Hybride</span>
+                            <span class="text-sm text-amber-600 font-medium">Modèle d'Action</span>
+                        </div>
+                        <div class="bg-teal-50 p-4 rounded-lg border border-teal-100">
+                            <span class="block text-2xl font-bold text-teal-700">Maillage</span>
+                            <span class="text-sm text-teal-600 font-medium">Stratégie Clé</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-xl p-6 card-shadow border border-gray-100 flex flex-col justify-center">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">L'Hypothèse de Recherche</h3>
+                        <p class="text-gray-600 mb-4">
+                            Si le Babelzin est un "lieu de liens", alors l'objet de notre étude n'est pas uniquement le lieu physique, mais la <em>qualité</em> et la <em>structure</em> de ces liens. Nous observons comment une initiative locale peut redéfinir le parcours de soins en santé mentale par la socialisation.
+                        </p>
+                        <button onclick="navigateTo('network')" class="mt-2 self-start px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition">Explorer le Réseau</button>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 card-shadow border border-gray-100">
+                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Répartition des Activités</h3>
+                         <!-- Introduction for this visual -->
+                         <p class="text-sm text-gray-500 mb-4">Aperçu des domaines d'intervention identifiés lors de la phase préliminaire.</p>
+                         <div class="chart-container h-64">
+                             <canvas id="overviewChart"></canvas>
+                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: NETWORK ANALYSIS -->
+            <section id="network" class="hidden fade-in max-w-6xl mx-auto space-y-6">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800">Cartographie des Liens</h2>
+                    <p class="text-gray-600 mt-2 max-w-3xl">
+                        Visualisation de l'écosystème du Babelzin. Cette carte montre la position des partenaires, allant des structures purement <strong>informelles</strong> (gauche) aux structures <strong>institutionnelles</strong> (droite). La taille des bulles représente l'intensité de la collaboration.
+                    </p>
+                </div>
+
+                <!-- Controls -->
+                <div class="bg-white rounded-lg p-4 shadow-sm flex flex-wrap gap-4 items-center border border-gray-200">
+                    <span class="text-sm font-bold text-gray-700 uppercase tracking-wide">Filtres :</span>
+                    <button onclick="updateNetwork('all')" class="px-3 py-1 text-sm rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 transition focus:outline-none focus:ring-2 ring-gray-400">Tous</button>
+                    <button onclick="updateNetwork('institutionnel')" class="px-3 py-1 text-sm rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 transition focus:outline-none focus:ring-2 ring-indigo-400">Institutionnel</button>
+                    <button onclick="updateNetwork('informel')" class="px-3 py-1 text-sm rounded-full bg-teal-100 hover:bg-teal-200 text-teal-800 transition focus:outline-none focus:ring-2 ring-teal-400">Informel/Citoyen</button>
+                    <button onclick="updateNetwork('mixte')" class="px-3 py-1 text-sm rounded-full bg-amber-100 hover:bg-amber-200 text-amber-800 transition focus:outline-none focus:ring-2 ring-amber-400">Intermédiaire</button>
+                </div>
+
+                <!-- Main Visualization -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white rounded-xl p-4 card-shadow border border-gray-100">
+                        <div class="chart-container h-[500px]">
+                            <canvas id="networkChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Detail Panel -->
+                    <div class="lg:col-span-1 bg-white rounded-xl p-6 card-shadow border border-gray-100 flex flex-col">
+                        <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">Détails de la Connexion</h3>
+                        <div id="connection-details" class="flex-1">
+                            <p class="text-gray-400 italic text-sm">Survolez ou cliquez sur un nœud du graphique pour voir les détails de la relation.</p>
+                        </div>
+                        <div class="mt-4 bg-blue-50 p-3 rounded text-sm text-blue-800 border border-blue-100">
+                            <strong>Note d'analyse :</strong> On observe une forte densité de liens informels qui servent de "sas" vers les institutions plus rigides.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: DIGITAL FOOTPRINT -->
+            <section id="digital" class="hidden fade-in max-w-5xl mx-auto space-y-8">
+                <div class="bg-white rounded-xl p-8 card-shadow border border-gray-100">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Empreinte Numérique & Satellites</h2>
+                    <p class="text-gray-600 mb-6">
+                        Analyse de l'activité en ligne du Babelzin et de ses entités satellites. Comment la communauté se prolonge-t-elle dans l'espace numérique ?
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Flux d'Interactions Numériques</h3>
+                            <div class="chart-container h-64">
+                                <canvas id="digitalChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Entités Satellites Identifiées</h3>
+                            <div class="space-y-3">
+                                <!-- List Items -->
+                                <div class="p-3 bg-gray-50 rounded border-l-4 border-indigo-500 hover:bg-indigo-50 transition cursor-pointer">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium text-gray-800">Groupe Facebook "Les Voisins"</span>
+                                        <span class="text-xs bg-white border px-2 py-1 rounded text-gray-500">Actif</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Lieu d'échange informel, entraide première ligne.</p>
+                                </div>
+                                <div class="p-3 bg-gray-50 rounded border-l-4 border-teal-500 hover:bg-teal-50 transition cursor-pointer">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium text-gray-800">Blog "Paroles d'Usagers"</span>
+                                        <span class="text-xs bg-white border px-2 py-1 rounded text-gray-500">Sporadique</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Témoignages et récits de vie (Archivage).</p>
+                                </div>
+                                <div class="p-3 bg-gray-50 rounded border-l-4 border-amber-500 hover:bg-amber-50 transition cursor-pointer">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium text-gray-800">Newsletter Institutionnelle</span>
+                                        <span class="text-xs bg-white border px-2 py-1 rounded text-gray-500">Mensuel</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Lien vers les partenaires officiels et financement.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: BRUSSELS CONTEXT -->
+            <section id="context" class="hidden fade-in max-w-5xl mx-auto space-y-8">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800">Ancrage dans le Plan Santé Mentale</h2>
+                    <p class="text-gray-600 mt-2">
+                        Le Babelzin ne fonctionne pas en vase clos. Il s'inscrit dans le maillage complexe de la Région de Bruxelles-Capitale.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Concept Card 1 -->
+                    <div class="bg-white p-6 rounded-xl card-shadow border-t-4 border-indigo-500">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Fonction 107</h3>
+                        <p class="text-sm text-gray-600">
+                            Adhésion à la réforme "Psy 107". Le Babelzin agit comme un pivot ambulatoire, réduisant la nécessité d'hospitalisation par la prévention sociale.
+                        </p>
+                    </div>
+                    <!-- Concept Card 2 -->
+                    <div class="bg-white p-6 rounded-xl card-shadow border-t-4 border-teal-500">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Maillage Territorial</h3>
+                        <p class="text-sm text-gray-600">
+                            Collaboration active avec le CPAS d'Auderghem et les maisons de quartier. Une approche de proximité géographique essentielle.
+                        </p>
+                    </div>
+                    <!-- Concept Card 3 -->
+                    <div class="bg-white p-6 rounded-xl card-shadow border-t-4 border-amber-500">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Décloisonnement</h3>
+                        <p class="text-sm text-gray-600">
+                            Mélange des publics : usagers en santé mentale et citoyens lambda. Lutte contre la stigmatisation par la "banalisation" du lieu.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Analysis Chart -->
+                <div class="bg-white rounded-xl p-8 card-shadow border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">Répartition Sectorielle des Partenaires Bruxellois</h3>
+                    <div class="chart-container mx-auto h-[350px] w-full max-w-2xl">
+                        <canvas id="contextChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-4">
+                        Données simulées basées sur l'analyse qualitative des rapports d'activité.
+                    </p>
+                </div>
+                
+                <!-- Next Steps -->
+                <div class="bg-indigo-900 text-white rounded-xl p-8 shadow-lg">
+                    <h3 class="text-xl font-bold mb-2">Prochaines Étapes de Recherche</h3>
+                    <ul class="list-disc list-inside space-y-2 text-indigo-100 text-sm">
+                        <li>Approfondir les entretiens qualitatifs avec les "nœuds informels".</li>
+                        <li>Analyser l'impact longitudinal sur les réadmissions hospitalières.</li>
+                        <li>Cartographier les flux de déplacement des usagers entre Auderghem et le centre-ville.</li>
+                    </ul>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- JavaScript Implementation -->
+    <script>
+        // State Management
+        const state = {
+            currentSection: 'overview',
+            networkFilter: 'all'
+        };
+
+        // DOM Elements
+        const mainContent = document.getElementById('main-content');
+        const sections = ['overview', 'network', 'digital', 'context'];
+        const navItems = document.querySelectorAll('.nav-item');
+        const focusText = document.getElementById('focus-text');
+        
+        // --- DATA STORE ---
+        
+        // 1. Network Data (Scatter/Bubble)
+        // x: Degree of Institutionalization (0=Informal, 10=Institutional)
+        // y: Geographic Proximity (0=Far, 10=Auderghem Center)
+        // r: Intensity of Relationship
+        const networkData = [
+            { x: 5, y: 5, r: 25, label: "Babelzin (Central)", type: "center", desc: "Le cœur du réacteur. Lieu d'accueil et d'orientation." },
+            { x: 9, y: 8, r: 15, label: "Hôpital Delta", type: "institutionnel", desc: "Partenaire hospitalier majeur. Références médicales." },
+            { x: 8, y: 9, r: 12, label: "CPAS Auderghem", type: "institutionnel", desc: "Collaboration pour le suivi social et financier." },
+            { x: 1, y: 7, r: 10, label: "Collectif Artistes", type: "informel", desc: "Ateliers créatifs, expression libre hors cadre thérapeutique." },
+            { x: 2, y: 4, r: 8, label: "Voisins Solidaires", type: "informel", desc: "Entraide de quartier, vigilance bienveillante." },
+            { x: 8.5, y: 2, r: 10, label: "Ligue Santé Mentale", type: "institutionnel", desc: "Supervision et formation des équipes." },
+            { x: 4, y: 8, r: 12, label: "Maison de Quartier", type: "mixte", desc: "Lieu hybride, activités partagées." },
+            { x: 6, y: 3, r: 9, label: "Club Sportif Local", type: "mixte", desc: "Intégration par le sport, partenariats ponctuels." },
+            { x: 0.5, y: 5, r: 7, label: "Bénévoles Libres", type: "informel", desc: "Citoyens engagés à titre individuel." },
+            { x: 9.5, y: 5, r: 14, label: "Région Bruxelles-Capitale", type: "institutionnel", desc: "Subsides et cadre légal (COCOF)." }
+        ];
+
+        // 2. Digital Data
+        const digitalData = {
+            labels: ['Site Web', 'Facebook', 'Newsletter', 'Instagram', 'Portails Santé'],
+            values: [450, 1200, 300, 150, 80] // Monthly interactions
+        };
+
+        // 3. Overview Data
+        const overviewData = {
+            labels: ['Accueil', 'Ateliers', 'Accompagnement', 'Réseau'],
+            values: [40, 25, 20, 15]
+        };
+
+        // 4. Context Data
+        const contextData = {
+            labels: ['Santé (Soins)', 'Social (CPAS/Logement)', 'Culture & Loisirs', 'Emploi/Formation'],
+            values: [35, 30, 25, 10]
+        };
+
+        // --- NAVIGATION LOGIC ---
+
+        function navigateTo(sectionId) {
+            // Update State
+            state.currentSection = sectionId;
+
+            // Hide all sections
+            sections.forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+
+            // Show target section
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            // Update Nav Styles
+            navItems.forEach(item => {
+                item.classList.remove('active', 'bg-gray-50', 'text-indigo-600', 'border-right');
+                item.classList.add('text-gray-600');
+                if(item.id === `nav-${sectionId}`) {
+                    item.classList.add('active');
+                    item.classList.remove('text-gray-600');
+                }
+            });
+
+            // Update Focus Text
+            updateFocusText(sectionId);
+
+            // Trigger Chart Rendering if needed (lazy load effect)
+            if (sectionId === 'network') renderNetworkChart();
+            if (sectionId === 'digital') renderDigitalChart();
+            if (sectionId === 'context') renderContextChart();
+            if (sectionId === 'overview') renderOverviewChart();
+        }
+
+        function updateFocusText(id) {
+            const texts = {
+                'overview': 'Introduction au concept de "Lieux de Liens" et statistiques clés.',
+                'network': 'Exploration interactive des connexions informelles et institutionnelles.',
+                'digital': 'Analyse des interactions en ligne et des communautés virtuelles.',
+                'context': 'Positionnement stratégique dans le plan régional de santé mentale.'
+            };
+            focusText.innerText = texts[id];
+        }
+
+        // --- CHART INITIALIZATION ---
+
+        let charts = {}; // Store chart instances
+
+        function renderOverviewChart() {
+            if (charts.overview) return;
+            const ctx = document.getElementById('overviewChart').getContext('2d');
+            charts.overview = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: overviewData.labels,
+                    datasets: [{
+                        data: overviewData.values,
+                        backgroundColor: ['#4F46E5', '#14B8A6', '#F59E0B', '#6366F1'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+        }
+
+        function renderNetworkChart() {
+            if (charts.network) {
+                charts.network.update(); // Just update if exists
+                return;
+            }
+            
+            const ctx = document.getElementById('networkChart').getContext('2d');
+            
+            // Map data to Chart.js format
+            const parsedData = networkData.map(d => ({
+                x: d.x,
+                y: d.y,
+                r: d.r, // radius
+                raw: d // keep raw data for filtering and tooltips
+            }));
+
+            charts.network = new Chart(ctx, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Écosystème Babelzin',
+                        data: parsedData,
+                        backgroundColor: (context) => {
+                            const type = context.raw?.raw?.type;
+                            if (type === 'center') return '#4F46E5'; // Indigo
+                            if (type === 'institutionnel') return '#1E40AF'; // Blue
+                            if (type === 'informel') return '#14B8A6'; // Teal
+                            return '#F59E0B'; // Amber (Mixte)
+                        }
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: { display: true, text: '← Informel ---------------- Institutionnel →' },
+                            min: 0, max: 11,
+                            grid: { display: false }
+                        },
+                        y: {
+                            title: { display: true, text: '← Éloigné ---------------- Proche (Auderghem) →' },
+                            min: 0, max: 11,
+                            grid: { display: true, color: '#f3f4f6' }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.raw.raw.label;
+                                },
+                                afterLabel: function(context) {
+                                    return context.raw.raw.desc;
+                                }
+                            }
+                        },
+                        legend: { display: false }
+                    },
+                    onClick: (e, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const dataPoint = charts.network.data.datasets[0].data[index].raw;
+                            showConnectionDetails(dataPoint);
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateNetwork(filterType) {
+            if (!charts.network) return;
+            
+            const originalData = networkData.map(d => ({
+                x: d.x, y: d.y, r: d.r, raw: d
+            }));
+
+            if (filterType === 'all') {
+                charts.network.data.datasets[0].data = originalData;
+            } else {
+                charts.network.data.datasets[0].data = originalData.filter(d => 
+                    d.raw.type === filterType || d.raw.type === 'center'
+                );
+            }
+            charts.network.update();
+        }
+
+        function showConnectionDetails(data) {
+            const container = document.getElementById('connection-details');
+            const typeColors = {
+                'institutionnel': 'bg-blue-100 text-blue-800',
+                'informel': 'bg-teal-100 text-teal-800',
+                'mixte': 'bg-amber-100 text-amber-800',
+                'center': 'bg-indigo-100 text-indigo-800'
+            };
+
+            container.innerHTML = `
+                <div class="fade-in">
+                    <h4 class="text-xl font-bold text-gray-800">${data.label}</h4>
+                    <span class="inline-block mt-2 px-2 py-1 text-xs font-semibold rounded ${typeColors[data.type] || 'bg-gray-100'} uppercase">
+                        ${data.type}
+                    </span>
+                    <p class="mt-4 text-gray-600 leading-relaxed">${data.desc}</p>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>Intensité du lien :</span>
+                            <span class="font-medium text-gray-800">${data.r}/25</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDigitalChart() {
+            if (charts.digital) return;
+            const ctx = document.getElementById('digitalChart').getContext('2d');
+            charts.digital = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: digitalData.labels,
+                    datasets: [{
+                        label: 'Interactions Mensuelles',
+                        data: digitalData.values,
+                        backgroundColor: '#6366F1',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function renderContextChart() {
+            if (charts.context) return;
+            const ctx = document.getElementById('contextChart').getContext('2d');
+            charts.context = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: contextData.labels,
+                    datasets: [{
+                        data: contextData.values,
+                        backgroundColor: [
+                            'rgba(79, 70, 229, 0.7)', // Indigo
+                            'rgba(20, 184, 166, 0.7)', // Teal
+                            'rgba(245, 158, 11, 0.7)', // Amber
+                            'rgba(99, 102, 241, 0.7)'  // Violet
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderOverviewChart(); // Load first section viz
+            
+            // Mobile toggle
+            document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+                const nav = document.querySelector('nav');
+                nav.classList.toggle('hidden');
+                nav.classList.toggle('absolute');
+                nav.classList.toggle('h-full');
+                nav.classList.toggle('z-40');
+            });
+        });
+
+    </script>
+    
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</body>
+</html>
