@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POLiT!KA // PROTOCOL ZERO</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --grid-color: rgba(255, 51, 51, 0.1);
+            --primary: #ff3333; /* Rouge Prussien */
+            --secondary: #e0e0e0;
+            --dim: #444;
+            --scanline: rgba(0,0,0,0.5);
+            --font-main: 'Courier New', monospace;
+        }
+
+        * { box-sizing: border-box; cursor: crosshair; }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--secondary);
+            font-family: var(--font-main);
+            height: 100vh;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        /* --- FX CRT & GLITCH --- */
+        .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(255, 51, 51, 0.1) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
+        }
+
+        /* --- LAYOUT --- */
+        #interface {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            grid-template-rows: 60px 1fr 200px;
+            height: 100vh;
+            padding: 20px;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- PANELS --- */
+        .panel {
+            border: 1px solid var(--dim);
+            background: rgba(10, 10, 10, 0.8);
+            padding: 15px;
+            position: relative;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+        
+        .panel:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.2);
+        }
+
+        .panel::after {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px;
+            width: 10px; height: 10px;
+            border-top: 2px solid var(--primary);
+            border-left: 2px solid var(--primary);
+        }
+
+        /* HEADER */
+        .header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--dim); }
+        .logo { font-size: 2rem; font-weight: bold; letter-spacing: 5px; color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        .status { font-size: 0.8rem; color: var(--secondary); text-align: right; }
+        .blink { animation: blink 1s infinite; }
+
+        /* SIDEBAR LEFT */
+        .sidebar-left { grid-row: 2 / -1; display: flex; flex-direction: column; gap: 10px; }
+        .nav-btn {
+            background: transparent;
+            border: 1px solid var(--dim);
+            color: var(--dim);
+            padding: 15px;
+            text-align: left;
+            font-family: var(--font-main);
+            transition: 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+            font-weight: bold;
+            padding-left: 25px;
+        }
+        .nav-btn::before {
+            content: '>';
+            position: absolute;
+            left: -20px;
+            transition: 0.2s;
+        }
+        .nav-btn:hover::before { left: 10px; }
+
+        /* MAIN VIEW (RADAR) */
+        .main-view {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            position: relative;
+            border: 1px solid var(--dim);
+            overflow: hidden;
+            background: radial-gradient(circle, rgba(20,20,20,1) 0%, rgba(5,5,5,1) 100%);
+        }
+        canvas#tactical-map { width: 100%; height: 100%; display: block; }
+        .overlay-text {
+            position: absolute;
+            top: 20px; left: 20px;
+            pointer-events: none;
+        }
+
+        /* SIDEBAR RIGHT (DATA) */
+        .sidebar-right { grid-column: 3 / 4; grid-row: 2 / 4; display: flex; flex-direction: column; gap: 20px; }
+        
+        .data-block h3 { border-bottom: 1px solid var(--primary); font-size: 0.9rem; margin-bottom: 10px; padding-bottom: 5px; }
+        .data-row { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px; }
+        .bar-container { width: 100%; height: 4px; background: #333; margin-top: 5px; }
+        .bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 1s; }
+
+        /* LOGS CONSOLE */
+        .console {
+            grid-column: 2 / 3;
+            grid-row: 3 / 4;
+            font-size: 0.8rem;
+            overflow-y: auto;
+            border-top: 1px solid var(--dim);
+            padding-top: 10px;
+        }
+        .log-entry { margin-bottom: 4px; opacity: 0.7; }
+        .log-entry.alert { color: var(--primary); font-weight: bold; opacity: 1; }
+        .log-entry span { color: #888; margin-right: 10px; }
+
+        /* GLITCH TEXT EFFECT */
+        .glitch { position: relative; }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+        .glitch::before { left: 2px; text-shadow: -1px 0 red; clip: rect(24px, 550px, 90px, 0); animation: glitch-anim-2 3s infinite linear alternate-reverse; }
+        .glitch::after { left: -2px; text-shadow: -1px 0 blue; clip: rect(85px, 550px, 140px, 0); animation: glitch-anim 2.5s infinite linear alternate-reverse; }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(14px, 9999px, 122px, 0); }
+            20% { clip: rect(80px, 9999px, 5px, 0); }
+            40% { clip: rect(104px, 9999px, 35px, 0); }
+            60% { clip: rect(2px, 9999px, 69px, 0); }
+            80% { clip: rect(44px, 9999px, 12px, 0); }
+            100% { clip: rect(12px, 9999px, 86px, 0); }
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* BUTTON PULSE */
+        #deploy-btn {
+            background: var(--primary);
+            color: black;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 51, 51, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0); } }
+
+    </style>
+</head>
+<body class="crt">
+
+    <div class="scanline"></div>
+
+    <div id="interface">
+        
+        <header class="header panel">
+            <div class="logo glitch" data-text="POLiT!KA_OS">POLiT!KA_OS</div>
+            <div class="status">
+                SYS_INTEGRITY: 98%<br>
+                NET_NODES: <span id="nodes-count" style="color:var(--primary)">0</span><br>
+                <span class="blink">● CONNECTED (GUN_DB)</span>
+            </div>
+        </header>
+
+        <nav class="sidebar-left panel">
+            <div style="font-size:0.7rem; color: #666; padding-bottom:10px;">COMMAND_MODULES</div>
+            <button class="nav-btn active">PANOPTICON // MAP</button>
+            <button class="nav-btn">WARGAMES // SIM</button>
+            <button class="nav-btn">ISTORE // LOGS</button>
+            <button class="nav-btn">FLASHCARDS // PSY</button>
+            
+            <div id="deploy-btn" onclick="triggerInsurrection()">
+                ⚠️ INITIATE PROTOCOL<br>
+                <span style="font-size:0.7rem">CLONE & DEPLOY</span>
+            </div>
+        </nav>
+
+        <main class="main-view">
+            <div class="overlay-text">
+                <h2 style="margin:0">BELGIUM_GRID</h2>
+                <small>LIVE TRACKING...</small>
+            </div>
+            <canvas id="tactical-map"></canvas>
+        </main>
+
+        <aside class="sidebar-right">
+            <div class="panel data-block">
+                <h3>THREAT LEVEL</h3>
+                <div style="font-size:3rem; color:var(--primary); font-weight:bold; text-align:center;" id="defcon">3</div>
+                <div style="text-align:center; font-size:0.8rem;">DEFENSE CONDITION</div>
+            </div>
+
+            <div class="panel data-block">
+                <h3>RESOURCE ALLOCATION</h3>
+                <div class="data-row"><span>CPU</span><span>42%</span></div>
+                <div class="bar-container"><div class="bar-fill" style="width:42%"></div></div>
+                
+                <div class="data-row" style="margin-top:10px"><span>MEM</span><span>128TB</span></div>
+                <div class="bar-container"><div class="bar-fill" style="width:76%"></div></div>
+
+                <div class="data-row" style="margin-top:10px"><span>P2P SWARM</span><span>ACTIVE</span></div>
+                <div class="bar-container"><div class="bar-fill" style="width:90%; background:#3f3;"></div></div>
+            </div>
+
+            <div class="panel data-block" style="flex-grow:1; display:flex; flex-direction:column;">
+                <h3>TARGET LIST</h3>
+                <div id="target-list" style="overflow:hidden; font-size:0.7rem; color:#aaa;">
+                    </div>
+            </div>
+        </aside>
+
+        <div class="panel console" id="console-output">
+            <div class="log-entry"><span>00:00:01</span> SYSTEM BOOT SEQUENCE INITIATED...</div>
+            <div class="log-entry"><span>00:00:02</span> LOADING KERNEL MODULES... OK</div>
+            <div class="log-entry"><span>00:00:03</span> CONNECTING TO SWARM... SUCCESS</div>
+        </div>
+
+    </div>
+
+    <script>
+        /* PRUSSIAN_CODE_BLOCK v1.0
+           Pure JS. No Frameworks. Pure Efficiency.
+        */
+
+        // --- 1. CONSOLE SYSTEM ---
+        const consoleEl = document.getElementById('console-output');
+        function log(msg, type = 'info') {
+            const date = new Date();
+            const time = date.toLocaleTimeString('fr-BE');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type === 'alert' ? 'alert' : ''}`;
+            entry.innerHTML = `<span>${time}</span> ${msg}`;
+            consoleEl.insertBefore(entry, consoleEl.firstChild);
+            if(consoleEl.children.length > 50) consoleEl.lastChild.remove();
+        }
+
+        // --- 2. RADAR SYSTEM (CANVAS) ---
+        const canvas = document.getElementById('tactical-map');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let targets = [];
+        let sweepAngle = 0;
+
+        function resize() {
+            width = canvas.parentElement.offsetWidth;
+            height = canvas.parentElement.offsetHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Generate fake targets
+        for(let i=0; i<15; i++) {
+            targets.push({
+                x: Math.random() * 100, // %
+                y: Math.random() * 100, // %
+                active: true,
+                id: Math.floor(Math.random() * 9999)
+            });
+        }
+
+        function drawRadar() {
+            // Fade effect
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+
+            const cx = width / 2;
+            const cy = height / 2;
+            const radius = Math.min(cx, cy) - 20;
+
+            // Draw Grid
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius * 0.6, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius * 0.3, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(cx - radius, cy); ctx.lineTo(cx + radius, cy);
+            ctx.moveTo(cx, cy - radius); ctx.lineTo(cx, cy + radius);
+            ctx.stroke();
+
+            // Draw Targets
+            targets.forEach(t => {
+                const tx = (t.x / 100) * width;
+                const ty = (t.y / 100) * height;
+                
+                // Random blink
+                if(Math.random() > 0.95) {
+                    ctx.fillStyle = '#ff3333';
+                    ctx.fillRect(tx-2, ty-2, 4, 4);
+                    // Draw Label randomly
+                    if(Math.random() > 0.98) {
+                        ctx.fillStyle = '#fff';
+                        ctx.font = '10px monospace';
+                        ctx.fillText(`TRG_${t.id}`, tx + 5, ty - 5);
+                    }
+                }
+            });
+
+            // Draw Sweep
+            sweepAngle += 0.02;
+            const sx = cx + Math.cos(sweepAngle) * radius;
+            const sy = cy + Math.sin(sweepAngle) * radius;
+
+            const gradient = ctx.createLinearGradient(cx, cy, sx, sy);
+            gradient.addColorStop(0, 'rgba(255, 51, 51, 0)');
+            gradient.addColorStop(1, 'rgba(255, 51, 51, 0.5)');
+
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.arc(cx, cy, radius, sweepAngle - 0.2, sweepAngle);
+            ctx.lineTo(cx, cy);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Border Scanline
+            ctx.strokeStyle = '#ff3333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(sx, sy);
+            ctx.stroke();
+
+            requestAnimationFrame(drawRadar);
+        }
+        drawRadar();
+
+        // --- 3. DATA SIMULATION ---
+        const targetList = document.getElementById('target-list');
+        
+        setInterval(() => {
+            // Update node count
+            const nodes = Math.floor(Math.random() * 50) + 1200;
+            document.getElementById('nodes-count').innerText = nodes;
+
+            // Random log
+            const events = [
+                "PACKET_LOSS DETECTED ON NODE_7",
+                "NEW PEER CONNECTED: BRUSSELS_CENTER",
+                "ENCRYPTED MESSAGE RECEIVED",
+                "SYNCING DATABASE...",
+                "PING 12ms TO HUB"
+            ];
+            if(Math.random() > 0.7) {
+                log(events[Math.floor(Math.random() * events.length)]);
+            }
+
+            // Update Target List
+            if(Math.random() > 0.8) {
+                const tID = Math.floor(Math.random() * 9000) + 1000;
+                const div = document.createElement('div');
+                div.style.marginBottom = "5px";
+                div.innerHTML = `> CIBLE #${tID} [PENDING]`;
+                targetList.prepend(div);
+                if(targetList.children.length > 8) targetList.lastChild.remove();
+            }
+
+        }, 800);
+
+        // --- 4. INTERACTION ---
+        function triggerInsurrection() {
+            log("⚠️ INITIATING DEPLOYMENT SEQUENCE...", "alert");
+            log("CLONING REPO...", "alert");
+            
+            let btn = document.getElementById('deploy-btn');
+            let originalText = btn.innerHTML;
+            btn.innerHTML = "EXECUTING...";
+            btn.style.background = "#fff";
+            btn.style.color = "#f00";
+
+            setTimeout(() => {
+                alert("PROTOCOL ZERO ACTIVATED.\n\nLa cellule est déployée.\nL'URL de ton fork a été générée.");
+                btn.innerHTML = originalText;
+                btn.style.background = "";
+                btn.style.color = "";
+                log("DEPLOYMENT COMPLETE.", "alert");
+            }, 2000);
+        }
+
+        // --- 5. KEYBOARD SHORTCUTS ---
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Delete') {
+                document.body.style.filter = "invert(1)";
+                setTimeout(() => document.body.style.filter = "invert(0)", 100);
+                log("EMP BLAST TRIGGERED", "alert");
+            }
+        });
+
+    </script>
+</body>
+</html>
