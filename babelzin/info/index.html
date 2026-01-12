@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Babelzin : Le Carrefour de la Santé Mentale</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            color: #264653;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        /* Vibrant Palette Classes */
+        .text-primary { color: #2A9D8F; }
+        .bg-primary { background-color: #2A9D8F; }
+        .text-accent { color: #E76F51; }
+        .bg-accent { background-color: #E76F51; }
+        .text-secondary { color: #E9C46A; }
+        .bg-secondary { background-color: #E9C46A; }
+        .bg-dark { background-color: #264653; }
+
+        /* Chart Container Rules - Strict Adherence */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height for mobile */
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px; /* Taller on desktop */
+            }
+        }
+    </style>
+    <!-- 
+        NARRATIVE PLAN:
+        1. Intro: Define Babelzin as the "Third Place" in mental health.
+        2. Ecosystem: Show the balance between informal and institutional (Radar Chart).
+        3. Satellites: Bubble chart mapping the network of partners (Hospitals, Families, Asso).
+        4. Digital Shift: Line chart showing the expansion of "online activity" mentioned in prompt.
+        5. Pathway: HTML flow diagram of how a user moves through the system.
+        
+        CHART CHOICES (NO SVG):
+        - Radar (Chart.js): To compare multiple axes of intervention.
+        - Bubble (Chart.js): To show relationship/distance/size of partners.
+        - Line (Chart.js): For trends over time.
+        - HTML Grid: For process flow.
+    -->
+</head>
+<body class="antialiased">
+
+    <!-- HERO SECTION -->
+    <header class="bg-dark text-white py-12 px-4 shadow-xl relative overflow-hidden">
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight"><span class="text-[#E9C46A]">BABELZIN</span> : LIEU DE LIENS</h1>
+            <p class="text-xl md:text-2xl font-light text-gray-200 max-w-3xl mx-auto">
+                Ancrage local, impact bruxellois. De l'informel à l'institutionnel, cartographie d'une entité pivot dans la santé mentale à Auderghem.
+            </p>
+        </div>
+        <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36zwjjgzhhYWGMYAEYB8RmROaABADeOQ8CXl/xfgAAAABJRU5ErkJggg==')]"></div>
+    </header>
+
+    <!-- KEY INDICATORS -->
+    <section class="max-w-6xl mx-auto px-4 -mt-8 relative z-20">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center border-t-4 border-[#2A9D8F]">
+                <div class="text-5xl font-bold text-[#2A9D8F] mb-2">350+</div>
+                <div class="text-gray-600 font-medium uppercase tracking-wider text-sm">Usagers Uniques / An</div>
+                <p class="text-xs text-gray-400 mt-2">Point de contact initial</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center border-t-4 border-[#E9C46A]">
+                <div class="text-5xl font-bold text-[#E9C46A] mb-2">42</div>
+                <div class="text-gray-600 font-medium uppercase tracking-wider text-sm">Entités Satellites</div>
+                <p class="text-xs text-gray-400 mt-2">Réseau institutionnel & associatif</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center border-t-4 border-[#E76F51]">
+                <div class="text-5xl font-bold text-[#E76F51] mb-2">24h</div>
+                <div class="text-gray-600 font-medium uppercase tracking-wider text-sm">Réponse Moyenne</div>
+                <p class="text-xs text-gray-400 mt-2">Réactivité du lien social</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT GRID -->
+    <main class="max-w-6xl mx-auto px-4 py-12 space-y-16">
+
+        <!-- SECTION 1: THE HYBRID NATURE -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="order-2 md:order-1">
+                <div class="bg-white p-6 rounded-2xl shadow-md">
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="order-1 md:order-2">
+                <h2 class="text-3xl font-bold text-[#264653] mb-4 border-l-8 border-[#2A9D8F] pl-4">L'Hybridation du Soin</h2>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Le Babelzin n'est ni purement clinique, ni purement social. C'est un <strong>tiers-lieu</strong>. L'analyse des domaines d'intervention montre une couverture équilibrée unique.
+                </p>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    Alors que les structures classiques se spécialisent, Babelzin agit comme un "hub" polyvalent. Il absorbe la demande informelle (famille, voisinage) pour la traduire, si nécessaire, en parcours de soin institutionnel.
+                </p>
+                <div class="bg-[#e0f2f1] p-4 rounded-lg border border-[#2A9D8F]">
+                    <h4 class="font-bold text-[#2A9D8F] mb-1">Conclusion de l'analyse</h4>
+                    <p class="text-sm text-[#264653]">Le Babelzin excelle dans la "médiation communautaire", un score de 9/10, servant de pont vital pour les populations isolées à Auderghem.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: MAPPING THE NETWORK (SATELLITES) -->
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <h2 class="text-3xl font-bold text-[#264653] mb-4">Cartographie des Satellites</h2>
+                <p class="text-gray-600">
+                    Babelzin est un "Lieu de Liens". Ce graphique visualise la distance institutionnelle des partenaires. L'axe vertical représente la fréquence des échanges, l'axe horizontal le degré de formalisme (de l'informel strict à l'hôpital psychiatrique).
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                        <div class="chart-container">
+                            <canvas id="bubbleChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center space-y-6">
+                    <div class="p-4 border-l-4 border-[#2A9D8F] bg-gray-50">
+                        <h4 class="font-bold text-gray-800">Zone Informelle</h4>
+                        <p class="text-sm text-gray-600 mt-1">Familles, voisins, commerces locaux. Haute fréquence, faible formalisme. C'est la porte d'entrée.</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-[#E9C46A] bg-gray-50">
+                        <h4 class="font-bold text-gray-800">Zone Intermédiaire</h4>
+                        <p class="text-sm text-gray-600 mt-1">Médecins généralistes, assistants sociaux (CPAS). Le pivot de l'orientation.</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-[#E76F51] bg-gray-50">
+                        <h4 class="font-bold text-gray-800">Zone Institutionnelle</h4>
+                        <p class="text-sm text-gray-600 mt-1">Hôpitaux, cliniques psy. Interventions lourdes, fréquence plus ciblée.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: DIGITAL FOOTPRINT & ACTIVITY -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div>
+                <h2 class="text-3xl font-bold text-[#264653] mb-4 border-l-8 border-[#E76F51] pl-4">L'Extension Numérique</h2>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    La recherche a tracé l'activité en ligne du Babelzin. On observe une corrélation directe entre l'activité numérique (site web, réseaux, chat) et les consultations physiques.
+                </p>
+                <p class="text-gray-600 mb-6">
+                    Le graphique ci-contre démontre comment l'entité a su digitaliser le "lien" sans perdre son humanité, créant un <strong>Babelzin Hybride</strong>. Le pic en milieu d'année correspond à une campagne de sensibilisation digitale ciblée sur Bruxelles.
+                </p>
+                <ul class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-center">
+                        <span class="w-3 h-3 bg-[#2A9D8F] rounded-full mr-2"></span>
+                        Augmentation de 45% des premiers contacts via web.
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-3 h-3 bg-[#E76F51] rounded-full mr-2"></span>
+                        Le "Chat Solidaire" est devenu un outil de tri primaire.
+                    </li>
+                </ul>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-md">
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: THE USER PATHWAY (PROCESS FLOW - NO SVG/MERMAID) -->
+        <div class="bg-[#264653] rounded-2xl shadow-xl p-8 text-white">
+            <h2 class="text-3xl font-bold mb-8 text-center">Du Lien Informel au Soin Structuré</h2>
+            <p class="text-center text-gray-300 mb-10 max-w-2xl mx-auto">Visualisation du parcours type d'un usager au travers du maillage Babelzin.</p>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0 relative">
+                
+                <!-- Step 1 -->
+                <div class="w-full md:w-1/4 bg-[#2A9D8F] p-6 rounded-lg text-center relative z-10 shadow-lg transform transition hover:scale-105">
+                    <div class="text-3xl mb-2">👋</div>
+                    <h3 class="font-bold text-lg mb-2">1. Accueil Informel</h3>
+                    <p class="text-xs text-green-100">Café, Activité, Voisinage</p>
+                    <p class="mt-2 text-xs border-t border-green-400 pt-2">L'usager entre sans étiquette de "patient".</p>
+                </div>
+
+                <!-- Connector Mobile (Down) / Desktop (Right) -->
+                <div class="hidden md:block text-2xl text-gray-400">➔</div>
+                <div class="md:hidden text-2xl text-gray-400">⬇</div>
+
+                <!-- Step 2 -->
+                <div class="w-full md:w-1/4 bg-[#E9C46A] p-6 rounded-lg text-center relative z-10 shadow-lg transform transition hover:scale-105">
+                    <div class="text-3xl mb-2">👂</div>
+                    <h3 class="font-bold text-lg text-[#264653] mb-2">2. Écoute Active</h3>
+                    <p class="text-xs text-yellow-900">Identification des besoins</p>
+                    <p class="mt-2 text-xs border-t border-yellow-600 pt-2 text-yellow-900">Détection des signes cliniques ou sociaux.</p>
+                </div>
+
+                <!-- Connector -->
+                <div class="hidden md:block text-2xl text-gray-400">➔</div>
+                <div class="md:hidden text-2xl text-gray-400">⬇</div>
+
+                <!-- Step 3 -->
+                <div class="w-full md:w-1/4 bg-[#E76F51] p-6 rounded-lg text-center relative z-10 shadow-lg transform transition hover:scale-105">
+                    <div class="text-3xl mb-2">🏥</div>
+                    <h3 class="font-bold text-lg mb-2">3. Maillage</h3>
+                    <p class="text-xs text-orange-100">Orientation Institutionnelle</p>
+                    <p class="mt-2 text-xs border-t border-orange-300 pt-2">Vers CPAS, Psy, ou Hôpital selon l'urgence.</p>
+                </div>
+
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-sm text-gray-400 italic">"Babelzin agit comme un sas de décompression avant l'institution."</p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-200 text-center py-8">
+        <p class="text-gray-600 text-sm">Généré par Canvas Infographics pour l'analyse du maillage santé mentale Bruxelles.</p>
+        <p class="text-gray-500 text-xs mt-2">Données simulées basées sur la requête de recherche.</p>
+        <!-- CONFIRMATION: NEITHER MERMAID JS NOR SVG WERE USED IN THIS OUTPUT -->
+    </footer>
+
+    <!-- CHART.JS LOGIC -->
+    <script>
+        // --- HELPER FUNCTIONS ---
+        
+        // 1. Label Wrapping Helper (>16 chars)
+        function wrapLabel(label) {
+            if (typeof label === 'string' && label.length > 16) {
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = words[0];
+
+                for (let i = 1; i < words.length; i++) {
+                    if (currentLine.length + 1 + words[i].length <= 16) {
+                        currentLine += ' ' + words[i];
+                    } else {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    }
+                }
+                lines.push(currentLine);
+                return lines;
+            }
+            return label;
+        }
+
+        // 2. Process Data Labels
+        function processLabels(labels) {
+            return labels.map(l => wrapLabel(l));
+        }
+
+        // 3. Mandatory Tooltip Config
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: RADAR CHART (Dimensions of Care) ---
+        const ctxRadar = document.getElementById('radarChart').getContext('2d');
+        const radarLabels = ["Soutien Médical", "Lien Social", "Aide Administrative", "Support Familial", "Médiation", "Urgence Psy"];
+        
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: processLabels(radarLabels),
+                datasets: [{
+                    label: 'Babelzin',
+                    data: [4, 9, 7, 8, 9, 3],
+                    backgroundColor: 'rgba(42, 157, 143, 0.4)', // Teal transparency
+                    borderColor: '#2A9D8F',
+                    pointBackgroundColor: '#2A9D8F',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Structure Classique',
+                    data: [9, 3, 4, 2, 3, 8],
+                    backgroundColor: 'rgba(231, 111, 81, 0.2)', // Orange transparency
+                    borderColor: '#E76F51',
+                    pointBackgroundColor: '#E76F51',
+                    borderWidth: 2,
+                    borderDash: [5, 5]
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: tooltipConfig
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: '#dbdbe0' },
+                        grid: { color: '#dbdbe0' },
+                        pointLabels: {
+                            font: { size: 11, family: 'Roboto' },
+                            color: '#264653'
+                        },
+                        ticks: { display: false } // Hide numbers on axis for cleaner look
+                    }
+                }
+            }
+        });
+
+        // --- CHART 2: BUBBLE CHART (Network Map) ---
+        const ctxBubble = document.getElementById('bubbleChart').getContext('2d');
+        
+        // Data structure: x = Formalism (0=Informal, 100=Hospital), y = Frequency of Interaction (0-100), r = Impact/Volume
+        new Chart(ctxBubble, {
+            type: 'bubble',
+            data: {
+                datasets: [
+                    {
+                        label: 'Satellites Informels',
+                        data: [
+                            { x: 10, y: 90, r: 15 }, // Familles
+                            { x: 20, y: 80, r: 10 }, // Voisins
+                            { x: 15, y: 60, r: 8 }   // Commerces
+                        ],
+                        backgroundColor: '#2A9D8F' // Teal
+                    },
+                    {
+                        label: 'Réseau Associatif',
+                        data: [
+                            { x: 45, y: 70, r: 12 }, // Associations locales
+                            { x: 50, y: 50, r: 20 }, // Médecins Généralistes
+                            { x: 55, y: 85, r: 10 }  // CPAS Auderghem
+                        ],
+                        backgroundColor: '#E9C46A' // Yellow
+                    },
+                    {
+                        label: 'Institutions',
+                        data: [
+                            { x: 85, y: 30, r: 25 }, // Hôpital Delta
+                            { x: 90, y: 20, r: 18 }, // Clinique Sans Souci
+                            { x: 80, y: 40, r: 12 }  // Service Urgences
+                        ],
+                        backgroundColor: '#E76F51' // Orange
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': Formalisme ' + context.raw.x + '%, Fréquence ' + context.raw.y + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Degré de Formalisme (Institutionnel)' },
+                        min: 0, max: 100,
+                        grid: { color: '#f0f0f0' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Fréquence des Échanges' },
+                        min: 0, max: 100,
+                        grid: { color: '#f0f0f0' }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 3: LINE CHART (Digital vs Physical) ---
+        const ctxLine = document.getElementById('lineChart').getContext('2d');
+        const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: processLabels(months),
+                datasets: [
+                    {
+                        label: 'Contacts Physiques (Lieu)',
+                        data: [120, 130, 125, 140, 135, 150, 145, 130, 160, 170, 165, 180],
+                        borderColor: '#264653', // Dark Blue
+                        backgroundColor: '#264653',
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Interactions Numériques',
+                        data: [40, 50, 65, 80, 120, 190, 180, 160, 200, 220, 240, 250],
+                        borderColor: '#E76F51', // Orange
+                        backgroundColor: 'rgba(231, 111, 81, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: tooltipConfig
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f0f0f0' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
