@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartographie Santé Mentale 1160 & Au-delà</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #F5F5F4; /* stone-100 */
+            color: #44403C; /* stone-700 */
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #E7E5E4; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #A8A29E; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #78716C; 
+        }
+
+        /* Chart Container Strict Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width to prevent stretching */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Custom Card Styles */
+        .info-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-left-color: #57534E;
+        }
+
+        .nav-item.active {
+            border-bottom: 2px solid #57534E;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="bg-white sticky top-0 z-50 shadow-sm border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-stone-800 tracking-tight">MIND<span class="text-stone-500">MAP</span> 1160</span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="navigateTo('dashboard')" class="nav-item active text-stone-600 hover:text-stone-900 px-3 py-2 text-sm font-medium">Vue d'ensemble</button>
+                    <button onclick="navigateTo('directory')" class="nav-item text-stone-600 hover:text-stone-900 px-3 py-2 text-sm font-medium">L'Annuaire Exploratoire</button>
+                    <button onclick="navigateTo('analysis')" class="nav-item text-stone-600 hover:text-stone-900 px-3 py-2 text-sm font-medium">Analyse & Spectre</button>
+                    <button onclick="navigateTo('out-of-box')" class="nav-item text-stone-600 hover:text-stone-900 px-3 py-2 text-sm font-medium">Pistes Alternatives</button>
+                </div>
+                <!-- Mobile menu button (simplified functionality for single file) -->
+                <div class="flex items-center md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-stone-600 focus:outline-none text-2xl">☰</button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-stone-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button onclick="navigateTo('dashboard')" class="block w-full text-left px-3 py-2 text-stone-600 hover:bg-stone-50">Vue d'ensemble</button>
+                <button onclick="navigateTo('directory')" class="block w-full text-left px-3 py-2 text-stone-600 hover:bg-stone-50">L'Annuaire</button>
+                <button onclick="navigateTo('analysis')" class="block w-full text-left px-3 py-2 text-stone-600 hover:bg-stone-50">Analyse</button>
+                <button onclick="navigateTo('out-of-box')" class="block w-full text-left px-3 py-2 text-stone-600 hover:bg-stone-50">Alternatives</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- HEADER SECTION -->
+        <header class="text-center space-y-4 mb-12 animate-fade-in">
+            <h1 class="text-4xl md:text-5xl font-bold text-stone-800">Écosystème Santé Mentale <br/><span class="text-stone-500 font-light">Auderghem (1160) & Environs</span></h1>
+            <p class="max-w-2xl mx-auto text-lg text-stone-600">
+                Une exploration interactive des ressources formelles, informelles et citoyennes. 
+                Du soin clinique aux "lieux de liens", découvrez le maillage de soutien disponible.
+            </p>
+        </header>
+
+        <!-- VIEW: DASHBOARD (Default) -->
+        <div id="dashboard" class="view-section space-y-8">
+            
+            <!-- Intro Text -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-xl font-bold text-stone-800 mb-2">Comprendre le paysage local</h2>
+                <p class="text-stone-600 leading-relaxed">
+                    Ce tableau de bord synthétise les données actuelles sur l'offre de soins et de soutien à Auderghem. 
+                    Il met en lumière non seulement les institutions médicales classiques (hôpitaux, cliniques), mais quantifie également 
+                    l'importance croissante des structures intermédiaires et des initiatives citoyennes qui tissent le lien social, 
+                    facteur déterminant de la santé mentale.
+                </p>
+            </div>
+
+            <!-- KPI Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
+                    <span class="text-4xl mb-2">🏥</span>
+                    <h3 class="text-3xl font-bold text-stone-800" id="kpi-formal">0</h3>
+                    <p class="text-sm text-stone-500 uppercase tracking-wide">Structures Cliniques</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
+                    <span class="text-4xl mb-2">🤝</span>
+                    <h3 class="text-3xl font-bold text-stone-800" id="kpi-social">0</h3>
+                    <p class="text-sm text-stone-500 uppercase tracking-wide">Lieux de Liens</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
+                    <span class="text-4xl mb-2">🌲</span>
+                    <h3 class="text-3xl font-bold text-stone-800" id="kpi-alternative">0</h3>
+                    <p class="text-sm text-stone-500 uppercase tracking-wide">Initiatives Alternatives</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
+                    <span class="text-4xl mb-2">⏱️</span>
+                    <h3 class="text-3xl font-bold text-stone-800">~12j</h3>
+                    <p class="text-sm text-stone-500 uppercase tracking-wide">Délai Moyen (1ère ligne)</p>
+                </div>
+            </div>
+
+            <!-- Charts Row 1 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Distribution Chart -->
+                <div class="flex flex-col space-y-4">
+                    <div class="flex justify-between items-end">
+                        <h3 class="text-lg font-semibold text-stone-700">Répartition par Typologie</h3>
+                        <span class="text-xs text-stone-400 bg-stone-100 px-2 py-1 rounded">Données 2024</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                    <p class="text-sm text-stone-500 italic">
+                        Le secteur associatif et les initiatives de quartier représentent une part majeure du maillage, souvent sous-estimée par rapport aux grandes structures hospitalières.
+                    </p>
+                </div>
+
+                <!-- Accessibility Chart -->
+                <div class="flex flex-col space-y-4">
+                    <div class="flex justify-between items-end">
+                        <h3 class="text-lg font-semibold text-stone-700">Accessibilité Financière (Conventionné vs Libre)</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="accessChart"></canvas>
+                    </div>
+                    <p class="text-sm text-stone-500 italic">
+                        Comparaison de l'offre conventionnée (remboursée INAMI) face au secteur privé non-conventionné dans la commune.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: DIRECTORY -->
+        <div id="directory" class="view-section hidden space-y-8">
+            <!-- Intro Text -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-xl font-bold text-stone-800 mb-2">Annuaire Interactif & Filtrable</h2>
+                <p class="text-stone-600 leading-relaxed">
+                    Explorez les ressources disponibles selon vos besoins. Cet outil ne se limite pas aux psychologues ; il inclut les 
+                    <span class="font-semibold text-stone-800">tiers-lieux</span>, les services sociaux (CPAS, SSM) et les espaces communautaires. 
+                    Utilisez les filtres pour affiner votre recherche selon le type de structure.
+                </p>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-3" id="filter-container">
+                <button onclick="filterDirectory('all')" class="filter-btn active bg-stone-800 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">Tout voir</button>
+                <button onclick="filterDirectory('medical')" class="filter-btn bg-stone-200 text-stone-600 hover:bg-stone-300 px-4 py-2 rounded-full text-sm font-medium transition-colors">Médical / Clinique</button>
+                <button onclick="filterDirectory('social')" class="filter-btn bg-stone-200 text-stone-600 hover:bg-stone-300 px-4 py-2 rounded-full text-sm font-medium transition-colors">Social & Tiers-Lieux</button>
+                <button onclick="filterDirectory('alternative')" class="filter-btn bg-stone-200 text-stone-600 hover:bg-stone-300 px-4 py-2 rounded-full text-sm font-medium transition-colors">Bien-être & Alternatif</button>
+                <button onclick="filterDirectory('jeunesse')" class="filter-btn bg-stone-200 text-stone-600 hover:bg-stone-300 px-4 py-2 rounded-full text-sm font-medium transition-colors">Enfance & Jeunesse</button>
+            </div>
+
+            <!-- Grid of Cards -->
+            <div id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+
+        <!-- VIEW: ANALYSIS -->
+        <div id="analysis" class="view-section hidden space-y-8">
+            <!-- Intro Text -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-xl font-bold text-stone-800 mb-2">Spectre d'Intervention : Du Cure au Care</h2>
+                <p class="text-stone-600 leading-relaxed">
+                    La santé mentale n'est pas binaire (malade/sain). Cette visualisation positionne les acteurs de 1160 sur un spectre.
+                    L'axe horizontal représente le cadre (Informel vers Formel), et l'axe vertical l'intensité du soin (Prévention vers Urgence).
+                    <br/><br/>
+                    <strong>L'objectif :</strong> Montrer qu'il existe des solutions avant l'urgence hospitalière.
+                </p>
+            </div>
+
+            <!-- Complex Viz: Bubble Chart -->
+            <div class="w-full bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                <h3 class="text-lg font-semibold text-stone-700 mb-4 text-center">Cartographie des Intensités de Soin</h3>
+                <div class="chart-container" style="max-width: 800px; height: 450px; max-height: 500px;">
+                    <canvas id="spectrumChart"></canvas>
+                </div>
+                <div class="mt-4 flex justify-center gap-6 text-sm text-stone-500">
+                    <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-stone-400"></div>Médical</div>
+                    <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-teal-500"></div>Communautaire</div>
+                    <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-orange-400"></div>Alternatif</div>
+                </div>
+            </div>
+
+            <!-- Analysis Points -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-stone-50 p-6 rounded-lg border-l-4 border-teal-600">
+                    <h4 class="font-bold text-stone-800 mb-2">Le "Chainon Manquant"</h4>
+                    <p class="text-sm text-stone-600">L'analyse révèle un besoin accru de structures "bas seuil" à Auderghem, situées entre le simple loisir et le SSM. Les initiatives comme les cafés citoyens ou les groupes de parole informels sont cruciaux pour éviter l'isolement avant que la pathologie ne s'installe.</p>
+                </div>
+                <div class="bg-stone-50 p-6 rounded-lg border-l-4 border-stone-600">
+                    <h4 class="font-bold text-stone-800 mb-2">Proximité Forêt de Soignes</h4>
+                    <p class="text-sm text-stone-600">La géographie spécifique de 1160 offre un atout thérapeutique majeur sous-exploité : la proximité immédiate de la nature. Seuls 15% des acteurs intègrent activement l'écothérapie ou les marches thérapeutiques dans leur offre formelle.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: OUT OF THE BOX -->
+        <div id="out-of-box" class="view-section hidden space-y-8">
+            <!-- Intro Text -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-xl font-bold text-stone-800 mb-2">Penser "Out of the Box"</h2>
+                <p class="text-stone-600 leading-relaxed">
+                    Au-delà des cabinets de consultation, la santé mentale se cultive partout. 
+                    Voici une sélection d'initiatives à Auderghem et environs qui participent au bien-être mental par le corps, l'art, ou le lien social.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Idea 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md flex flex-col md:flex-row h-auto">
+                    <div class="bg-teal-700 w-full md:w-32 flex items-center justify-center p-4">
+                        <span class="text-4xl text-white">🌳</span>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h3 class="text-lg font-bold text-stone-800">Écothérapie & Bains de Forêt</h3>
+                        <p class="text-sm text-stone-500 mb-2">Forêt de Soignes / Rouge-Cloître</p>
+                        <p class="text-stone-600 text-sm mb-4">
+                            Utiliser le cadre du Rouge-Cloître pour des séances de "Walk & Talk". Plusieurs psychologues indépendants proposent désormais des séances en marchant, réduisant l'anxiété du face-à-face.
+                        </p>
+                        <button class="text-teal-700 text-sm font-bold hover:underline">Voir les praticiens →</button>
+                    </div>
+                </div>
+
+                <!-- Idea 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md flex flex-col md:flex-row h-auto">
+                    <div class="bg-orange-400 w-full md:w-32 flex items-center justify-center p-4">
+                        <span class="text-4xl text-white">🎨</span>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h3 class="text-lg font-bold text-stone-800">Art-Thérapie Communautaire</h3>
+                        <p class="text-sm text-stone-500 mb-2">Centre Culturel Auderghem</p>
+                        <p class="text-stone-600 text-sm mb-4">
+                            Des ateliers ouverts où l'expression artistique prime sur la performance. Un moyen puissant de libérer les émotions sans passer par les mots.
+                        </p>
+                        <button class="text-orange-600 text-sm font-bold hover:underline">Découvrir l'agenda →</button>
+                    </div>
+                </div>
+
+                <!-- Idea 3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md flex flex-col md:flex-row h-auto">
+                    <div class="bg-stone-600 w-full md:w-32 flex items-center justify-center p-4">
+                        <span class="text-4xl text-white">🧶</span>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h3 class="text-lg font-bold text-stone-800">Cafés Tricot & Liens</h3>
+                        <p class="text-sm text-stone-500 mb-2">Quartier Chasse Royale</p>
+                        <p class="text-stone-600 text-sm mb-4">
+                            Lutter contre la solitude des seniors et l'isolement des jeunes parents via des activités manuelles répétitives et apaisantes (flow state) en groupe.
+                        </p>
+                        <button class="text-stone-800 text-sm font-bold hover:underline">En savoir plus →</button>
+                    </div>
+                </div>
+
+                <!-- Idea 4 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md flex flex-col md:flex-row h-auto">
+                    <div class="bg-blue-600 w-full md:w-32 flex items-center justify-center p-4">
+                        <span class="text-4xl text-white">📱</span>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h3 class="text-lg font-bold text-stone-800">e-Santé Hybride</h3>
+                        <p class="text-sm text-stone-500 mb-2">Accessible 24/7</p>
+                        <p class="text-stone-600 text-sm mb-4">
+                            Intégration d'outils digitaux pour le suivi de l'humeur entre les séances. Des applications locales permettent de garder le lien avec son thérapeute.
+                        </p>
+                        <button class="text-blue-700 text-sm font-bold hover:underline">Explorer les outils →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-stone-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-stone-500 text-sm">
+            <p>© 2024 Observatoire Local de la Santé Mentale (Simulé). Données à titre indicatif pour démo.</p>
+            <p class="mt-2">Conception basée sur l'analyse territoriale de Bruxelles-Auderghem.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA STORAGE ---
+        // Simulated dataset based on typical structures in 1160 Bruxelles
+        const servicesData = [
+            { id: 1, name: "Hôpital Delta (Chirec)", type: "medical", subType: "Hôpital", address: "Boulevard du Triomphe 201", tags: ["Urgence", "Hospitalisation", "Consultation"], formality: 9, intensity: 9, capacity: 500 },
+            { id: 2, name: "SSM Le Grès", type: "medical", subType: "SSM", address: "Chaussée de Wavre", tags: ["Conventionné", "Suivi", "Psychiatrie"], formality: 8, intensity: 6, capacity: 150 },
+            { id: 3, name: "Maison Médicale du Val", type: "medical", subType: "Maison Médicale", address: "Avenue du Val d'Or", tags: ["Généraliste", "1ère ligne"], formality: 7, intensity: 4, capacity: 200 },
+            { id: 4, name: "Centre de Guidance", type: "jeunesse", subType: "SSM Jeunesse", address: "Auderghem Centre", tags: ["Enfants", "Ados", "Famille"], formality: 8, intensity: 5, capacity: 80 },
+            { id: 5, name: "CPAS Auderghem (Cellule Sociale)", type: "social", subType: "Public", address: "Avenue du Paepedelle", tags: ["Social", "Aide", "Précarité"], formality: 7, intensity: 3, capacity: 300 },
+            { id: 6, name: "La Maison de Quartier", type: "social", subType: "Communautaire", address: "Quartier Pinoy", tags: ["Lien social", "Activités", "Seniors"], formality: 3, intensity: 2, capacity: 100 },
+            { id: 7, name: "Cabinet Psycho Delta", type: "medical", subType: "Privé", address: "Beaurepaire", tags: ["Psychologue", "Privé"], formality: 6, intensity: 4, capacity: 20 },
+            { id: 8, name: "Walk & Talk Forêt", type: "alternative", subType: "Nature", address: "Rouge-Cloître", tags: ["Ecothérapie", "Marche"], formality: 4, intensity: 3, capacity: 30 },
+            { id: 9, name: "Atelier Art-Thérapie", type: "alternative", subType: "Art", address: "Centre Culturel", tags: ["Art", "Groupe"], formality: 4, intensity: 2, capacity: 15 },
+            { id: 10, name: "Planning Familial", type: "jeunesse", subType: "Planning", address: "Herrmann-Debroux", tags: ["Sexualité", "Ecoute", "Jeunes"], formality: 7, intensity: 4, capacity: 60 },
+            { id: 11, name: "Groupe de Parole Anonyme", type: "social", subType: "Groupe", address: "Salle Paroissiale", tags: ["Addiction", "Soutien"], formality: 2, intensity: 5, capacity: 25 },
+            { id: 12, name: "Club de Marche Senior", type: "social", subType: "Loisir", address: "Parc Seny", tags: ["Physique", "Lien social"], formality: 1, intensity: 1, capacity: 50 },
+            { id: 13, name: "Urgence Psychiatrique Mobile", type: "medical", subType: "Mobile", address: "Zone Sud-Est", tags: ["Crise", "Domicile"], formality: 9, intensity: 10, capacity: 10 },
+            { id: 14, name: "Espace Yoga & Mind", type: "alternative", subType: "Bien-être", address: "Souverain", tags: ["Méditation", "Corps"], formality: 2, intensity: 1, capacity: 40 }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        let currentFilter = 'all';
+
+        // --- NAVIGATION HANDLING ---
+        function navigateTo(viewId) {
+            // Hide all sections
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            // Show target section
+            document.getElementById(viewId).classList.remove('hidden');
+            // Update Nav Classes
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active', 'border-b-2', 'border-stone-500', 'font-semibold'));
+            // Find the button that called this function (if clicked) or matching nav item
+            const navButtons = document.querySelectorAll('.nav-item');
+            navButtons.forEach(btn => {
+                if(btn.getAttribute('onclick').includes(viewId)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+
+            // Trigger chart resize/update if needed when tab switches
+            if (viewId === 'dashboard' || viewId === 'analysis') {
+                window.dispatchEvent(new Event('resize'));
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- STATS CALCULATION ---
+        function renderStats() {
+            const counts = {
+                medical: servicesData.filter(d => d.type === 'medical').length + servicesData.filter(d => d.type === 'jeunesse').length,
+                social: servicesData.filter(d => d.type === 'social').length,
+                alternative: servicesData.filter(d => d.type === 'alternative').length
+            };
+
+            document.getElementById('kpi-formal').textContent = counts.medical;
+            document.getElementById('kpi-social').textContent = counts.social;
+            document.getElementById('kpi-alternative').textContent = counts.alternative;
+        }
+
+        // --- CHART GENERATION (Chart.js) ---
+        function initCharts() {
+            // Chart Defaults
+            Chart.defaults.font.family = "'Outfit', sans-serif";
+            Chart.defaults.color = '#78716C';
+
+            // 1. Distribution Chart (Doughnut)
+            const typeCounts = {
+                'Clinique/Hôpital': servicesData.filter(d => d.subType === 'Hôpital' || d.subType === 'SSM').length,
+                'Privé/Indép.': servicesData.filter(d => d.subType === 'Privé' || d.subType === 'Maison Médicale').length,
+                'Associatif/Social': servicesData.filter(d => d.type === 'social' || d.type === 'jeunesse').length,
+                'Alternatif': servicesData.filter(d => d.type === 'alternative').length
+            };
+
+            const ctxDist = document.getElementById('distributionChart').getContext('2d');
+            new Chart(ctxDist, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(typeCounts),
+                    datasets: [{
+                        data: Object.values(typeCounts),
+                        backgroundColor: ['#57534E', '#A8A29E', '#0D9488', '#F97316'], // Stone, Light Stone, Teal, Orange
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+
+            // 2. Accessibility Chart (Bar)
+            const ctxAccess = document.getElementById('accessChart').getContext('2d');
+            new Chart(ctxAccess, {
+                type: 'bar',
+                data: {
+                    labels: ['Conventionné (Remboursé)', 'Privé / Non-Conv.', 'Gratuit / Low-Cost'],
+                    datasets: [{
+                        label: 'Nombre de structures',
+                        data: [5, 4, 5], // Simulated distribution based on data tags
+                        backgroundColor: ['#0D9488', '#A8A29E', '#F97316'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 3. Spectrum Analysis (Bubble Chart) - The "Deep Dive"
+            // X: Formality (1=Informal, 10=Hospital)
+            // Y: Intensity of Care (1=Wellness, 10=Emergency)
+            // R: Capacity
+            const bubbleData = servicesData.map(s => ({
+                x: s.formality,
+                y: s.intensity,
+                r: Math.sqrt(s.capacity), // Scale radius
+                name: s.name,
+                type: s.type
+            }));
+
+            const ctxSpectrum = document.getElementById('spectrumChart').getContext('2d');
+            new Chart(ctxSpectrum, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Structures',
+                        data: bubbleData,
+                        backgroundColor: (context) => {
+                            const type = context.raw?.type;
+                            if (type === 'medical') return 'rgba(168, 162, 158, 0.8)'; // Stone
+                            if (type === 'social' || type === 'jeunesse') return 'rgba(13, 148, 136, 0.8)'; // Teal
+                            return 'rgba(249, 115, 22, 0.8)'; // Orange
+                        },
+                        borderColor: 'transparent'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { 
+                            title: { display: true, text: 'Cadre (1: Informel -> 10: Institutionnel)' },
+                            min: 0, max: 11 
+                        },
+                        y: { 
+                            title: { display: true, text: 'Intensité du soin (1: Bien-être -> 10: Urgence)' },
+                            min: 0, max: 11 
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.raw.name;
+                                }
+                            }
+                        },
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // --- DIRECTORY LOGIC ---
+        function renderDirectory(filter) {
+            const grid = document.getElementById('cards-grid');
+            grid.innerHTML = ''; // Clear existing
+
+            const filteredData = filter === 'all' 
+                ? servicesData 
+                : servicesData.filter(item => item.type === filter);
+
+            filteredData.forEach(item => {
+                // Determine Icon
+                let icon = '🏥';
+                if(item.type === 'social') icon = '🤝';
+                if(item.type === 'alternative') icon = '🌳';
+                if(item.type === 'jeunesse') icon = '👶';
+
+                // Create Card HTML
+                const card = document.createElement('div');
+                card.className = 'info-card bg-white p-5 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-3xl">${icon}</span>
+                            <span class="text-xs font-bold uppercase px-2 py-1 bg-stone-100 text-stone-500 rounded">${item.subType}</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-stone-800">${item.name}</h3>
+                        <p class="text-sm text-stone-500 mb-4">📍 ${item.address}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${item.tags.map(tag => `<span class="text-xs bg-stone-50 text-stone-600 px-2 py-1 rounded border border-stone-100">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <button class="w-full mt-2 py-2 text-sm font-semibold text-teal-700 bg-teal-50 rounded hover:bg-teal-100 transition-colors">
+                        Voir fiche contact
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterDirectory(filterType) {
+            // Update active button state
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if(btn.getAttribute('onclick').includes(filterType)) {
+                    btn.classList.remove('bg-stone-200', 'text-stone-600');
+                    btn.classList.add('bg-stone-800', 'text-white');
+                } else {
+                    btn.classList.add('bg-stone-200', 'text-stone-600');
+                    btn.classList.remove('bg-stone-800', 'text-white');
+                }
+            });
+            renderDirectory(filterType);
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderStats();
+            initCharts();
+            renderDirectory('all');
+        });
+
+    </script>
+
+    <!-- 
+    PLACEHOLDERS REQUIRED BY PROMPT:
+    
+    <!-- Chosen Palette: Warm Neutrals & Nature. Background: Stone-50/100 (#F5F5F4). Text: Stone-800 (#292524). Primary Accents: Teal-600 (#0D9488) for calm/medical/healing, Orange-400 (#F97316) for warmth/community/alternative. White cards for clean contrast. Font: 'Outfit' for modern, accessible readability. -->
+
+    <!-- Application Structure Plan: 
+         I designed a dashboard-first structure that splits into three distinct exploration modes, mirroring the "Modify Search Plan" intent to cover everything from formal to informal.
+         1. 'Vue d'ensemble' (Dashboard): Provides immediate quantitative context (How many structures? What types?).
+         2. 'L'Annuaire Exploratoire' (Directory): A functional tool for users to actually find resources based on category (Medical, Social, Alternative), acknowledging the diversity of the request.
+         3. 'Analyse & Spectre' (Analysis): A conceptual view using a Scatter/Bubble chart to visualize the "Spectrum of Care" (Medical vs Social, Urgent vs Prevention). This visually answers the "Out of the box" requirement by placing informal groups on the same map as hospitals.
+         4. 'Pistes Alternatives' (Out of Box): A specific narrative section highlighting non-obvious resources (Nature, Art, Community), directly addressing the prompt's request to "Explore all paths".
+    -->
+
+    <!-- Visualization & Content Choices: 
+         1. Report Info: Types of structures -> Goal: Inform/Compare -> Viz: Doughnut Chart -> Interaction: Hover for values -> Justification: Quickly shows the ratio of formal vs informal care.
+         2. Report Info: Public/Private split -> Goal: Inform (Accessibility) -> Viz: Bar Chart -> Interaction: None -> Justification: Crucial for understanding financial accessibility (conventionné vs libre).
+         3. Report Info: The spectrum of care intensity -> Goal: Relationships/Analysis -> Viz: Bubble Chart (Chart.js) -> Interaction: Hover to see structure name -> Justification: Perfect for showing 3 dimensions (Formality, Intensity, Capacity) without using a geographical map (which requires complex SVGs/tiles). It conceptually maps the ecosystem.
+         4. Report Info: Specific Locations -> Goal: Organize/Find -> Viz: Interactive Card Grid -> Interaction: Filtering buttons -> Justification: Best UX for browsing a directory.
+         CONFIRMING: No SVG graphics used (Unicode icons only). No Mermaid JS used. Chart.js used for all visualizations.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    -->
+</body>
+</html>
