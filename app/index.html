@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartographie Santé Mentale 1160 & Au-delà</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Import Google Fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #F5F5F4; /* stone-100 */
+            color: #44403C; /* stone-700 */
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #E7E5E4; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #A8A29E; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #78716C; 
+        }
+
+        /* Chart Container Strict Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width to prevent stretching */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Custom Card Styles */
+        .info-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-left-color: #57534E;
+        }
+
+        .nav-item.active {
+            border-bottom: 2px solid #57534E;
+            font-weight: 600;
+        }
+
+        /* AI Chat Modal Styling */
+        .chat-modal {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+        }
+        .chat-modal.open {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        .chat-bubble.user {
+            background-color: #57534E;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-bubble.ai {
+            background-color: #E7E5E4;
+            color: #292524;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+            height: 6px;
+            width: 6px;
+            background-color: #78716C;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+        }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        /* Sparkle Animation for AI Buttons */
+        @keyframes sparkle {
+            0% { transform: scale(1); filter: brightness(100%); }
+            50% { transform: scale(1.05); filter: brightness(110%); }
+            100% { transform: scale(1); filter: brightness(100%); }
+        }
+        .sparkle-btn:hover {
+            animation: sparkle 1s infinite;
+        }
+    </style>
+</head>
+<body class="antialiased relative">
+
+    <!-- Navigation -->
+    <nav class="bg-white sticky top-0 z-50 shadow-sm border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-stone-800 tracking-tight">MIND<span class="text-stone-500">MAP</span> 1160</span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="navigateTo('dashboard')" class="nav-item active text-stone-600 hover:text-stone-900 px-3 py-2 text-sm font-medium">Vue d'ensemble</button>
+                    <button onclick="navigateTo('directory')" class="nav-item text-stone-600 hover:text-stone-900 px-3 py-2 text-sm font-medium">L'Annuaire Exploratoire</button>
+                    <button onclick="navigateTo('analysis')" class="nav-item text-stone-600 hover:text-stone-900 px-3 py-2 text-sm font-medium">Analyse & Spectre</button>
+                    <button onclick="navigateTo('out-of-box')" class="nav-item text-stone-600 hover:text-stone-900 px-3 py-2 text-sm font-medium">Pistes Alternatives</button>
+                </div>
+                <!-- Mobile menu button (simplified functionality for single file) -->
+                <div class="flex items-center md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-stone-600 focus:outline-none text-2xl">☰</button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-stone-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button onclick="navigateTo('dashboard')" class="block w-full text-left px-3 py-2 text-stone-600 hover:bg-stone-50">Vue d'ensemble</button>
+                <button onclick="navigateTo('directory')" class="block w-full text-left px-3 py-2 text-stone-600 hover:bg-stone-50">L'Annuaire</button>
+                <button onclick="navigateTo('analysis')" class="block w-full text-left px-3 py-2 text-stone-600 hover:bg-stone-50">Analyse</button>
+                <button onclick="navigateTo('out-of-box')" class="block w-full text-left px-3 py-2 text-stone-600 hover:bg-stone-50">Alternatives</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 mb-24">
+
+        <!-- HEADER SECTION -->
+        <header class="text-center space-y-4 mb-12 animate-fade-in">
+            <h1 class="text-4xl md:text-5xl font-bold text-stone-800">Écosystème Santé Mentale <br/><span class="text-stone-500 font-light">Auderghem (1160) & Environs</span></h1>
+            <p class="max-w-2xl mx-auto text-lg text-stone-600">
+                Une exploration interactive des ressources formelles, informelles et citoyennes. 
+                Du soin clinique aux "lieux de liens", découvrez le maillage de soutien disponible.
+            </p>
+        </header>
+
+        <!-- VIEW: DASHBOARD (Default) -->
+        <div id="dashboard" class="view-section space-y-8">
+            
+            <!-- Intro Text -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 -mt-2 -mr-2 w-24 h-24 bg-teal-50 rounded-full blur-2xl opacity-50"></div>
+                <h2 class="text-xl font-bold text-stone-800 mb-2 relative z-10">Comprendre le paysage local</h2>
+                <p class="text-stone-600 leading-relaxed relative z-10">
+                    Ce tableau de bord synthétise les données actuelles sur l'offre de soins et de soutien à Auderghem. 
+                    Il met en lumière non seulement les institutions médicales classiques, mais aussi les initiatives citoyennes qui tissent le lien social.
+                </p>
+            </div>
+
+            <!-- KPI Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
+                    <span class="text-4xl mb-2">🏥</span>
+                    <h3 class="text-3xl font-bold text-stone-800" id="kpi-formal">0</h3>
+                    <p class="text-sm text-stone-500 uppercase tracking-wide">Structures Cliniques</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
+                    <span class="text-4xl mb-2">🤝</span>
+                    <h3 class="text-3xl font-bold text-stone-800" id="kpi-social">0</h3>
+                    <p class="text-sm text-stone-500 uppercase tracking-wide">Lieux de Liens</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
+                    <span class="text-4xl mb-2">🌲</span>
+                    <h3 class="text-3xl font-bold text-stone-800" id="kpi-alternative">0</h3>
+                    <p class="text-sm text-stone-500 uppercase tracking-wide">Initiatives Alternatives</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
+                    <span class="text-4xl mb-2">⏱️</span>
+                    <h3 class="text-3xl font-bold text-stone-800">~12j</h3>
+                    <p class="text-sm text-stone-500 uppercase tracking-wide">Délai Moyen (1ère ligne)</p>
+                </div>
+            </div>
+
+            <!-- Charts Row 1 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Distribution Chart -->
+                <div class="flex flex-col space-y-4">
+                    <div class="flex justify-between items-end">
+                        <h3 class="text-lg font-semibold text-stone-700">Répartition par Typologie</h3>
+                        <span class="text-xs text-stone-400 bg-stone-100 px-2 py-1 rounded">Données 2024</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                    <p class="text-sm text-stone-500 italic">
+                        Le secteur associatif et les initiatives de quartier représentent une part majeure du maillage, souvent sous-estimée par rapport aux grandes structures hospitalières.
+                    </p>
+                </div>
+
+                <!-- Accessibility Chart -->
+                <div class="flex flex-col space-y-4">
+                    <div class="flex justify-between items-end">
+                        <h3 class="text-lg font-semibold text-stone-700">Accessibilité Financière</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="accessChart"></canvas>
+                    </div>
+                    <p class="text-sm text-stone-500 italic">
+                        Comparaison de l'offre conventionnée (remboursée INAMI) face au secteur privé non-conventionné dans la commune.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: DIRECTORY -->
+        <div id="directory" class="view-section hidden space-y-8">
+            <!-- Intro Text -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-xl font-bold text-stone-800 mb-2">Annuaire Interactif & Filtrable</h2>
+                <p class="text-stone-600 leading-relaxed">
+                    Explorez les ressources disponibles selon vos besoins. Cet outil inclut les <span class="font-semibold text-stone-800">tiers-lieux</span>, les services sociaux (CPAS, SSM) et les espaces communautaires. 
+                    <br><span class="text-sm text-teal-700 italic">💡 Astuce : Utilisez l'Assistant IA en bas à droite pour une recommandation personnalisée.</span>
+                </p>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-3" id="filter-container">
+                <button onclick="filterDirectory('all')" class="filter-btn active bg-stone-800 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">Tout voir</button>
+                <button onclick="filterDirectory('medical')" class="filter-btn bg-stone-200 text-stone-600 hover:bg-stone-300 px-4 py-2 rounded-full text-sm font-medium transition-colors">Médical / Clinique</button>
+                <button onclick="filterDirectory('social')" class="filter-btn bg-stone-200 text-stone-600 hover:bg-stone-300 px-4 py-2 rounded-full text-sm font-medium transition-colors">Social & Tiers-Lieux</button>
+                <button onclick="filterDirectory('alternative')" class="filter-btn bg-stone-200 text-stone-600 hover:bg-stone-300 px-4 py-2 rounded-full text-sm font-medium transition-colors">Bien-être & Alternatif</button>
+                <button onclick="filterDirectory('jeunesse')" class="filter-btn bg-stone-200 text-stone-600 hover:bg-stone-300 px-4 py-2 rounded-full text-sm font-medium transition-colors">Enfance & Jeunesse</button>
+            </div>
+
+            <!-- Grid of Cards -->
+            <div id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+
+        <!-- VIEW: ANALYSIS -->
+        <div id="analysis" class="view-section hidden space-y-8">
+            <!-- Intro Text -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-xl font-bold text-stone-800 mb-2">Spectre d'Intervention : Du Cure au Care</h2>
+                <p class="text-stone-600 leading-relaxed">
+                    La santé mentale n'est pas binaire. Cette visualisation positionne les acteurs sur un spectre (Informel vers Formel / Prévention vers Urgence).
+                </p>
+            </div>
+
+            <!-- Complex Viz: Bubble Chart -->
+            <div class="w-full bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                <h3 class="text-lg font-semibold text-stone-700 mb-4 text-center">Cartographie des Intensités de Soin</h3>
+                <div class="chart-container" style="max-width: 800px; height: 450px; max-height: 500px;">
+                    <canvas id="spectrumChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: OUT OF THE BOX -->
+        <div id="out-of-box" class="view-section hidden space-y-8">
+            
+            <!-- Gemini Feature: Activity Generator -->
+            <div class="bg-gradient-to-r from-teal-50 to-stone-100 p-6 rounded-xl border border-teal-100 shadow-sm mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-2xl">✨</span>
+                            <h2 class="text-xl font-bold text-stone-800">Générateur de Micro-Aventure IA</h2>
+                        </div>
+                        <p class="text-stone-600">
+                            En manque d'inspiration ? Laissez l'IA analyser la géographie d'Auderghem pour vous proposer une <span class="font-semibold">activité bien-être courte et unique</span> à faire maintenant.
+                        </p>
+                    </div>
+                    <button onclick="generateMicroAdventure()" class="sparkle-btn bg-teal-700 text-white px-6 py-3 rounded-lg shadow-md hover:bg-teal-800 font-medium flex items-center gap-2 whitespace-nowrap transition-all">
+                        <span>🎲 Générer une idée</span>
+                    </button>
+                </div>
+                <!-- AI Output Container -->
+                <div id="adventure-result" class="hidden mt-6 bg-white p-4 rounded-lg border border-teal-100 text-stone-700 animate-fade-in relative">
+                    <!-- Content injected by AI -->
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold text-stone-800 mb-6">Pistes Permanentes</h3>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Idea 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md flex flex-col md:flex-row h-auto">
+                    <div class="bg-teal-700 w-full md:w-32 flex items-center justify-center p-4">
+                        <span class="text-4xl text-white">🌳</span>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h3 class="text-lg font-bold text-stone-800">Écothérapie & Bains de Forêt</h3>
+                        <p class="text-sm text-stone-500 mb-2">Forêt de Soignes / Rouge-Cloître</p>
+                        <p class="text-stone-600 text-sm mb-4">
+                            Utiliser le cadre du Rouge-Cloître pour des séances de "Walk & Talk". Plusieurs psychologues indépendants proposent désormais des séances en marchant.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Idea 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md flex flex-col md:flex-row h-auto">
+                    <div class="bg-orange-400 w-full md:w-32 flex items-center justify-center p-4">
+                        <span class="text-4xl text-white">🎨</span>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <h3 class="text-lg font-bold text-stone-800">Art-Thérapie Communautaire</h3>
+                        <p class="text-sm text-stone-500 mb-2">Centre Culturel Auderghem</p>
+                        <p class="text-stone-600 text-sm mb-4">
+                            Des ateliers ouverts où l'expression artistique prime sur la performance. Un moyen puissant de libérer les émotions sans passer par les mots.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-stone-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-stone-500 text-sm">
+            <p>© 2024 Observatoire Local de la Santé Mentale (Simulé). Powered by Gemini AI ✨</p>
+        </div>
+    </footer>
+
+    <!-- FLOAT AI BUTTON -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
+        
+        <!-- Chat Modal -->
+        <div id="ai-chat-modal" class="chat-modal bg-white rounded-2xl shadow-2xl border border-stone-200 w-80 sm:w-96 flex flex-col h-[500px] overflow-hidden">
+            <!-- Header -->
+            <div class="bg-stone-800 text-white p-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">✨</span>
+                    <h3 class="font-bold text-sm">Assistant d'Orientation 1160</h3>
+                </div>
+                <button onclick="toggleChat()" class="text-stone-300 hover:text-white">✕</button>
+            </div>
+            
+            <!-- Messages Area -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 flex flex-col bg-stone-50">
+                <div class="chat-bubble ai">
+                    Bonjour ! Je suis l'assistant virtuel de MindMap 1160. Je connais toutes les ressources locales. Comment vous sentez-vous ou que cherchez-vous aujourd'hui ?
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-3 bg-white border-t border-stone-200">
+                <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
+                    <input type="text" id="chat-input" class="flex-1 border border-stone-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-teal-600" placeholder="Ex: Je cherche un psy..." autocomplete="off">
+                    <button type="submit" class="bg-teal-600 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-teal-700 transition-colors">
+                        ➤
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Floating Button -->
+        <button onclick="toggleChat()" class="sparkle-btn shadow-xl bg-stone-800 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl focus:outline-none hover:bg-stone-700 transition-all">
+            ✨
+        </button>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- GEMINI API CONFIG ---
+        const apiKey = ""; // System will provide key
+
+        async function callGemini(userPrompt, systemInstruction) {
+            if (!apiKey) {
+                console.error("API Key missing");
+                return "Erreur de configuration API.";
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            // Exponential backoff logic
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i <= 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && i < 5) { // Too Many Requests
+                            await new Promise(r => setTimeout(r, delays[i]));
+                            continue;
+                        }
+                        throw new Error(`HTTP Error: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "Pas de réponse.";
+                } catch (error) {
+                    if (i === 5) return "Désolé, je rencontre des difficultés techniques pour le moment.";
+                }
+            }
+        }
+
+        // --- DATA STORAGE ---
+        const servicesData = [
+            { id: 1, name: "Hôpital Delta (Chirec)", type: "medical", subType: "Hôpital", address: "Boulevard du Triomphe 201", tags: ["Urgence", "Hospitalisation", "Consultation"], formality: 9, intensity: 9, capacity: 500 },
+            { id: 2, name: "SSM Le Grès", type: "medical", subType: "SSM", address: "Chaussée de Wavre", tags: ["Conventionné", "Suivi", "Psychiatrie"], formality: 8, intensity: 6, capacity: 150 },
+            { id: 3, name: "Maison Médicale du Val", type: "medical", subType: "Maison Médicale", address: "Avenue du Val d'Or", tags: ["Généraliste", "1ère ligne"], formality: 7, intensity: 4, capacity: 200 },
+            { id: 4, name: "Centre de Guidance", type: "jeunesse", subType: "SSM Jeunesse", address: "Auderghem Centre", tags: ["Enfants", "Ados", "Famille"], formality: 8, intensity: 5, capacity: 80 },
+            { id: 5, name: "CPAS Auderghem (Cellule Sociale)", type: "social", subType: "Public", address: "Avenue du Paepedelle", tags: ["Social", "Aide", "Précarité"], formality: 7, intensity: 3, capacity: 300 },
+            { id: 6, name: "La Maison de Quartier", type: "social", subType: "Communautaire", address: "Quartier Pinoy", tags: ["Lien social", "Activités", "Seniors"], formality: 3, intensity: 2, capacity: 100 },
+            { id: 7, name: "Cabinet Psycho Delta", type: "medical", subType: "Privé", address: "Beaurepaire", tags: ["Psychologue", "Privé"], formality: 6, intensity: 4, capacity: 20 },
+            { id: 8, name: "Walk & Talk Forêt", type: "alternative", subType: "Nature", address: "Rouge-Cloître", tags: ["Ecothérapie", "Marche"], formality: 4, intensity: 3, capacity: 30 },
+            { id: 9, name: "Atelier Art-Thérapie", type: "alternative", subType: "Art", address: "Centre Culturel", tags: ["Art", "Groupe"], formality: 4, intensity: 2, capacity: 15 },
+            { id: 10, name: "Planning Familial", type: "jeunesse", subType: "Planning", address: "Herrmann-Debroux", tags: ["Sexualité", "Ecoute", "Jeunes"], formality: 7, intensity: 4, capacity: 60 },
+            { id: 11, name: "Groupe de Parole Anonyme", type: "social", subType: "Groupe", address: "Salle Paroissiale", tags: ["Addiction", "Soutien"], formality: 2, intensity: 5, capacity: 25 },
+            { id: 12, name: "Club de Marche Senior", type: "social", subType: "Loisir", address: "Parc Seny", tags: ["Physique", "Lien social"], formality: 1, intensity: 1, capacity: 50 },
+            { id: 13, name: "Urgence Psychiatrique Mobile", type: "medical", subType: "Mobile", address: "Zone Sud-Est", tags: ["Crise", "Domicile"], formality: 9, intensity: 10, capacity: 10 },
+            { id: 14, name: "Espace Yoga & Mind", type: "alternative", subType: "Bien-être", address: "Souverain", tags: ["Méditation", "Corps"], formality: 2, intensity: 1, capacity: 40 }
+        ];
+
+        // --- GEMINI FEATURES IMPLEMENTATION ---
+
+        // 1. Chat Assistant Logic
+        function toggleChat() {
+            const modal = document.getElementById('ai-chat-modal');
+            modal.classList.toggle('open');
+            if (modal.classList.contains('open')) {
+                document.getElementById('chat-input').focus();
+            }
+        }
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const inputEl = document.getElementById('chat-input');
+            const message = inputEl.value.trim();
+            if (!message) return;
+
+            // 1. Add User Message
+            addChatBubble(message, 'user');
+            inputEl.value = '';
+
+            // 2. Add Loading Indicator
+            const loadingBubble = addChatBubble('<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>', 'ai', true);
+
+            // 3. Construct Prompt with Context
+            const systemPrompt = `Tu es un assistant expert pour "MINDMAP 1160", l'application de santé mentale d'Auderghem (Bruxelles). 
+            Voici les données JSON des services disponibles : ${JSON.stringify(servicesData)}.
+            
+            Ta mission :
+            1. Analyser la demande de l'utilisateur avec empathie.
+            2. Recommander 1 à 3 services spécifiques de la liste JSON qui correspondent le mieux à ses besoins (en citant leur nom et adresse).
+            3. Si la demande semble urgente (mots clés : suicide, crise, danger), recommande immédiatement l'Urgence Psychiatrique Mobile ou le 112.
+            4. Sois concis (max 3 phrases) et chaleureux.
+            5. Réponds toujours en français.`;
+
+            // 4. Call API
+            const response = await callGemini(message, systemPrompt);
+
+            // 5. Replace Loading with Response
+            loadingBubble.innerHTML = formatAIResponse(response);
+            
+            // Scroll to bottom
+            const container = document.getElementById('chat-messages');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addChatBubble(htmlContent, type, isHtml = false) {
+            const container = document.getElementById('chat-messages');
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble ${type}`;
+            if (isHtml) bubble.innerHTML = htmlContent;
+            else bubble.textContent = htmlContent;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+            return bubble;
+        }
+
+        function formatAIResponse(text) {
+            // Basic formatting for bolding names if they match service names
+            let formatted = text;
+            servicesData.forEach(s => {
+                const regex = new RegExp(s.name, 'gi');
+                formatted = formatted.replace(regex, `<strong>${s.name}</strong>`);
+            });
+            return formatted.replace(/\n/g, '<br>');
+        }
+
+        // 2. Micro-Adventure Generator Logic
+        async function generateMicroAdventure() {
+            const resultContainer = document.getElementById('adventure-result');
+            resultContainer.classList.remove('hidden');
+            resultContainer.innerHTML = '<div class="flex items-center gap-2 text-teal-600"><span class="typing-dot"></span> Conception de votre aventure en cours...</div>';
+
+            const systemPrompt = `Tu es un coach bien-être local expert d'Auderghem (Bruxelles 1160).
+            Génère une idée d'activité "Micro-Aventure Bien-être" (durée 15-30 min) faisable immédiatement.
+            Utilise ta connaissance de la géographie locale (Forêt de Soignes, Rouge-Cloître, Parc Seny, Val Duchesse, Boulevard du Souverain).
+            Format de réponse :
+            🎯 **Titre** (Court et inspirant)
+            📍 **Lieu** (Précis à 1160)
+            🧘 **L'Action** (Une consigne simple de pleine conscience ou d'action, ex: "Cherchez 3 types de feuilles", "Observez les canards", "Respirez face à l'étang").
+            Ton : Léger, motivant, un peu poétique. Pas de markdown complexe, juste du texte aéré.`;
+
+            const response = await callGemini("Donne-moi une idée maintenant.", systemPrompt);
+            
+            // Format response nicely
+            resultContainer.innerHTML = response.replace(/\*\*/g, '').replace(/\n/g, '<br>');
+        }
+
+
+        // --- STATE MANAGEMENT ---
+        let currentFilter = 'all';
+
+        // --- NAVIGATION HANDLING ---
+        function navigateTo(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(viewId).classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active', 'border-b-2', 'border-stone-500', 'font-semibold'));
+            const navButtons = document.querySelectorAll('.nav-item');
+            navButtons.forEach(btn => {
+                if(btn.getAttribute('onclick').includes(viewId)) {
+                    btn.classList.add('active');
+                }
+            });
+            document.getElementById('mobile-menu').classList.add('hidden');
+            if (viewId === 'dashboard' || viewId === 'analysis') {
+                window.dispatchEvent(new Event('resize'));
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- STATS CALCULATION ---
+        function renderStats() {
+            const counts = {
+                medical: servicesData.filter(d => d.type === 'medical').length + servicesData.filter(d => d.type === 'jeunesse').length,
+                social: servicesData.filter(d => d.type === 'social').length,
+                alternative: servicesData.filter(d => d.type === 'alternative').length
+            };
+            document.getElementById('kpi-formal').textContent = counts.medical;
+            document.getElementById('kpi-social').textContent = counts.social;
+            document.getElementById('kpi-alternative').textContent = counts.alternative;
+        }
+
+        // --- CHART GENERATION (Chart.js) ---
+        function initCharts() {
+            Chart.defaults.font.family = "'Outfit', sans-serif";
+            Chart.defaults.color = '#78716C';
+
+            // 1. Distribution Chart
+            const typeCounts = {
+                'Clinique/Hôpital': servicesData.filter(d => d.subType === 'Hôpital' || d.subType === 'SSM').length,
+                'Privé/Indép.': servicesData.filter(d => d.subType === 'Privé' || d.subType === 'Maison Médicale').length,
+                'Associatif/Social': servicesData.filter(d => d.type === 'social' || d.type === 'jeunesse').length,
+                'Alternatif': servicesData.filter(d => d.type === 'alternative').length
+            };
+            const ctxDist = document.getElementById('distributionChart').getContext('2d');
+            new Chart(ctxDist, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(typeCounts),
+                    datasets: [{
+                        data: Object.values(typeCounts),
+                        backgroundColor: ['#57534E', '#A8A29E', '#0D9488', '#F97316'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+            });
+
+            // 2. Accessibility Chart
+            const ctxAccess = document.getElementById('accessChart').getContext('2d');
+            new Chart(ctxAccess, {
+                type: 'bar',
+                data: {
+                    labels: ['Conventionné (Remboursé)', 'Privé / Non-Conv.', 'Gratuit / Low-Cost'],
+                    datasets: [{
+                        label: 'Nombre de structures',
+                        data: [5, 4, 5],
+                        backgroundColor: ['#0D9488', '#A8A29E', '#F97316'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 3. Spectrum Analysis
+            const bubbleData = servicesData.map(s => ({
+                x: s.formality, y: s.intensity, r: Math.sqrt(s.capacity), name: s.name, type: s.type
+            }));
+            const ctxSpectrum = document.getElementById('spectrumChart').getContext('2d');
+            new Chart(ctxSpectrum, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Structures',
+                        data: bubbleData,
+                        backgroundColor: (context) => {
+                            const type = context.raw?.type;
+                            if (type === 'medical') return 'rgba(168, 162, 158, 0.8)';
+                            if (type === 'social' || type === 'jeunesse') return 'rgba(13, 148, 136, 0.8)';
+                            return 'rgba(249, 115, 22, 0.8)';
+                        },
+                        borderColor: 'transparent'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Cadre (1: Informel -> 10: Institutionnel)' }, min: 0, max: 11 },
+                        y: { title: { display: true, text: 'Intensité du soin (1: Bien-être -> 10: Urgence)' }, min: 0, max: 11 }
+                    },
+                    plugins: { tooltip: { callbacks: { label: function(context) { return context.raw.name; } } }, legend: { display: false } }
+                }
+            });
+        }
+
+        // --- DIRECTORY LOGIC ---
+        function renderDirectory(filter) {
+            const grid = document.getElementById('cards-grid');
+            grid.innerHTML = '';
+            const filteredData = filter === 'all' ? servicesData : servicesData.filter(item => item.type === filter);
+            filteredData.forEach(item => {
+                let icon = '🏥';
+                if(item.type === 'social') icon = '🤝';
+                if(item.type === 'alternative') icon = '🌳';
+                if(item.type === 'jeunesse') icon = '👶';
+                const card = document.createElement('div');
+                card.className = 'info-card bg-white p-5 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-3xl">${icon}</span>
+                            <span class="text-xs font-bold uppercase px-2 py-1 bg-stone-100 text-stone-500 rounded">${item.subType}</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-stone-800">${item.name}</h3>
+                        <p class="text-sm text-stone-500 mb-4">📍 ${item.address}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${item.tags.map(tag => `<span class="text-xs bg-stone-50 text-stone-600 px-2 py-1 rounded border border-stone-100">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <button class="w-full mt-2 py-2 text-sm font-semibold text-teal-700 bg-teal-50 rounded hover:bg-teal-100 transition-colors">Voir fiche contact</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterDirectory(filterType) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if(btn.getAttribute('onclick').includes(filterType)) {
+                    btn.classList.remove('bg-stone-200', 'text-stone-600');
+                    btn.classList.add('bg-stone-800', 'text-white');
+                } else {
+                    btn.classList.add('bg-stone-200', 'text-stone-600');
+                    btn.classList.remove('bg-stone-800', 'text-white');
+                }
+            });
+            renderDirectory(filterType);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderStats();
+            initCharts();
+            renderDirectory('all');
+        });
+    </script>
+</body>
+</html>
