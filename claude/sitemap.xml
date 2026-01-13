@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage FR (Default) -->
+  <url>
+    <loc>https://ouaisfieu.github.io/lead-dexing/</loc>
+    <lastmod>2025-09-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ouaisfieu.github.io/lead-dexing/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouaisfieu.github.io/lead-dexing/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ouaisfieu.github.io/lead-dexing/"/>
+    <image:image>
+      <image:loc>https://ouaisfieu.github.io/lead-dexing/og-image.png</image:loc>
+      <image:title>Lead-Dexing : La Méthode de Découvrabilité Mesurable</image:title>
+      <image:caption>Schéma du protocole Lead-Dexing avec timeline T₀ → T_alert → T_reply</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Homepage EN -->
+  <url>
+    <loc>https://ouaisfieu.github.io/lead-dexing/en/</loc>
+    <lastmod>2025-09-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ouaisfieu.github.io/lead-dexing/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ouaisfieu.github.io/lead-dexing/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ouaisfieu.github.io/lead-dexing/"/>
+    <image:image>
+      <image:loc>https://ouaisfieu.github.io/lead-dexing/og-image-en.png</image:loc>
+      <image:title>Lead-Dexing: The Measurable Discoverability Method</image:title>
+      <image:caption>Lead-Dexing protocol diagram with timeline T₀ → T_alert → T_reply</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Section: Définition / Definition -->
+  <url>
+    <loc>https://ouaisfieu.github.io/lead-dexing/#definition</loc>
+    <lastmod>2025-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Section: Protocole / Protocol -->
+  <url>
+    <loc>https://ouaisfieu.github.io/lead-dexing/#protocole</loc>
+    <lastmod>2025-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Section: Calculateur / Calculator -->
+  <url>
+    <loc>https://ouaisfieu.github.io/lead-dexing/#calculateur</loc>
+    <lastmod>2025-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- External References (for context, not indexed directly) -->
+  <!-- Source Article 1: Le Pilote -->
+  <!-- https://dl.ouaisfi.eu/biologia/posts/2025/09/lead-dexing-saison-1-le-pilote/ -->
+  
+  <!-- Source Article 2: Ça N'existe Pas -->
+  <!-- https://dl.ouaisfi.eu/biologia/posts/2025/09/le-lead-dexing-n-existe-pas/ -->
+
+</urlset>
