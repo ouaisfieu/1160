@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead-Dexing : Suite Stratégique & Simulateur</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles for specific chart constraints and layout tweaks */
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #1e293b; /* Slate 800 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%; 
+            height: 300px;
+            max-height: 400px;
+            margin: 0 auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        .interactive-card {
+            transition: all 0.3s ease;
+        }
+        .interactive-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .step-connector {
+            width: 2px;
+            background-color: #e2e8f0;
+            position: absolute;
+            top: 2rem;
+            bottom: 0;
+            left: 1rem;
+            z-index: 0;
+        }
+    </style>
+    <!-- Chosen Palette: Slate (Backgrounds/Text) + Indigo (Primary Action) + Emerald (Success/Growth) + Rose (Risk/Alerts) -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Defines Lead-Dexing immediately based on the report's definition.
+         2. Theory Module (The Long Tail): Interactive chart demonstrating the inverse relationship between keyword volume and conversion rate (Report Chap 1).
+         3. Simulation Engine (Programmatic Power): A calculator allowing the user to input Services x Locations to see the exponential page growth and projected leads.
+         4. Speed Module (Indexing API): Visual comparison of Traditional Crawl vs. API Injection (Report Chap 3).
+         5. Architecture Builder (Siloing): A visual representation of the URL structure required to avoid penalties.
+         6. Risk/Checklist: Interactive guide on avoiding SpamBrain/Panda penalties.
+         Why: This structure moves from Theory -> Math/Simulation -> Technical Execution -> Risk Management, mirroring the strategic planning flow.
+    -->
+    <!-- Visualization & Content Choices:
+         - Long Tail Chart: Line chart to visualize the "area under the curve" concept mentioned in the report.
+         - Calculator: Real-time JS inputs to simulate the "mass acquisition" described in the case studies.
+         - Indexing Chart: Bar/Line combo to show the speed difference, emphasizing the "immediate consideration" aspect of the API.
+         - Silo Viz: CSS-based tree structure (Flex/Grid) to show parent-child relationships without SVG/Mermaid.
+         - Library: Chart.js for all data viz due to its canvas rendering and responsiveness.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-indigo-800">Lead-Dexing</span>
+                    <span class="text-xs px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full font-medium tracking-wide uppercase">Command Center</span>
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-600">
+                    <a href="#concept" class="hover:text-indigo-600 transition-colors">Le Concept</a>
+                    <a href="#simulation" class="hover:text-indigo-600 transition-colors">Simulateur</a>
+                    <a href="#indexing" class="hover:text-indigo-600 transition-colors">Vitesse (API)</a>
+                    <a href="#architecture" class="hover:text-indigo-600 transition-colors">Architecture</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
+                L'Industrialisation du SEO
+            </h1>
+            <p class="max-w-2xl mx-auto text-lg text-slate-600 mb-8">
+                Ne créez plus une page à la fois. Le <strong>Lead-Dexing</strong> fusionne la génération de leads et l'indexation programmatique pour capturer la "Longue Traîne" transactionnelle.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="#simulation" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition-all transform hover:-translate-y-1">
+                    Lancer une Simulation
+                </a>
+                <a href="#architecture" class="px-6 py-3 bg-white text-slate-700 border border-slate-300 font-semibold rounded-lg hover:bg-slate-50 transition-all">
+                    Voir l'Architecture
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+
+        <!-- Section 1: Theory - The Long Tail -->
+        <section id="concept" class="scroll-mt-24">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <div class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold uppercase rounded-full">Fondements Théoriques</div>
+                    <h2 class="text-3xl font-bold text-slate-900">La Puissance de la Longue Traîne</h2>
+                    <p class="text-slate-600 leading-relaxed">
+                        Le rapport souligne une vérité mathématique : 70% des recherches sont des mots-clés de longue traîne (3 mots ou plus). Ces requêtes ont un volume individuel faible, mais une intention de conversion (Lead Gen) extrêmement élevée.
+                    </p>
+                    <div class="bg-slate-100 p-6 rounded-xl border-l-4 border-indigo-500">
+                        <p class="font-medium text-slate-800 mb-2">Le Changement de Paradigme :</p>
+                        <p class="text-sm text-slate-600">
+                            Au lieu de se battre pour 1 mot-clé à 10 000 volumes (concurrence extrême), le Lead-Dexing vise 1 000 mots-clés à 10 volumes. Le trafic total est identique, mais le taux de conversion est décuplé.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-semibold mb-4 text-center">Volume vs. Intention de Conversion</h3>
+                    <div class="chart-container">
+                        <canvas id="longTailChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center text-xs text-slate-500">
+                        Cliquez sur la légende pour filtrer les données.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Simulator - Programmatic Scale -->
+        <section id="simulation" class="scroll-mt-24 bg-indigo-900 text-white rounded-3xl p-8 md:p-12 shadow-2xl overflow-hidden relative">
+            <!-- Decorative background element -->
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-700 rounded-full opacity-50 blur-3xl"></div>
+
+            <div class="relative z-10">
+                <div class="max-w-3xl mb-10">
+                    <div class="inline-block px-3 py-1 bg-indigo-800 border border-indigo-600 text-indigo-200 text-xs font-bold uppercase rounded-full mb-4">Moteur de Simulation</div>
+                    <h2 class="text-3xl font-bold mb-4">Simulateur d'Impact Programmatique</h2>
+                    <p class="text-indigo-200">
+                        Le Lead-Dexing repose sur la multiplication : <em>Services × Localisations = Volume de Pages</em>. Utilisez ce calculateur pour estimer la couverture de votre marché cible.
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Controls -->
+                    <div class="lg:col-span-1 space-y-6 bg-indigo-950/50 p-6 rounded-xl border border-indigo-700 backdrop-blur-sm">
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-200 mb-2">Nombre de Services / Offres</label>
+                            <input type="range" id="serviceInput" min="1" max="50" value="5" class="w-full h-2 bg-indigo-700 rounded-lg appearance-none cursor-pointer accent-emerald-400">
+                            <div class="flex justify-between text-xs text-indigo-300 mt-1">
+                                <span>1</span>
+                                <span id="serviceValue" class="font-bold text-white text-lg">5</span>
+                                <span>50</span>
+                            </div>
+                            <p class="text-xs text-indigo-400 mt-1">Ex: Plombier, Chauffagiste, Débouchage...</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-200 mb-2">Nombre de Cibles (Villes/Segments)</label>
+                            <input type="range" id="locationInput" min="10" max="1000" value="100" class="w-full h-2 bg-indigo-700 rounded-lg appearance-none cursor-pointer accent-emerald-400">
+                            <div class="flex justify-between text-xs text-indigo-300 mt-1">
+                                <span>10</span>
+                                <span id="locationValue" class="font-bold text-white text-lg">100</span>
+                                <span>1000</span>
+                            </div>
+                            <p class="text-xs text-indigo-400 mt-1">Ex: Bruxelles, Ixelles, Namur...</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-200 mb-2">Taux de Conversion Estimé (%)</label>
+                            <input type="number" id="conversionInput" value="2.5" step="0.1" class="w-full bg-indigo-900 border border-indigo-600 rounded px-3 py-2 text-white focus:outline-none focus:border-emerald-400">
+                        </div>
+
+                        <div class="pt-4 border-t border-indigo-800">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-indigo-300">Pages Générées</span>
+                                <span id="totalPagesDisplay" class="text-2xl font-bold text-white">500</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-indigo-300">Leads Potentiels / Mois</span>
+                                <span id="totalLeadsDisplay" class="text-2xl font-bold text-emerald-400">12</span>
+                            </div>
+                            <p class="text-xs text-indigo-400 mt-1">*Basé sur une estimation de 1 visite/page/mois (hypothèse basse).</p>
+                        </div>
+                    </div>
+
+                    <!-- Chart -->
+                    <div class="lg:col-span-2 bg-white rounded-xl p-4 text-slate-800 shadow-lg">
+                        <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase tracking-wider">Projection de Croissance (6 Mois)</h3>
+                        <div class="chart-container">
+                            <canvas id="projectionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Indexing API - Speed -->
+        <section id="indexing" class="scroll-mt-24">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-semibold mb-4 text-center">Vitesse d'Indexation : Crawl Standard vs API</h3>
+                    <div class="chart-container">
+                        <canvas id="indexingChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="order-1 md:order-2 space-y-6">
+                    <div class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold uppercase rounded-full">L'Accélérateur</div>
+                    <h2 class="text-3xl font-bold text-slate-900">L'API d'Indexation Google</h2>
+                    <p class="text-slate-600 leading-relaxed">
+                        Le problème majeur du SEO programmatique est le "Crawl Budget". Google peut mettre des mois à découvrir 5 000 nouvelles pages. Le Lead-Dexing contourne cela en utilisant l'<strong>API Google Indexing</strong>.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm mr-3">✓</span>
+                            <span class="text-sm text-slate-700"><strong>Notification Directe :</strong> On ne demande pas à Google de chercher, on lui notifie l'existence de la page.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm mr-3">✓</span>
+                            <span class="text-sm text-slate-700"><strong>Priorité "Job Posting" :</strong> L'API (initialement pour les offres d'emploi) force un crawl quasi-immédiat (souvent < 24h).</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm mr-3">✓</span>
+                            <span class="text-sm text-slate-700"><strong>Rotation des Clés :</strong> Utilisation de plusieurs comptes de service (Service Accounts) pour dépasser les quotas quotidiens.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Architecture & Siloing -->
+        <section id="architecture" class="scroll-mt-24 bg-slate-100 p-8 rounded-3xl border border-slate-200">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <div class="inline-block px-3 py-1 bg-slate-200 text-slate-700 text-xs font-bold uppercase rounded-full mb-2">Structure Technique</div>
+                    <h2 class="text-3xl font-bold text-slate-900">Architecture en Silos Thématiques</h2>
+                    <p class="text-slate-600 mt-4">
+                        Pour éviter la cannibalisation et renforcer l'autorité sémantique, le site doit être structuré rigoureusement. Chaque "Service" est un dossier parent contenant les pages "Villes".
+                    </p>
+                </div>
+
+                <!-- Visualizing the Structure without Mermaid/SVG -->
+                <div class="flex flex-col md:flex-row justify-center items-start gap-8">
+                    
+                    <!-- Root -->
+                    <div class="w-full md:w-1/3 flex flex-col items-center">
+                        <div class="bg-slate-900 text-white px-6 py-4 rounded-lg shadow-lg w-full text-center font-bold mb-4 z-10 relative">
+                            Homepage (Racine)
+                            <div class="text-xs font-normal text-slate-400 mt-1">Autorité Globale</div>
+                        </div>
+                        <div class="h-8 w-0.5 bg-slate-300"></div>
+                        <div class="h-0.5 w-full bg-slate-300"></div>
+                        <div class="flex justify-between w-full">
+                            <div class="h-8 w-0.5 bg-slate-300"></div>
+                            <div class="h-8 w-0.5 bg-slate-300"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 mt-2">
+                    <!-- Silo A -->
+                    <div class="bg-white p-6 rounded-xl border-t-4 border-indigo-500 shadow-sm interactive-card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-bold text-indigo-900">Silo A : Plomberie</h4>
+                            <span class="text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded">Service Principal</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded text-sm text-slate-600 flex items-center">
+                                <span class="text-indigo-400 mr-2">↳</span> /plomberie/bruxelles
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded text-sm text-slate-600 flex items-center">
+                                <span class="text-indigo-400 mr-2">↳</span> /plomberie/ixelles
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded text-sm text-slate-600 flex items-center">
+                                <span class="text-indigo-400 mr-2">↳</span> /plomberie/uccle
+                            </div>
+                            <div class="text-center text-xs text-slate-400 mt-2">... +50 Villes</div>
+                        </div>
+                        <p class="mt-4 text-xs text-slate-500 bg-indigo-50 p-2 rounded">
+                            <strong>Maillage Interne :</strong> Chaque ville lie vers la page "Mère" (Plomberie) et vers les villes voisines proches.
+                        </p>
+                    </div>
+
+                    <!-- Silo B -->
+                    <div class="bg-white p-6 rounded-xl border-t-4 border-emerald-500 shadow-sm interactive-card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-bold text-emerald-900">Silo B : Chauffage</h4>
+                            <span class="text-xs bg-emerald-50 text-emerald-600 px-2 py-1 rounded">Service Principal</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded text-sm text-slate-600 flex items-center">
+                                <span class="text-emerald-400 mr-2">↳</span> /chauffage/bruxelles
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded text-sm text-slate-600 flex items-center">
+                                <span class="text-emerald-400 mr-2">↳</span> /chauffage/mons
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded text-sm text-slate-600 flex items-center">
+                                <span class="text-emerald-400 mr-2">↳</span> /chauffage/charleroi
+                            </div>
+                            <div class="text-center text-xs text-slate-400 mt-2">... +50 Villes</div>
+                        </div>
+                        <p class="mt-4 text-xs text-slate-500 bg-emerald-50 p-2 rounded">
+                            <strong>Isolation :</strong> Les liens entre Silo A et Silo B sont limités pour maintenir la pertinence thématique stricte.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Implementation & Risks -->
+        <section class="grid md:grid-cols-3 gap-8">
+            <div class="md:col-span-2">
+                <h3 class="text-xl font-bold text-slate-900 mb-6">Protocole d'Implémentation</h3>
+                <div class="space-y-4">
+                    <!-- Step 1 -->
+                    <div class="group bg-white border border-slate-200 rounded-lg p-4 hover:border-indigo-400 transition-colors cursor-pointer" onclick="toggleDetails('step1')">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-semibold text-slate-800">1. Collecte de Données (Data Mining)</h4>
+                            <span class="text-indigo-500 font-bold">+</span>
+                        </div>
+                        <div id="step1" class="hidden mt-3 text-sm text-slate-600 border-t border-slate-100 pt-3">
+                            Scraper les bases de données (codes postaux, coordonnées GPS, données démographiques). Créer un fichier CSV "Maître" contenant toutes les variables à injecter.
+                        </div>
+                    </div>
+                     <!-- Step 2 -->
+                     <div class="group bg-white border border-slate-200 rounded-lg p-4 hover:border-indigo-400 transition-colors cursor-pointer" onclick="toggleDetails('step2')">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-semibold text-slate-800">2. Création de Templates (Spintax)</h4>
+                            <span class="text-indigo-500 font-bold">+</span>
+                        </div>
+                        <div id="step2" class="hidden mt-3 text-sm text-slate-600 border-t border-slate-100 pt-3">
+                            Développer des gabarits HTML avec des variables dynamiques {{Ville}}, {{Service}}. Utiliser le Spintax pour varier les phrases et éviter le "Duplicate Content" flagrant.
+                        </div>
+                    </div>
+                     <!-- Step 3 -->
+                     <div class="group bg-white border border-slate-200 rounded-lg p-4 hover:border-indigo-400 transition-colors cursor-pointer" onclick="toggleDetails('step3')">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-semibold text-slate-800">3. Injection & Indexation API</h4>
+                            <span class="text-indigo-500 font-bold">+</span>
+                        </div>
+                        <div id="step3" class="hidden mt-3 text-sm text-slate-600 border-t border-slate-100 pt-3">
+                            Publier les pages (WordPress, Webflow CMS, ou Static). Configurer le script Python/Node.js pour envoyer les URLs par paquets de 200/jour à l'API Google Indexing.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Management -->
+            <div class="bg-rose-50 border border-rose-200 rounded-xl p-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="text-xl">⚠️</span>
+                    <h3 class="text-lg font-bold text-rose-900">Gestion des Risques</h3>
+                </div>
+                <p class="text-sm text-rose-800 mb-4">
+                    Le Lead-Dexing flirte avec les limites de Google. Voici les gardes-fous impératifs :
+                </p>
+                <ul class="space-y-2 text-sm text-rose-700">
+                    <li class="flex gap-2">
+                        <span>🚫</span> <strong>Cannibalisation :</strong> Ne ciblez pas deux villes trop proches avec le même texte.
+                    </li>
+                    <li class="flex gap-2">
+                        <span>🚫</span> <strong>Doorway Pages :</strong> Chaque page doit avoir une valeur unique (carte, avis locaux, données spécifiques).
+                    </li>
+                    <li class="flex gap-2">
+                        <span>🚫</span> <strong>Suroptimisation :</strong> Évitez le bourrage de mots-clés dans les H1. Restez naturel.
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="mb-2">Lead-Dexing Analysis Tool © 2026</p>
+            <p class="text-xs">Basé sur les méthodologies d'acquisition programmatique et d'indexation rapide.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. Long Tail Chart (Theory) ---
+        const ctxLongTail = document.getElementById('longTailChart').getContext('2d');
+        const longTailChart = new Chart(ctxLongTail, {
+            type: 'line',
+            data: {
+                labels: ['Générique ("Plombier")', 'Semi-précis ("Plombier Paris")', 'Spécifique ("Plombier Urgence Paris 15")', 'Hyper-Spécifique ("Plombier Fuite WC Paris 15 Rue Lecourbe")'],
+                datasets: [
+                    {
+                        label: 'Volume de Recherche',
+                        data: [100, 60, 20, 5],
+                        borderColor: '#6366f1', // Indigo 500
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        yAxisID: 'y',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Taux de Conversion (%)',
+                        data: [1, 3, 15, 45],
+                        borderColor: '#10b981', // Emerald 500
+                        backgroundColor: 'transparent',
+                        yAxisID: 'y1',
+                        borderDash: [5, 5],
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) label += context.parsed.y + (context.datasetIndex === 1 ? '%' : ' vol');
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Volume' } },
+                    y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: 'Conversion %' }, grid: { drawOnChartArea: false } },
+                    x: { ticks: { display: false } } // Hide long labels for clean look
+                }
+            }
+        });
+
+        // --- 2. Simulation Logic & Projection Chart ---
+        const serviceInput = document.getElementById('serviceInput');
+        const locationInput = document.getElementById('locationInput');
+        const conversionInput = document.getElementById('conversionInput');
+        const serviceValue = document.getElementById('serviceValue');
+        const locationValue = document.getElementById('locationValue');
+        const totalPagesDisplay = document.getElementById('totalPagesDisplay');
+        const totalLeadsDisplay = document.getElementById('totalLeadsDisplay');
+
+        const ctxProjection = document.getElementById('projectionChart').getContext('2d');
+        const projectionChart = new Chart(ctxProjection, {
+            type: 'bar',
+            data: {
+                labels: ['Mois 1', 'Mois 2', 'Mois 3', 'Mois 4', 'Mois 5', 'Mois 6'],
+                datasets: [{
+                    label: 'Trafic Organique Cumulé',
+                    data: [100, 300, 800, 1500, 2500, 4000],
+                    backgroundColor: '#6366f1',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        function updateSimulation() {
+            // Update Text Values
+            const services = parseInt(serviceInput.value);
+            const locations = parseInt(locationInput.value);
+            const conversionRate = parseFloat(conversionInput.value) / 100;
+
+            serviceValue.textContent = services;
+            locationValue.textContent = locations;
+
+            // Core Math
+            const totalPages = services * locations;
+            const estimatedTrafficPerMonth = totalPages * 1.5; // Hypothesis: 1.5 visits per page avg (Long Tail)
+            const estimatedLeads = Math.round(estimatedTrafficPerMonth * conversionRate);
+
+            // Animate Numbers
+            totalPagesDisplay.textContent = totalPages.toLocaleString();
+            totalLeadsDisplay.textContent = estimatedLeads.toLocaleString();
+
+            // Update Chart Data (Exponential Growth Simulation)
+            const growthCurve = [0.1, 0.25, 0.45, 0.70, 0.90, 1.0]; // Ramp up factor
+            const newData = growthCurve.map(factor => Math.round(estimatedTrafficPerMonth * factor));
+            
+            projectionChart.data.datasets[0].data = newData;
+            projectionChart.update();
+        }
+
+        // Event Listeners
+        serviceInput.addEventListener('input', updateSimulation);
+        locationInput.addEventListener('input', updateSimulation);
+        conversionInput.addEventListener('input', updateSimulation);
+
+        // --- 3. Indexing Comparison Chart ---
+        const ctxIndexing = document.getElementById('indexingChart').getContext('2d');
+        new Chart(ctxIndexing, {
+            type: 'line',
+            data: {
+                labels: ['J-1', 'J-2', 'J-3', 'J-7', 'J-14', 'J-30'],
+                datasets: [
+                    {
+                        label: 'Indexation Naturelle (Sitemap XML)',
+                        data: [0, 2, 5, 15, 30, 60], // Slow percent
+                        borderColor: '#94a3b8', // Slate 400
+                        borderDash: [5, 5],
+                        fill: false
+                    },
+                    {
+                        label: 'Lead-Dexing (Google API)',
+                        data: [0, 85, 95, 98, 99, 100], // Fast percent
+                        borderColor: '#10b981', // Emerald 500
+                        borderWidth: 3,
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { title: { display: true, text: '% de Pages Indexées' }, max: 100 }
+                }
+            }
+        });
+
+        // --- 4. Interactive Details Toggle ---
+        function toggleDetails(id) {
+            const element = document.getElementById(id);
+            const parent = element.parentElement;
+            const icon = parent.querySelector('span.text-indigo-500');
+            
+            if (element.classList.contains('hidden')) {
+                element.classList.remove('hidden');
+                icon.textContent = '-';
+            } else {
+                element.classList.add('hidden');
+                icon.textContent = '+';
+            }
+        }
+
+        // Initialize Simulation on Load
+        updateSimulation();
+
+    </script>
+</body>
+</html>
