@@ -61,3 +61,101 @@ Oh on y va ALL-IN alors 🚀**BOOM.** Livraison complète 🎁
 4. **Partage sur LinkedIn/Twitter** avec les bons hashtags (#SEO #LeadDexing #GrowthHacking)
 
 C'est quoi le truc crucial que tu voulais tester ? 👀
+
+---
+
+# 🚀 LEAD-DEXING HUB — Deployment Package
+
+## 📁 Structure des fichiers
+
+```
+lead-dexing/
+├── index.html          ← Page FR (principale)
+├── sitemap.xml         ← Sitemap multilingue
+├── robots.txt          ← Directives crawlers
+├── og-image.png        ← À créer (1200×630)
+├── og-image-en.png     ← À créer (1200×630)
+└── en/
+    └── index.html      ← Page EN
+```
+
+---
+
+## 🛠️ Déploiement GitHub Pages
+
+### 1. Créer le repo
+```bash
+# Option A: Nouveau repo dédié
+gh repo create lead-dexing --public
+
+# Option B: Sous-dossier d'un repo existant
+cd ouaisfieu.github.io
+mkdir lead-dexing
+```
+
+### 2. Ajouter les fichiers
+```bash
+# Copier tous les fichiers depuis les artifacts Claude
+# index.html (FR) → /lead-dexing/index.html
+# index.html (EN) → /lead-dexing/en/index.html
+# sitemap.xml → /lead-dexing/sitemap.xml
+# robots.txt → /lead-dexing/robots.txt
+```
+
+### 3. Push
+```bash
+git add .
+git commit -m "🚀 Launch Lead-Dexing Hub"
+git push origin main
+```
+
+### 4. Activer GitHub Pages
+- Settings → Pages → Source: `main` / `root`
+- Attendre ~2 min
+
+---
+
+## 🔍 Indexation Google
+
+### Search Console
+1. Aller sur [Google Search Console](https://search.google.com/search-console)
+2. Ajouter la propriété `https://ouaisfieu.github.io/lead-dexing/`
+3. Vérifier via fichier HTML ou DNS
+
+### Soumettre le sitemap
+```
+https://search.google.com/search-console/sitemaps?resource_id=https://ouaisfieu.github.io/lead-dexing/
+```
+→ Ajouter: `sitemap.xml`
+
+### Ping Google directement
+```bash
+curl "https://www.google.com/ping?sitemap=https://ouaisfieu.github.io/lead-dexing/sitemap.xml"
+```
+
+### Demander indexation
+1. URL Inspection → `https://ouaisfieu.github.io/lead-dexing/`
+2. "Demander une indexation"
+3. Répéter pour `/en/`
+
+---
+
+## 🖼️ OG Images à créer
+
+### Specs
+- **Dimensions**: 1200 × 630 px
+- **Format**: PNG ou JPG
+- **Poids**: < 300KB
+
+### Contenu suggéré
+```
+┌────────────────────────────────────────────┐
+│                                            │
+│     ██  LEAD-DEXING  ██                   │
+│                                            │
+│  La méthode de découvrabilité mesurable   │
+│                                            │
+│     T₀ → T_alert → T_reply                │
+│                                            │
+│                         biologia.ouaisfi.eu│
+└────────────────────────────────────────
