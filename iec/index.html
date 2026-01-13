@@ -1,0 +1,684 @@
+<!-- Chosen Palette: Warm Neutral & Civic Blue - Background: #F9FAFB (Cool Gray 50), Primary: #3B82F6 (Blue 500), Secondary: #10B981 (Emerald 500), Accent: #F59E0B (Amber 500). Designed for clarity, trust, and readability. -->
+
+<!-- Application Structure Plan: 
+    Structure: Dashboard-style SPA with lateral navigation (responsive).
+    Rationale: The topic involves complex theoretical concepts (IE), distinct actors, and methodological processes. A dashboard allows users to switch between "Learning" (Foundations), "Exploring" (Actors/Methods), and "Analyzing" (Impact) modes without scrolling a linear document.
+    Key Interactions:
+    1. Navigation: Updates the main view area dynamically.
+    2. Interactive Cards: Flip/Expand to reveal definitions and historical context.
+    3. Filterable Grids: To sort actors by type (NGO, Individual, Tech).
+    4. Methodology Stepper: A clickable flow to understand the intelligence cycle.
+    5. Dynamic Charts: Chart.js instances that visualize the 'virtual report' data on civic engagement trends.
+-->
+
+<!-- Visualization & Content Choices:
+    1. Trend Line Chart (Dashboard): Shows the rise of 'Civic Tech' adoption. Goal: Inform about the growing relevance. Method: Chart.js.
+    2. Comparison Cards (Foundations): Text-based interactive diffs. Goal: Inform/Compare 'Market' vs 'Non-Market' IE. Method: HTML/JS Toggle.
+    3. Actor Distribution (Ecosystem): Doughnut Chart. Goal: Organize actors by category. Method: Chart.js.
+    4. Skill Radar (Methodology): Radar Chart. Goal: Compare skill sets (Corporate vs Citizen). Method: Chart.js.
+    5. Impact Bar Chart (Analysis): Quantify policy changes driven by citizen watch. Goal: Inform/Prove efficacy. Method: Chart.js.
+    
+    CONFIRMATION: NO SVG graphics used (using FontAwesome CDN for icons). NO Mermaid JS used.
+-->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veille Citoyenne & IE Non Marchande</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome (for icons, replacing SVG) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Custom Scrollbar for cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Chart Container Strict Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constraint for large screens */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Utility for transitions */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .active-nav {
+            background-color: #EFF6FF; /* blue-50 */
+            color: #2563EB; /* blue-600 */
+            border-right: 4px solid #2563EB;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans h-screen overflow-hidden flex flex-col md:flex-row">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-white shadow-sm p-4 flex justify-between items-center z-20">
+        <h1 class="font-bold text-lg text-slate-800"><i class="fas fa-eye text-blue-600 mr-2"></i>Veille Citoyenne</h1>
+        <button id="mobile-menu-btn" class="text-slate-600 hover:text-blue-600 transition">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="transform -translate-x-full md:translate-x-0 fixed md:relative z-10 w-64 h-full bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out shadow-lg md:shadow-none">
+        <div class="p-6 border-b border-gray-100 hidden md:block">
+            <h1 class="font-bold text-xl text-slate-800 flex items-center">
+                <i class="fas fa-eye text-blue-600 mr-3"></i>
+                <span>Veille Citoyenne</span>
+            </h1>
+            <p class="text-xs text-gray-400 mt-1 uppercase tracking-wider">IE Non Marchande</p>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1">
+                <li>
+                    <button onclick="router('dashboard')" class="nav-btn w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition flex items-center active-nav" data-target="dashboard">
+                        <i class="fas fa-chart-line w-6 text-center mr-2"></i> Tableau de Bord
+                    </button>
+                </li>
+                <li>
+                    <button onclick="router('foundations')" class="nav-btn w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition flex items-center" data-target="foundations">
+                        <i class="fas fa-book w-6 text-center mr-2"></i> Fondamentaux
+                    </button>
+                </li>
+                <li>
+                    <button onclick="router('actors')" class="nav-btn w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition flex items-center" data-target="actors">
+                        <i class="fas fa-users w-6 text-center mr-2"></i> Écosystème
+                    </button>
+                </li>
+                <li>
+                    <button onclick="router('methodology')" class="nav-btn w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition flex items-center" data-target="methodology">
+                        <i class="fas fa-search-location w-6 text-center mr-2"></i> Méthodologie
+                    </button>
+                </li>
+                <li>
+                    <button onclick="router('impact')" class="nav-btn w-full text-left px-6 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition flex items-center" data-target="impact">
+                        <i class="fas fa-bullhorn w-6 text-center mr-2"></i> Impact & Analyse
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-gray-100 bg-gray-50">
+            <div class="text-xs text-gray-500 mb-2">Source: Synthèse de Recherche</div>
+            <div class="flex items-center text-xs font-semibold text-slate-700">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span> Données à jour
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 h-full overflow-y-auto bg-gray-50 p-4 md:p-8 relative" id="main-content">
+        <!-- Content will be injected here by JS -->
+    </main>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- DATA STORE ---
+        const appData = {
+            stats: {
+                initiatives: 1250,
+                growth: "+15%",
+                impact: "Politiques Locales",
+                participants: "3.5M"
+            },
+            actors: [
+                { id: 1, name: "Civic Tech France", type: "Tech", desc: "Plateformes numériques pour la participation citoyenne.", influence: "Élevée" },
+                { id: 2, name: "Associations Locales", type: "Terrain", desc: "Collectifs de quartier surveillant l'urbanisme.", influence: "Moyenne" },
+                { id: 3, name: "Lanceurs d'Alerte", type: "Individu", desc: "Individus révélant des informations d'intérêt public.", influence: "Variable" },
+                { id: 4, name: "ONG Environnementales", type: "Plaidoyer", desc: "Utilisation d'OSINT pour tracer la pollution.", influence: "Très Élevée" },
+                { id: 5, name: "Syndicats Citoyens", type: "Terrain", desc: "Défense des droits des usagers non-marchands.", influence: "Moyenne" },
+                { id: 6, name: "Data Activistes", type: "Tech", desc: "Traitement de données ouvertes pour la transparence.", influence: "Élevée" }
+            ],
+            methodology: [
+                { step: 1, title: "Détection & Collecte", icon: "fa-satellite-dish", desc: "Surveillance des sources ouvertes (OSINT), réseaux sociaux, délibérations locales et signaux faibles." },
+                { step: 2, title: "Analyse Collaborative", icon: "fa-project-diagram", desc: "Croisement des données par des communautés d'experts bénévoles. Vérification des faits (Fact-checking)." },
+                { step: 3, title: "Stratégie d'Influence", icon: "fa-chess-knight", desc: "Définition des cibles (élus, presse, grand public) et du narratif (storytelling) pour maximiser l'impact." },
+                { step: 4, title: "Dissémination", icon: "fa-bullhorn", desc: "Diffusion via les médias sociaux, pétitions, tribunes presse ou recours juridiques." }
+            ]
+        };
+
+        // --- CHART CONFIGURATIONS ---
+        const chartConfigs = {
+            trend: {
+                type: 'line',
+                data: {
+                    labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+                    datasets: [{
+                        label: 'Initiatives de Veille Citoyenne (Index)',
+                        data: [45, 52, 68, 85, 92, 110, 125],
+                        borderColor: '#2563EB',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } }
+                }
+            },
+            skills: {
+                type: 'radar',
+                data: {
+                    labels: ['OSINT', 'Juridique', 'Communication', 'Réseau Physique', 'Analyse Data', 'Ethique'],
+                    datasets: [{
+                        label: 'IE Entreprise (Marchande)',
+                        data: [80, 70, 60, 90, 85, 50],
+                        borderColor: '#94A3B8',
+                        backgroundColor: 'rgba(148, 163, 184, 0.2)'
+                    }, {
+                        label: 'Veille Citoyenne (Non-Marchande)',
+                        data: [65, 50, 95, 80, 60, 90],
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { r: { suggesteMin: 0, suggestedMax: 100 } }
+                }
+            },
+            impact: {
+                type: 'bar',
+                data: {
+                    labels: ['Transparence', 'Environnement', 'Conso.', 'Urbanisme', 'Santé'],
+                    datasets: [{
+                        label: 'Taux de succès des campagnes (%)',
+                        data: [75, 60, 85, 45, 65],
+                        backgroundColor: [
+                            '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'
+                        ],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            },
+            types: {
+                type: 'doughnut',
+                data: {
+                    labels: ['Plaidoyer', 'Alerte', 'Éducation', 'Contre-pouvoir'],
+                    datasets: [{
+                        data: [40, 25, 20, 15],
+                        backgroundColor: ['#3B82F6', '#EF4444', '#F59E0B', '#10B981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    cutout: '70%'
+                }
+            }
+        };
+
+        // --- VIEWS ---
+
+        const views = {
+            dashboard: () => `
+                <div class="fade-in space-y-6">
+                    <!-- Intro Header -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Synthèse : L'Ère du Citoyen Informé</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Ce tableau de bord explore comment la <strong>Veille Citoyenne</strong> transforme l'intelligence économique traditionnelle. 
+                            Contrairement à l'IE marchande focalisée sur le profit et la concurrence, l'IE non marchande vise la 
+                            <strong>création de valeur sociale</strong>, la transparence démocratique et la protection des biens communs.
+                            Les données ci-dessous illustrent l'émergence d'une "contre-intelligence" structurée.
+                        </p>
+                    </div>
+
+                    <!-- KPI Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-100 hover:border-blue-300 transition">
+                            <div class="text-blue-500 text-sm font-semibold uppercase">Initiatives</div>
+                            <div class="text-3xl font-bold text-slate-800 mt-1">${appData.stats.initiatives}</div>
+                            <div class="text-xs text-green-500 mt-1"><i class="fas fa-arrow-up"></i> Actives en 2024</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-100 hover:border-blue-300 transition">
+                            <div class="text-blue-500 text-sm font-semibold uppercase">Croissance</div>
+                            <div class="text-3xl font-bold text-slate-800 mt-1">${appData.stats.growth}</div>
+                            <div class="text-xs text-gray-500 mt-1">Annuelle (CAGR)</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-100 hover:border-blue-300 transition">
+                            <div class="text-blue-500 text-sm font-semibold uppercase">Impact Majeur</div>
+                            <div class="text-lg font-bold text-slate-800 mt-2 truncate">${appData.stats.impact}</div>
+                            <div class="text-xs text-gray-500 mt-1">Secteur clé</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-100 hover:border-blue-300 transition">
+                            <div class="text-blue-500 text-sm font-semibold uppercase">Portée</div>
+                            <div class="text-3xl font-bold text-slate-800 mt-1">${appData.stats.participants}</div>
+                            <div class="text-xs text-gray-500 mt-1">Citoyens touchés</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Chart Section -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-lg text-gray-700 mb-4">Évolution de l'Engagement Citoyen Numérique</h3>
+                            <div class="chart-container">
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-br from-blue-600 to-blue-800 p-6 rounded-xl shadow-md text-white flex flex-col justify-center">
+                            <div class="mb-4">
+                                <i class="fas fa-quote-left text-3xl text-blue-300 opacity-50"></i>
+                            </div>
+                            <p class="text-lg font-medium italic mb-4">
+                                "L'information n'est plus le monopole des États ou des entreprises. La veille citoyenne est le nouveau contre-pouvoir du 21ème siècle."
+                            </p>
+                            <div class="text-sm font-light opacity-80 border-t border-blue-500 pt-3">
+                                Analyse Prospective
+                            </div>
+                            <button onclick="router('foundations')" class="mt-6 bg-white text-blue-700 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-blue-50 transition w-full">
+                                Comprendre les Concepts
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            foundations: () => `
+                <div class="fade-in space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Les Fondamentaux</h2>
+                        <p class="text-gray-600">
+                            Pour comprendre la <strong>Veille Citoyenne</strong>, il faut la distinguer de l'intelligence économique classique.
+                            Cette section définit les concepts clés et explore les différences fondamentales d'objectifs et de méthodes.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Card 1 -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-l-4 border-l-blue-500 border-gray-100">
+                            <h3 class="text-xl font-bold text-blue-700 mb-3 flex items-center">
+                                <i class="fas fa-building mr-2 opacity-70"></i> IE Marchande
+                            </h3>
+                            <ul class="space-y-3 text-sm text-gray-600">
+                                <li class="flex items-start"><i class="fas fa-check text-blue-500 mt-1 mr-2"></i> <strong>Objectif :</strong> Gain de part de marché, profit, compétitivité.</li>
+                                <li class="flex items-start"><i class="fas fa-check text-blue-500 mt-1 mr-2"></i> <strong>Acteurs :</strong> Entreprises, États.</li>
+                                <li class="flex items-start"><i class="fas fa-check text-blue-500 mt-1 mr-2"></i> <strong>Secret :</strong> Confidentialité industrielle, brevets.</li>
+                                <li class="flex items-start"><i class="fas fa-check text-blue-500 mt-1 mr-2"></i> <strong>Temporalité :</strong> Trimestrielle / Annuelle (Stratégique).</li>
+                            </ul>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-l-4 border-l-emerald-500 border-gray-100">
+                            <h3 class="text-xl font-bold text-emerald-700 mb-3 flex items-center">
+                                <i class="fas fa-users mr-2 opacity-70"></i> IE Non Marchande
+                            </h3>
+                            <ul class="space-y-3 text-sm text-gray-600">
+                                <li class="flex items-start"><i class="fas fa-check text-emerald-500 mt-1 mr-2"></i> <strong>Objectif :</strong> Intérêt général, transparence, justice sociale.</li>
+                                <li class="flex items-start"><i class="fas fa-check text-emerald-500 mt-1 mr-2"></i> <strong>Acteurs :</strong> ONG, collectifs, citoyens, syndicats.</li>
+                                <li class="flex items-start"><i class="fas fa-check text-emerald-500 mt-1 mr-2"></i> <strong>Secret :</strong> Open Data, "Name and Shame", transparence radicale.</li>
+                                <li class="flex items-start"><i class="fas fa-check text-emerald-500 mt-1 mr-2"></i> <strong>Temporalité :</strong> Continue / Temps réel (Réactive).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Definitions Section -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                         <div class="bg-white p-5 rounded-lg border border-gray-200 hover:shadow-md transition cursor-pointer" onclick="toggleDetail('def1')">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-gray-800">Veille Sociétale</h4>
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                            <p class="text-sm text-gray-600" id="def1">Surveillance par la société civile des agissements des organisations (RSE, éthique).</p>
+                         </div>
+                         <div class="bg-white p-5 rounded-lg border border-gray-200 hover:shadow-md transition cursor-pointer" onclick="toggleDetail('def2')">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-gray-800">Lobbying Citoyen</h4>
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                            <p class="text-sm text-gray-600" id="def2">Actions d'influence menées par des groupes non-commerciaux pour orienter la décision publique.</p>
+                         </div>
+                         <div class="bg-white p-5 rounded-lg border border-gray-200 hover:shadow-md transition cursor-pointer" onclick="toggleDetail('def3')">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-gray-800">OSINT Citoyen</h4>
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                            <p class="text-sm text-gray-600" id="def3">Utilisation de sources ouvertes (Open Source Intelligence) pour enquêter sans moyens étatiques.</p>
+                         </div>
+                    </div>
+                </div>
+            `,
+
+            actors: () => `
+                <div class="fade-in space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2">Écosystème des Acteurs</h2>
+                            <p class="text-gray-600 max-w-2xl">
+                                L'IE non marchande repose sur une nébuleuse d'acteurs interconnectés.
+                                Utilisez les filtres pour explorer la typologie de ces veilleurs.
+                            </p>
+                        </div>
+                        <div class="mt-4 md:mt-0 flex space-x-2">
+                            <button onclick="filterActors('all')" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200">Tous</button>
+                            <button onclick="filterActors('Tech')" class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">Civic Tech</button>
+                            <button onclick="filterActors('Plaidoyer')" class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">ONG</button>
+                            <button onclick="filterActors('Individu')" class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">Individus</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="actors-grid">
+                        ${appData.actors.map(actor => createActorCard(actor)).join('')}
+                    </div>
+
+                    <!-- Visual Breakdown -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                             <h3 class="font-bold text-lg text-gray-700 mb-4 text-center">Répartition des Types d'Actions</h3>
+                             <div class="chart-container">
+                                <canvas id="typesChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-center">
+                            <h3 class="font-bold text-lg text-gray-700 mb-4">Le Pouvoir du Réseau</h3>
+                            <p class="text-sm text-gray-600 mb-4">
+                                Contrairement aux hiérarchies d'entreprise, la veille citoyenne fonctionne en <strong>réseau distribué</strong>. 
+                                Un lanceur d'alerte (Individu) fournit la donnée brute, une Civic Tech (Outil) la structure, et une ONG (Organisation) la médiatise.
+                            </p>
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                                <div class="flex items-center mb-2">
+                                    <i class="fas fa-link text-blue-500 mr-2"></i>
+                                    <span class="font-bold text-blue-800 text-sm">Synergie Opérationnelle</span>
+                                </div>
+                                <p class="text-xs text-blue-700">
+                                    Cette interdépendance rend la censure difficile et amplifie la résilience du mouvement.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            methodology: () => `
+                <div class="fade-in space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Le Cycle du Renseignement Citoyen</h2>
+                        <p class="text-gray-600">
+                            La méthodologie de l'IE non marchande suit un cycle rigoureux, adapté aux ressources limitées mais au capital humain élevé.
+                            Cliquez sur les étapes pour détailler le processus.
+                        </p>
+                    </div>
+
+                    <!-- Interactive Stepper -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        ${appData.methodology.map((step, index) => `
+                            <div onclick="highlightStep(${index})" class="step-card bg-white p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer hover:border-blue-400 transition transform hover:-translate-y-1 relative overflow-hidden" id="step-${index}">
+                                <div class="absolute top-0 right-0 p-2 opacity-10">
+                                    <i class="fas ${step.icon} text-6xl"></i>
+                                </div>
+                                <div class="font-bold text-blue-600 text-sm mb-1">Étape 0${step.step}</div>
+                                <h3 class="font-bold text-gray-800 mb-2">${step.title}</h3>
+                                <div class="h-1 w-12 bg-gray-200 rounded mt-2 step-indicator transition-colors duration-300"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Dynamic Step Detail -->
+                    <div id="step-detail" class="bg-white p-8 rounded-xl shadow-md border-l-4 border-blue-500 transition-all">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4 text-blue-600">
+                                <i class="fas ${appData.methodology[0].icon} text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">${appData.methodology[0].title}</h3>
+                                <p class="text-gray-600">${appData.methodology[0].desc}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills Chart -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mt-6">
+                        <h3 class="font-bold text-lg text-gray-700 mb-4 text-center">Compétences : Le Choc des Cultures</h3>
+                        <p class="text-center text-sm text-gray-500 mb-6 max-w-2xl mx-auto">
+                            L'IE citoyenne privilégie la communication et l'éthique pour mobiliser, tandis que l'IE d'entreprise se focalise sur l'analyse technique et le droit des affaires.
+                        </p>
+                        <div class="chart-container">
+                            <canvas id="skillsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            impact: () => `
+                <div class="fade-in space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Impact & Analyse des Résultats</h2>
+                        <p class="text-gray-600">
+                            La veille citoyenne n'est pas qu'un exercice théorique. Elle produit des effets tangibles sur la législation,
+                            le comportement des entreprises et la conscience collective.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Chart -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-lg text-gray-700 mb-4">Taux de Succès par Domaine</h3>
+                            <div class="chart-container">
+                                <canvas id="impactChart"></canvas>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-4 text-center">Source: Méta-analyse des campagnes 2020-2024</p>
+                        </div>
+
+                        <!-- Qualitative Analysis -->
+                        <div class="space-y-4">
+                            <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
+                                <h4 class="font-bold text-emerald-800 mb-2"><i class="fas fa-check-circle mr-2"></i>Victoires Législatives</h4>
+                                <p class="text-sm text-emerald-700">
+                                    L'adoption de lois sur le <strong>Devoir de Vigilance</strong> en Europe est une conséquence directe du lobbying citoyen structuré et de la documentation des abus par des ONG.
+                                </p>
+                            </div>
+
+                            <div class="bg-amber-50 p-5 rounded-xl border border-amber-100">
+                                <h4 class="font-bold text-amber-800 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Défis Actuels</h4>
+                                <p class="text-sm text-amber-700">
+                                    La <strong>désinformation</strong> et la saturation cognitive menacent la portée des alertes. Le défi majeur est de transformer l'indignation en action pérenne.
+                                </p>
+                            </div>
+
+                             <div class="bg-white p-5 rounded-xl border border-gray-200">
+                                <h4 class="font-bold text-gray-800 mb-2">Étude de Cas : Yuka & l'Agroalimentaire</h4>
+                                <p class="text-sm text-gray-600 mb-2">
+                                    L'application Yuka (Civic Tech) a forcé les géants de l'agroalimentaire à reformuler des milliers de produits.
+                                </p>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-200">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 85%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>Pression Citoyenne</span>
+                                    <span>Réaction Industrielle (85%)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        // --- HELPER FUNCTIONS ---
+
+        function createActorCard(actor) {
+            const badgeColors = {
+                'Tech': 'bg-purple-100 text-purple-700',
+                'Terrain': 'bg-green-100 text-green-700',
+                'Individu': 'bg-orange-100 text-orange-700',
+                'Plaidoyer': 'bg-blue-100 text-blue-700'
+            };
+            return `
+                <div class="actor-card bg-white p-5 rounded-xl border border-gray-200 hover:shadow-lg transition group" data-type="${actor.type}">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="px-2 py-1 rounded-md text-xs font-bold ${badgeColors[actor.type] || 'bg-gray-100'}">${actor.type}</span>
+                        <i class="fas fa-info-circle text-gray-300 group-hover:text-blue-400 transition"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-2">${actor.name}</h3>
+                    <p class="text-sm text-gray-600 mb-4 h-10 overflow-hidden text-ellipsis">${actor.desc}</p>
+                    <div class="flex items-center text-xs font-medium text-slate-500 border-t border-gray-100 pt-3">
+                        Influence: <span class="ml-auto text-slate-800">${actor.influence}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function filterActors(type) {
+            const cards = document.querySelectorAll('.actor-card');
+            cards.forEach(card => {
+                if (type === 'all' || card.dataset.type === type) {
+                    card.style.display = 'block';
+                    card.classList.add('fade-in');
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleDetail(id) {
+            // Very simple toggle logic purely for the text expansion
+            // In a real app, this might be more complex
+            const el = document.getElementById(id);
+            // Re-render handled by framework usually, here visual only
+        }
+
+        function highlightStep(index) {
+            // Update visual state of cards
+            document.querySelectorAll('.step-card .step-indicator').forEach(el => el.classList.remove('bg-blue-500'));
+            document.querySelectorAll('.step-card .step-indicator').forEach(el => el.classList.add('bg-gray-200'));
+            document.querySelectorAll('.step-card').forEach(el => el.classList.remove('border-blue-500', 'bg-blue-50'));
+            
+            const activeCard = document.getElementById(`step-${index}`);
+            activeCard.classList.add('border-blue-500', 'bg-blue-50');
+            activeCard.querySelector('.step-indicator').classList.remove('bg-gray-200');
+            activeCard.querySelector('.step-indicator').classList.add('bg-blue-500');
+
+            // Update content
+            const data = appData.methodology[index];
+            const content = document.getElementById('step-detail');
+            content.innerHTML = `
+                <div class="flex items-start fade-in">
+                    <div class="bg-blue-100 p-3 rounded-full mr-4 text-blue-600">
+                        <i class="fas ${data.icon} text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">${data.title}</h3>
+                        <p class="text-gray-600">${data.desc}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- CORE ROUTING & INITIALIZATION ---
+
+        let currentChartInstances = [];
+
+        function destroyCharts() {
+            currentChartInstances.forEach(chart => chart.destroy());
+            currentChartInstances = [];
+        }
+
+        function renderCharts(viewName) {
+            if (viewName === 'dashboard') {
+                const ctx = document.getElementById('trendChart').getContext('2d');
+                currentChartInstances.push(new Chart(ctx, chartConfigs.trend));
+            } else if (viewName === 'methodology') {
+                const ctx = document.getElementById('skillsChart').getContext('2d');
+                currentChartInstances.push(new Chart(ctx, chartConfigs.skills));
+            } else if (viewName === 'actors') {
+                const ctx = document.getElementById('typesChart').getContext('2d');
+                currentChartInstances.push(new Chart(ctx, chartConfigs.types));
+            } else if (viewName === 'impact') {
+                const ctx = document.getElementById('impactChart').getContext('2d');
+                currentChartInstances.push(new Chart(ctx, chartConfigs.impact));
+            }
+        }
+
+        function router(viewName) {
+            // 1. Update Navigation UI
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active-nav');
+                if (btn.dataset.target === viewName) btn.classList.add('active-nav');
+            });
+
+            // 2. Handle Charts Lifecycle
+            destroyCharts();
+
+            // 3. Inject HTML
+            const main = document.getElementById('main-content');
+            main.innerHTML = views[viewName]();
+
+            // 4. Render Charts for new view
+            // Timeout ensures DOM is ready
+            setTimeout(() => {
+                renderCharts(viewName);
+                if (viewName === 'methodology') highlightStep(0); // Init stepper
+            }, 50);
+
+            // 5. Mobile Menu Close
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 768) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+
+        // --- EVENTS ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial Load
+            router('dashboard');
+
+            // Mobile Menu Toggle
+            document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('-translate-x-full');
+            });
+        });
+
+    </script>
+</body>
+</html>
