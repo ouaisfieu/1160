@@ -1,0 +1,104 @@
+# ═══════════════════════════════════════════════════════════════
+#  LEAD-DEXING HUB — robots.txt
+#  https://ouaisfieu.github.io/lead-dexing/
+# ═══════════════════════════════════════════════════════════════
+#
+#  🔍 Si tu lis ça, tu fais de la veille. Bien joué.
+#     Le Lead-Dexing, c'est exactement ça : être détectable.
+#
+#  → https://dl.ouaisfi.eu/biologia/posts/2025/09/lead-dexing-saison-1-le-pilote/
+#
+# ═══════════════════════════════════════════════════════════════
+
+# Autoriser tous les robots
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://ouaisfieu.github.io/lead-dexing/sitemap.xml
+
+# ═══════════════════════════════════════════════════════════════
+#  CRAWL OPTIMIZATION
+# ═══════════════════════════════════════════════════════════════
+
+# Googlebot - Full access, optimized crawl
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Googlebot Image
+User-agent: Googlebot-Image
+Allow: /og-image.png
+Allow: /og-image-en.png
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+# DuckDuckBot
+User-agent: DuckDuckBot
+Allow: /
+
+# Yandex (pour expansion future)
+User-agent: Yandex
+Allow: /
+Crawl-delay: 2
+
+# Baidu (pour expansion Asie)
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 3
+
+# ═══════════════════════════════════════════════════════════════
+#  AI CRAWLERS — Optionnel, selon ta stratégie
+# ═══════════════════════════════════════════════════════════════
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+# Google AI (Bard/Gemini)
+User-agent: Google-Extended
+Allow: /
+
+# Anthropic Claude
+User-agent: ClaudeBot
+Allow: /
+
+# Common Crawl (datasets ML)
+User-agent: CCBot
+Allow: /
+
+# ═══════════════════════════════════════════════════════════════
+#  BLOCKED — Scrapers & Bad Actors
+# ═══════════════════════════════════════════════════════════════
+
+# SEO scrapers agressifs
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Spam bots connus
+User-agent: MauiBot
+Disallow: /
+
+User-agent: SeznamBot
+Disallow: /
+
+# ═══════════════════════════════════════════════════════════════
+#  HOST (legacy, mais certains bots le lisent encore)
+# ═══════════════════════════════════════════════════════════════
+Host: https://ouaisfieu.github.io
+
+# ═══════════════════════════════════════════════════════════════
+#  T₀ = maintenant. T_alert = quand tu l'as lu. T_reply = ?
+# ═══════════════════════════════════════════════════════════════
