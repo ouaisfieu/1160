@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="War Room - Évaluation du projet Résistance Cognitive pour la Régionale PAC Bruxelles">
+    <title>🎯 WAR ROOM — Résistance Cognitive | Évaluation Régionale PAC Bruxelles</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Palette War Room — Dark mode professionnel */
+            --bg-base: #0F0F0F;
+            --bg-card: #1A1A1A;
+            --bg-elevated: #242424;
+            --bg-hover: #2A2A2A;
+            
+            --border: #333333;
+            --border-light: #444444;
+            
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0A0;
+            --text-tertiary: #666666;
+            
+            /* Statuts */
+            --critical: #FF4757;
+            --critical-bg: rgba(255, 71, 87, 0.15);
+            --high: #FFA502;
+            --high-bg: rgba(255, 165, 2, 0.15);
+            --medium: #2ED573;
+            --medium-bg: rgba(46, 213, 115, 0.15);
+            --low: #1E90FF;
+            --low-bg: rgba(30, 144, 255, 0.15);
+            --info: #A55EEA;
+            --info-bg: rgba(165, 94, 234, 0.15);
+            
+            /* PAC */
+            --pac-red: #C8102E;
+            --pac-red-light: #E8304A;
+            
+            /* Typography */
+            --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            
+            /* Effects */
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 20px rgba(0,0,0,0.4);
+            --transition: 0.2s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+            background: var(--bg-base);
+            min-height: 100vh;
+        }
+
+        ::selection {
+            background: var(--pac-red);
+            color: white;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .card {
+                break-inside: avoid;
+                border: 1px solid #ccc !important;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════════ */
+        .war-header {
+            background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-base) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: var(--space-lg) var(--space-xl);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: var(--space-lg);
+            flex-wrap: wrap;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .war-badge {
+            background: var(--pac-red);
+            color: white;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.3em 0.8em;
+            border-radius: var(--radius-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .header-title h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .header-title h1 span {
+            color: var(--pac-red);
+        }
+
+        .header-meta {
+            display: flex;
+            gap: var(--space-lg);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .meta-item strong {
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .btn {
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.6em 1.2em;
+            border-radius: var(--radius-sm);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5em;
+            transition: all var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--pac-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--pac-red-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-light);
+        }
+
+        /* Score global */
+        .global-score {
+            display: flex;
+            gap: var(--space-xl);
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border);
+        }
+
+        .score-box {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .score-value {
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .score-value.urgency { color: var(--critical); }
+        .score-value.feasibility { color: var(--medium); }
+        .score-value.total { color: var(--pac-red); }
+
+        .score-bar {
+            width: 120px;
+            height: 6px;
+            background: var(--bg-elevated);
+            border-radius: 3px;
+            margin-top: var(--space-xs);
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .score-fill.urgency { background: var(--critical); }
+        .score-fill.feasibility { background: var(--medium); }
+        .score-fill.total { background: linear-gradient(90deg, var(--pac-red), var(--high)); }
+
+        /* ═══════════════════════════════════════════════════════════════
+           MAIN LAYOUT
+           ═══════════════════════════════════════════════════════════════ */
+        .war-main {
+            padding: var(--space-xl);
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-lg);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-lg);
+        }
+
+        @media (max-width: 1200px) {
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 900px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+        }
+
+        .section {
+            margin-bottom: var(--space-2xl);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 1.2em;
+            background: var(--pac-red);
+            border-radius: 2px;
+        }
+
+        .section-count {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: var(--bg-elevated);
+            padding: 0.3em 0.8em;
+            border-radius: var(--radius-sm);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           CARDS
+           ═══════════════════════════════════════════════════════════════ */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: all var(--transition);
+        }
+
+        .card:hover {
+            border-color: var(--border-light);
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .card-body {
+            padding: var(--space-md);
+        }
+
+        /* Priority badges */
+        .priority-badge {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.25em 0.6em;
+            border-radius: var(--radius-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .priority-critical {
+            background: var(--critical-bg);
+            color: var(--critical);
+            border: 1px solid var(--critical);
+        }
+
+        .priority-high {
+            background: var(--high-bg);
+            color: var(--high);
+            border: 1px solid var(--high);
+        }
+
+        .priority-medium {
+            background: var(--medium-bg);
+            color: var(--medium);
+            border: 1px solid var(--medium);
+        }
+
+        .priority-low {
+            background: var(--low-bg);
+            color: var(--low);
+            border: 1px solid var(--low);
+        }
+
+        .priority-info {
+            background: var(--info-bg);
+            color: var(--info);
+            border: 1px solid var(--info);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           CHECKLIST ITEMS
+           ═══════════════════════════════════════════════════════════════ */
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--border);
+            transition: background var(--transition);
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-item:hover {
+            background: var(--bg-elevated);
+        }
+
+        .checklist-item.checked {
+            background: rgba(46, 213, 115, 0.05);
+        }
+
+        .checklist-item.checked .item-title {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .checkbox-wrapper {
+            flex-shrink: 0;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            appearance: none;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            position: relative;
+            transition: all var(--transition);
+        }
+
+        .checkbox:checked {
+            background: var(--medium);
+            border-color: var(--medium);
+        }
+
+        .checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .checkbox:focus {
+            outline: 2px solid var(--pac-red);
+            outline-offset: 2px;
+        }
+
+        .item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xs);
+        }
+
+        .item-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .item-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+        }
+
+        .meta-tag {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            padding: 0.2em 0.5em;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+        }
+
+        .item-scores {
+            display: flex;
+            gap: var(--space-xs);
+            flex-shrink: 0;
+        }
+
+        .score-mini {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.2em 0.5em;
+            border-radius: var(--radius-sm);
+            min-width: 2.5em;
+            text-align: center;
+        }
+
+        .score-mini.urgency {
+            background: var(--critical-bg);
+            color: var(--critical);
+        }
+
+        .score-mini.feasibility {
+            background: var(--medium-bg);
+            color: var(--medium);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           DATA TABLES
+           ═══════════════════════════════════════════════════════════════ */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .data-table th {
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            padding: var(--space-sm) var(--space-md);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-elevated);
+        }
+
+        .data-table td {
+            padding: var(--space-sm) var(--space-md);
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover td {
+            background: var(--bg-elevated);
+        }
+
+        .data-table .number {
+            font-family: var(--font-mono);
+            font-weight: 600;
+        }
+
+        .data-table .highlight {
+            color: var(--pac-red);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           STATS GRID
+           ═══════════════════════════════════════════════════════════════ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-md);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: var(--font-mono);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--pac-red);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-top: var(--space-xs);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           TIMELINE
+           ═══════════════════════════════════════════════════════════════ */
+        .timeline {
+            position: relative;
+            padding-left: var(--space-xl);
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: var(--space-lg);
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: calc(-1 * var(--space-xl) + 4px);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--bg-base);
+            border: 2px solid var(--text-secondary);
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: var(--pac-red);
+            border-color: var(--pac-red);
+            box-shadow: 0 0 0 4px var(--critical-bg);
+        }
+
+        .timeline-item.complete .timeline-dot {
+            background: var(--medium);
+            border-color: var(--medium);
+        }
+
+        .timeline-date {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: var(--space-xs);
+        }
+
+        .timeline-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           MATRIX URGENCY/FEASIBILITY
+           ═══════════════════════════════════════════════════════════════ */
+        .matrix-container {
+            overflow-x: auto;
+        }
+
+        .matrix {
+            display: grid;
+            grid-template-columns: auto repeat(5, 1fr);
+            gap: 2px;
+            background: var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            min-width: 600px;
+        }
+
+        .matrix-cell {
+            background: var(--bg-card);
+            padding: var(--space-sm);
+            text-align: center;
+            font-size: 0.75rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .matrix-header {
+            background: var(--bg-elevated);
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .matrix-label {
+            writing-mode: vertical-lr;
+            transform: rotate(180deg);
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: var(--bg-elevated);
+        }
+
+        .matrix-cell.hot {
+            background: var(--critical-bg);
+            color: var(--critical);
+            font-weight: 600;
+        }
+
+        .matrix-cell.warm {
+            background: var(--high-bg);
+            color: var(--high);
+        }
+
+        .matrix-cell.cool {
+            background: var(--medium-bg);
+            color: var(--medium);
+        }
+
+        .matrix-cell.cold {
+            background: var(--low-bg);
+            color: var(--low);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           NOTES SECTION
+           ═══════════════════════════════════════════════════════════════ */
+        .notes-area {
+            width: 100%;
+            min-height: 150px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            resize: vertical;
+        }
+
+        .notes-area:focus {
+            outline: none;
+            border-color: var(--pac-red);
+        }
+
+        .notes-area::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════════════════ */
+        .war-footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: var(--space-lg) var(--space-xl);
+            margin-top: var(--space-2xl);
+        }
+
+        .footer-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+        }
+
+        .footer-disclaimer {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+        }
+
+        .footer-disclaimer strong {
+            color: var(--high);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--space-md);
+        }
+
+        .footer-links a {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--pac-red);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           UTILITIES
+           ═══════════════════════════════════════════════════════════════ */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .mt-lg { margin-top: var(--space-lg); }
+        .mb-lg { margin-bottom: var(--space-lg); }
+        .full-width { grid-column: 1 / -1; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .war-header {
+                padding: var(--space-md);
+            }
+            .war-main {
+                padding: var(--space-md);
+            }
+            .global-score {
+                flex-wrap: wrap;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+            .header-actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ═══════════════════════════════════════════════════════════════
+         HEADER
+         ═══════════════════════════════════════════════════════════════ -->
+    <header class="war-header">
+        <div class="header-top">
+            <div class="header-title">
+                <span class="war-badge">War Room</span>
+                <h1>🎯 <span>Résistance Cognitive</span> — Évaluation</h1>
+            </div>
+            
+            <div class="header-meta">
+                <div class="meta-item">
+                    <span>📍</span>
+                    <strong>Auderghem 1160</strong>
+                </div>
+                <div class="meta-item">
+                    <span>📅</span>
+                    <strong>Cible : 1er Mai 2026</strong>
+                </div>
+                <div class="meta-item">
+                    <span>👥</span>
+                    <strong>Régionale PAC Bruxelles</strong>
+                </div>
+            </div>
+            
+            <div class="header-actions no-print">
+                <button class="btn btn-secondary" onclick="window.print()">
+                    🖨️ Imprimer
+                </button>
+                <button class="btn btn-secondary" onclick="resetAll()">
+                    🔄 Reset
+                </button>
+                <button class="btn btn-primary" onclick="exportData()">
+                    📤 Exporter
+                </button>
+            </div>
+        </div>
+        
+        <div class="global-score">
+            <div class="score-box">
+                <div class="score-label">Score Urgence</div>
+                <div class="score-value urgency" id="score-urgency">0</div>
+                <div class="score-bar">
+                    <div class="score-fill urgency" id="bar-urgency" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="score-box">
+                <div class="score-label">Score Faisabilité</div>
+                <div class="score-value feasibility" id="score-feasibility">0</div>
+                <div class="score-bar">
+                    <div class="score-fill feasibility" id="bar-feasibility" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="score-box">
+                <div class="score-label">Score Total</div>
+                <div class="score-value total" id="score-total">0</div>
+                <div class="score-bar">
+                    <div class="score-fill total" id="bar-total" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="score-box">
+                <div class="score-label">Items Validés</div>
+                <div class="score-value total" id="items-checked">0/0</div>
+                <div class="score-bar">
+                    <div class="score-fill total" id="bar-items" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="war-main">
+        <!-- ═══════════════════════════════════════════════════════════════
+             STATS OVERVIEW
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Indicateurs Clés — Diagnostic Territorial</h2>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">12%</div>
+                    <div class="stat-label">Population BIM</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">19%</div>
+                    <div class="stat-label">Chômage 15-24 ans</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">22%</div>
+                    <div class="stat-label">Chômage Transvaal</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">16,6%</div>
+                    <div class="stat-label">Seniors isolés</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             URGENCY CHECKLIST
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">🚨 Critères d'Urgence</h2>
+                <span class="section-count" id="urgency-count">0/8 validés</span>
+            </div>
+            
+            <div class="card">
+                <ul class="checklist" id="urgency-checklist">
+                    <li class="checklist-item" data-urgency="5" data-feasibility="0">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox urgency-check" id="u1">
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <label for="u1" class="item-title">Angle mort territorial identifié</label>
+                                <span class="priority-badge priority-critical">Critique</span>
+                            </div>
+                            <p class="item-desc">Auderghem n'a pas de section locale PAC — lacune dans le maillage bruxellois.</p>
+                            <div class="item-meta">
+                                <span class="meta-tag">Maillage</span>
+                                <span class="meta-tag">Bruxelles</span>
+                            </div>
+                        </div>
+                        <div class="item-scores">
+                            <span class="score-mini urgency">U:5</span>
+                        </div>
+                    </li>
+                    
+                    <li class="checklist-item" data-urgency="5" data-feasibility="0">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox urgency-check" id="u2">
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <label for="u2" class="item-title">Précarité documentée (12% BIM)</label>
+                                <span class="priority-badge priority-critical">Critique</span>
+                            </div>
+                            <p class="item-desc">Données chiffrées : 12% statut BIM, 19% chômage jeunes, poches de précarité identifiées.</p>
+                            <div class="item-meta">
+                                <span class="meta-tag">Diagnostic</span>
+                                <span class="meta-tag">Social</span>
+                            </div>
+                        </div>
+                        <div class="item-scores">
+                            <span class="score-mini urgency">U:5</span>
+                        </div>
+                    </li>
+                    
+                    <li class="checklist-item" data-urgency="4" data-feasibility="0">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox urgency-check" id="u3">
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <label for="u3" class="item-title">Publics cibles vulnérables</label>
+                                <span class="priority-badge priority-high">Élevé</span>
+                            </div>
+                            <p class="item-desc">Seniors isolés (16,6%), demandeurs d'emploi, jeunes adultes déconnectés.</p>
+                            <div class="item-meta">
+                                <span class="meta-tag">Seniors</span>
+                                <span class="meta-tag">Jeunes</span>
+                                <span class="meta-tag">Chômeurs</span>
+                            </div>
+                        </div>
+                        <div class="item-scores">
+                            <span class="score-mini urgency">U:4</span>
+                        </div>
+                    </li>
+                    
+                    <li class="checklist-item" data-urgency="4" data-feasibility="0">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox urgency-check" id="u4">
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <label for="u4" class="item-title">Quartiers prioritaires identifiés</label>
+                                <span class="priority-badge priority-high">Élevé</span>
+                            </div>
+                            <p class="item-desc">Transvaal (22% chômage), Ten-Reuken, Pinoy — zones de logement social.</p>
+                            <div class="item-meta">
+                                <span class="meta-tag">Transvaal</span>
+                                <span class="meta-tag">Ten-Reuken</span>
+                                <span class="meta-tag">Pinoy</span>
+                            </div>
+                        </div>
+                        <div class="item-scores">
+                            <span class="score-mini urgency">U:4</span>
+                        </div>
+                    </li>
+                    
+                    <li class="checklist-item" data-urgency="3" data-feasibility="0">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox urgency-check" id="u5">
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <label for="u5" class="item-title">Enjeu civique concret identifié</label>
+                                <span class="priority-badge priority-medium">Moyen</span>
+                            </div>
+                            <p class="item-desc">Dossier viaduc Herrmann-Debroux comme cas d'usage pour l'ARG citoyen.</p>
+                            <div class="item-meta">
+                                <span class="meta-tag">Urbanisme</span>
+                                <span class="meta-tag">Mobilisation</span>
+                            </div>
+                        </div>
+                        <div class="item-scores">
+                            <span class="score-mini urgency">U:3</span>
+                        </div>
+                    </li>
+                    
+                    <li class="checklist-item" data-urgency="4" data-feasibility="0">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox urgency-check" id="u6">
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <label for="u6" class="item-title">Piège de l'inactivité à résoudre</label>
+                                <span class="priority-badge priority-high">Élevé</span>
+                            </div>
+                            <p class="item-desc">Personnes BIM/chômage pénalisées si engagement bénévole → besoin ECP.</p>
+                            <div class="item-meta">
+                                <span class="meta-tag">Social</span>
+                                <span class="meta-tag">Juridique</span>
+                            </div>
+                        </div>
+                        <div class="item-scores">
+                            <span class="score-mini urgency">U:4</span>
+                        </div>
+                    </li>
+                    
+                    <li class="checklist-item" data-urgency="3" data-feasibility="0">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox urgency-check" id="u7">
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <label for="u7" class="item-title">Fracture numérique à combler</label>
+                                <span class="priority-badge priority-medium">Moyen</span>
+                            </div>
+                            <p class="item-desc">Seniors et publics précaires exclus des outils numériques classiques.</p>
+                            <div class="item-meta">
+                                <span class="meta-tag">Accessibilité</span>
+                                <span class="meta-tag">Inclusion</span>
+                            </div>
+                        </div>
+                        <div class="item-scores">
+                            <span class="score-mini urgency">U:3</span>
+                        </div>
+                    </li>
+                    
+                    <li class="checklist-item" data-urgency="5" data-feasibility="0">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox urgency-check" id="u8">
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <label for="u8" class="item-title">Souveraineté cognitive menacée</label>
+                                <span class="priority-badge priority-critical">Critique</span>
+                            </div>
+                            <p class="item-desc">Désinformation, biais de confirmation, polarisation — enjeux éducation permanente.</p>
+                            <div class="item-meta">
+                                <span class="meta-tag">Éducation</span>
+                                <span class="meta-tag">Démocratie</span>
+                            </div>
+                        </div>
+                        <div class="item-scores">
+                            <span class="score-mini urgency">U:5</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             FEASIBILITY CHECKLIST
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">✅ Critères de Faisabilité</h2>
+                <span class="section-count" id="feasibility-count">0/12 validés</span>
+            </div>
+            
+            <div class="grid-2">
+                <!-- Faisabilité Juridique & Structurelle -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">⚖️ Juridique & Structure</span>
+                    </div>
+                    <ul class="checklist" id="feasibility-legal">
+                        <li class="checklist-item" data-urgency="0" data-feasibility="5">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f1">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f1" class="item-title">Intégration Régionale PAC Bruxelles</label>
+                                    <span class="priority-badge priority-critical">Critique</span>
+                                </div>
+                                <p class="item-desc">Contourne le moratoire ASBL — viabilité légale immédiate.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:5</span>
+                            </div>
+                        </li>
+                        
+                        <li class="checklist-item" data-urgency="0" data-feasibility="4">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f2">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f2" class="item-title">Ruling fiscal prévu (SDA)</label>
+                                    <span class="priority-badge priority-high">Élevé</span>
+                                </div>
+                                <p class="item-desc">Demande de décision anticipée pour sécuriser l'ECP.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:4</span>
+                            </div>
+                        </li>
+                        
+                        <li class="checklist-item" data-urgency="0" data-feasibility="4">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f3">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f3" class="item-title">CA avec 2 non-BIM minimum</label>
+                                    <span class="priority-badge priority-high">Élevé</span>
+                                </div>
+                                <p class="item-desc">Continuité administrative garantie.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:4</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Faisabilité Humaine -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">👥 Capital Humain</span>
+                    </div>
+                    <ul class="checklist" id="feasibility-human">
+                        <li class="checklist-item" data-urgency="0" data-feasibility="4">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f4">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f4" class="item-title">Noyau fondateur 5-8 personnes</label>
+                                    <span class="priority-badge priority-high">Élevé</span>
+                                </div>
+                                <p class="item-desc">Diversité de profils, générations, compétences.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:4</span>
+                            </div>
+                        </li>
+                        
+                        <li class="checklist-item" data-urgency="0" data-feasibility="3">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f5">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f5" class="item-title">Porteur de projet identifié</label>
+                                    <span class="priority-badge priority-medium">Moyen</span>
+                                </div>
+                                <p class="item-desc">Leadership clair et engagement confirmé.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:3</span>
+                            </div>
+                        </li>
+                        
+                        <li class="checklist-item" data-urgency="0" data-feasibility="3">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f6">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f6" class="item-title">Seuil critique atteignable (9 inscrits)</label>
+                                    <span class="priority-badge priority-medium">Moyen</span>
+                                </div>
+                                <p class="item-desc">Mécanisme d'activation réaliste.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:3</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Faisabilité Technique -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🔧 Technique & Outils</span>
+                    </div>
+                    <ul class="checklist" id="feasibility-tech">
+                        <li class="checklist-item" data-urgency="0" data-feasibility="4">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f7">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f7" class="item-title">Stack accessible (Lighthouse 100)</label>
+                                    <span class="priority-badge priority-high">Élevé</span>
+                                </div>
+                                <p class="item-desc">Eleventy + USWDS = inclusion seniors.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:4</span>
+                            </div>
+                        </li>
+                        
+                        <li class="checklist-item" data-urgency="0" data-feasibility="3">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f8">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f8" class="item-title">Plateforme Decidim disponible</label>
+                                    <span class="priority-badge priority-medium">Moyen</span>
+                                </div>
+                                <p class="item-desc">Open source, déjà déployé ailleurs.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:3</span>
+                            </div>
+                        </li>
+                        
+                        <li class="checklist-item" data-urgency="0" data-feasibility="2">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f9">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f9" class="item-title">Protocole Solid (expérimental)</label>
+                                    <span class="priority-badge priority-low">Bas</span>
+                                </div>
+                                <p class="item-desc">Innovant mais complexe — première en BE francophone.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:2</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Faisabilité Financière -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">💰 Financier & Budget</span>
+                    </div>
+                    <ul class="checklist" id="feasibility-finance">
+                        <li class="checklist-item" data-urgency="0" data-feasibility="5">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f10">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f10" class="item-title">Budget frugal (~16 000€/an)</label>
+                                    <span class="priority-badge priority-critical">Critique</span>
+                                </div>
+                                <p class="item-desc">ROI social élevé, coût opérationnel minimal.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:5</span>
+                            </div>
+                        </li>
+                        
+                        <li class="checklist-item" data-urgency="0" data-feasibility="3">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f11">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f11" class="item-title">Financements identifiés (500K-2M€)</label>
+                                    <span class="priority-badge priority-medium">Moyen</span>
+                                </div>
+                                <p class="item-desc">Innoviris PYSI, COCOF Impulsion, Horizon Europe.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:3</span>
+                            </div>
+                        </li>
+                        
+                        <li class="checklist-item" data-urgency="0" data-feasibility="4">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox feasibility-check" id="f12">
+                            </div>
+                            <div class="item-content">
+                                <div class="item-header">
+                                    <label for="f12" class="item-title">ECP via NYXO (provisionnement différé)</label>
+                                    <span class="priority-badge priority-high">Élevé</span>
+                                </div>
+                                <p class="item-desc">Valorise engagement sans requalification aides.</p>
+                            </div>
+                            <div class="item-scores">
+                                <span class="score-mini feasibility">F:4</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             METHODOLOGY OVERVIEW
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">📚 Méthodologies Proposées</h2>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Arpentage Citoyen (ACI)</span>
+                        <span class="priority-badge priority-medium">Éprouvé</span>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <tr>
+                                <td>Type</td>
+                                <td>Lecture collective</td>
+                            </tr>
+                            <tr>
+                                <td>Phase 1</td>
+                                <td>Asynchrone (numérique)</td>
+                            </tr>
+                            <tr>
+                                <td>Phase 2</td>
+                                <td>Présentiel (mise en commun)</td>
+                            </tr>
+                            <tr>
+                                <td>Fonction</td>
+                                <td>Sas d'initiation → mobilisation</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">ARG « Souveraineté Fantôme »</span>
+                        <span class="priority-badge priority-high">Innovant</span>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <tr>
+                                <td>Type</td>
+                                <td>Jeu en Réalité Alternée</td>
+                            </tr>
+                            <tr>
+                                <td>Seuil</td>
+                                <td class="number highlight">9 inscrits</td>
+                            </tr>
+                            <tr>
+                                <td>Plateforme</td>
+                                <td>Decidim (open source)</td>
+                            </tr>
+                            <tr>
+                                <td>Cas d'usage</td>
+                                <td>Viaduc Herrmann-Debroux</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             TECH STACK TABLE
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">🔧 Architecture Technique</h2>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Composant</th>
+                                <th>Bénéfice Stratégique</th>
+                                <th>Risque</th>
+                                <th>Maturité</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="number">Protocole Solid</td>
+                                <td>Souveraineté données citoyens</td>
+                                <td><span class="priority-badge priority-high">Élevé</span></td>
+                                <td>Expérimental</td>
+                            </tr>
+                            <tr>
+                                <td class="number">Eleventy + USWDS</td>
+                                <td>Accessibilité radicale (Lighthouse 100)</td>
+                                <td><span class="priority-badge priority-low">Bas</span></td>
+                                <td>Stable</td>
+                            </tr>
+                            <tr>
+                                <td class="number">Standard FHIR</td>
+                                <td>Pont CPAS ↔ Santé</td>
+                                <td><span class="priority-badge priority-medium">Moyen</span></td>
+                                <td>Standard</td>
+                            </tr>
+                            <tr>
+                                <td class="number">Git Scraping</td>
+                                <td>Patrimoine données inaltérable</td>
+                                <td><span class="priority-badge priority-low">Bas</span></td>
+                                <td>Stable</td>
+                            </tr>
+                            <tr>
+                                <td class="number">Vote Quadratique</td>
+                                <td>Intensité des préférences</td>
+                                <td><span class="priority-badge priority-medium">Moyen</span></td>
+                                <td>Émergent</td>
+                            </tr>
+                            <tr>
+                                <td class="number">Decidim</td>
+                                <td>Démocratie participative</td>
+                                <td><span class="priority-badge priority-low">Bas</span></td>
+                                <td>Mature</td>
+                            </tr>
+                            <tr>
+                                <td class="number">NYXO (ECP)</td>
+                                <td>Économie contributive sans requalification</td>
+                                <td><span class="priority-badge priority-medium">Moyen</span></td>
+                                <td>Innovant</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             URGENCY/FEASIBILITY MATRIX
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">📊 Matrice Urgence × Faisabilité</h2>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="matrix-container">
+                        <div class="matrix">
+                            <div class="matrix-cell matrix-header"></div>
+                            <div class="matrix-cell matrix-header">Faisabilité 1</div>
+                            <div class="matrix-cell matrix-header">Faisabilité 2</div>
+                            <div class="matrix-cell matrix-header">Faisabilité 3</div>
+                            <div class="matrix-cell matrix-header">Faisabilité 4</div>
+                            <div class="matrix-cell matrix-header">Faisabilité 5</div>
+                            
+                            <div class="matrix-cell matrix-label">Urgence 5</div>
+                            <div class="matrix-cell warm">Risqué</div>
+                            <div class="matrix-cell warm">Risqué</div>
+                            <div class="matrix-cell hot">PRIORITÉ</div>
+                            <div class="matrix-cell hot">PRIORITÉ</div>
+                            <div class="matrix-cell hot">🎯 OPTIMAL</div>
+                            
+                            <div class="matrix-cell matrix-label">Urgence 4</div>
+                            <div class="matrix-cell cool">Différer</div>
+                            <div class="matrix-cell warm">Risqué</div>
+                            <div class="matrix-cell hot">PRIORITÉ</div>
+                            <div class="matrix-cell hot">PRIORITÉ</div>
+                            <div class="matrix-cell hot">PRIORITÉ</div>
+                            
+                            <div class="matrix-cell matrix-label">Urgence 3</div>
+                            <div class="matrix-cell cold">Reporter</div>
+                            <div class="matrix-cell cool">Différer</div>
+                            <div class="matrix-cell cool">Planifier</div>
+                            <div class="matrix-cell warm">Planifier</div>
+                            <div class="matrix-cell hot">Rapide</div>
+                            
+                            <div class="matrix-cell matrix-label">Urgence 2</div>
+                            <div class="matrix-cell cold">Abandonner</div>
+                            <div class="matrix-cell cold">Reporter</div>
+                            <div class="matrix-cell cool">Différer</div>
+                            <div class="matrix-cell cool">Planifier</div>
+                            <div class="matrix-cell warm">Opportunité</div>
+                            
+                            <div class="matrix-cell matrix-label">Urgence 1</div>
+                            <div class="matrix-cell cold">Abandonner</div>
+                            <div class="matrix-cell cold">Abandonner</div>
+                            <div class="matrix-cell cold">Reporter</div>
+                            <div class="matrix-cell cool">Nice-to-have</div>
+                            <div class="matrix-cell cool">Quick win</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             TIMELINE
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">📅 Calendrier de Déploiement</h2>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item complete">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">Janvier 2026</div>
+                            <div class="timeline-title">Constitution noyau fondateur</div>
+                            <div class="timeline-desc">5-8 personnes, diversité des profils</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">Février 2026</div>
+                            <div class="timeline-title">Rédaction note d'intention</div>
+                            <div class="timeline-desc">Document formel pour la Régionale</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">Mars 2026</div>
+                            <div class="timeline-title">Identification local partenaire</div>
+                            <div class="timeline-desc">Bibliothèque, Maison des Associations</div>
+                        </div>
+                        
+                        <div class="timeline-item active">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">Avril 2026</div>
+                            <div class="timeline-title">🎯 Adoubement Régionale PAC Bruxelles</div>
+                            <div class="timeline-desc">Présentation au Bureau — Validation officielle</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">1er Mai 2026</div>
+                            <div class="timeline-title">🚀 Lancement public</div>
+                            <div class="timeline-desc">Date symbolique — premières activités</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             BUDGET OVERVIEW
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">💰 Aperçu Budgétaire</h2>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Budget Opérationnel Annuel</span>
+                        <span class="priority-badge priority-medium">Frugal</span>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="stat-value" style="font-size: 3rem;">~16 000€</div>
+                        <p style="color: var(--text-secondary); margin-top: var(--space-sm);">
+                            Infrastructure + outils + fonctionnement
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Potentiel de Financement</span>
+                        <span class="priority-badge priority-high">Ambitieux</span>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="stat-value" style="font-size: 3rem;">500K — 2M€</div>
+                        <p style="color: var(--text-secondary); margin-top: var(--space-sm);">
+                            Innoviris PYSI • COCOF Impulsion • Horizon Europe
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             DECISION NOTES
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">📝 Notes de Décision — Régionale</h2>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <textarea class="notes-area no-print" id="decision-notes" placeholder="Ajoutez vos notes, conditions, réserves ou recommandations pour la décision du Bureau..."></textarea>
+                    <div class="print-notes" style="display: none; min-height: 150px; border: 1px dashed var(--border); padding: var(--space-md); margin-top: var(--space-md);">
+                        <em>Zone de notes manuscrites</em>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             FINAL DECISION
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">🗳️ Décision Finale</h2>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="grid-3" style="gap: var(--space-md);">
+                        <label class="checklist-item" style="cursor: pointer; border: 2px solid var(--border); border-radius: var(--radius-md);">
+                            <input type="radio" name="decision" value="approved" style="display: none;">
+                            <div class="item-content text-center" style="padding: var(--space-lg);">
+                                <div style="font-size: 2rem; margin-bottom: var(--space-sm);">✅</div>
+                                <div class="item-title">APPROUVÉ</div>
+                                <p class="item-desc">Projet validé, lancement autorisé</p>
+                            </div>
+                        </label>
+                        
+                        <label class="checklist-item" style="cursor: pointer; border: 2px solid var(--border); border-radius: var(--radius-md);">
+                            <input type="radio" name="decision" value="conditional" style="display: none;">
+                            <div class="item-content text-center" style="padding: var(--space-lg);">
+                                <div style="font-size: 2rem; margin-bottom: var(--space-sm);">⚠️</div>
+                                <div class="item-title">CONDITIONNEL</div>
+                                <p class="item-desc">Sous réserve de conditions</p>
+                            </div>
+                        </label>
+                        
+                        <label class="checklist-item" style="cursor: pointer; border: 2px solid var(--border); border-radius: var(--radius-md);">
+                            <input type="radio" name="decision" value="rejected" style="display: none;">
+                            <div class="item-content text-center" style="padding: var(--space-lg);">
+                                <div style="font-size: 2rem; margin-bottom: var(--space-sm);">❌</div>
+                                <div class="item-title">REFUSÉ</div>
+                                <p class="item-desc">Projet non retenu</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         FOOTER
+         ═══════════════════════════════════════════════════════════════ -->
+    <footer class="war-footer">
+        <div class="footer-grid">
+            <div class="footer-disclaimer">
+                <strong>⚠️ Document de travail interne</strong> — 
+                Préparé pour évaluation par la Régionale PAC Bruxelles. 
+                Projet citoyen indépendant, historiquement lié aux valeurs PAC.
+            </div>
+            
+            <div class="footer-links">
+                <a href="https://www.pac-g.be" target="_blank" rel="noopener">PAC Officiel ↗</a>
+                <a href="https://www.pac-g.be/regionales/" target="_blank" rel="noopener">Régionales ↗</a>
+                <a href="https://www.pac-g.be/contact/" target="_blank" rel="noopener">Contact ↗</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         JAVASCRIPT
+         ═══════════════════════════════════════════════════════════════ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // State
+            let state = {
+                urgency: 0,
+                feasibility: 0,
+                urgencyMax: 0,
+                feasibilityMax: 0,
+                urgencyChecked: 0,
+                feasibilityChecked: 0,
+                totalItems: 0
+            };
+
+            // Calculate max scores on load
+            function initScores() {
+                document.querySelectorAll('.urgency-check').forEach(cb => {
+                    const item = cb.closest('.checklist-item');
+                    state.urgencyMax += parseInt(item.dataset.urgency) || 0;
+                    state.totalItems++;
+                });
+
+                document.querySelectorAll('.feasibility-check').forEach(cb => {
+                    const item = cb.closest('.checklist-item');
+                    state.feasibilityMax += parseInt(item.dataset.feasibility) || 0;
+                    state.totalItems++;
+                });
+
+                updateDisplay();
+            }
+
+            // Update scores
+            function updateScores() {
+                state.urgency = 0;
+                state.feasibility = 0;
+                state.urgencyChecked = 0;
+                state.feasibilityChecked = 0;
+
+                document.querySelectorAll('.urgency-check:checked').forEach(cb => {
+                    const item = cb.closest('.checklist-item');
+                    state.urgency += parseInt(item.dataset.urgency) || 0;
+                    state.urgencyChecked++;
+                    item.classList.add('checked');
+                });
+
+                document.querySelectorAll('.urgency-check:not(:checked)').forEach(cb => {
+                    cb.closest('.checklist-item').classList.remove('checked');
+                });
+
+                document.querySelectorAll('.feasibility-check:checked').forEach(cb => {
+                    const item = cb.closest('.checklist-item');
+                    state.feasibility += parseInt(item.dataset.feasibility) || 0;
+                    state.feasibilityChecked++;
+                    item.classList.add('checked');
+                });
+
+                document.querySelectorAll('.feasibility-check:not(:checked)').forEach(cb => {
+                    cb.closest('.checklist-item').classList.remove('checked');
+                });
+
+                updateDisplay();
+                saveState();
+            }
+
+            // Update display
+            function updateDisplay() {
+                const total = state.urgency + state.feasibility;
+                const totalMax = state.urgencyMax + state.feasibilityMax;
+                const itemsChecked = state.urgencyChecked + state.feasibilityChecked;
+
+                document.getElementById('score-urgency').textContent = state.urgency + '/' + state.urgencyMax;
+                document.getElementById('score-feasibility').textContent = state.feasibility + '/' + state.feasibilityMax;
+                document.getElementById('score-total').textContent = total + '/' + totalMax;
+                document.getElementById('items-checked').textContent = itemsChecked + '/' + state.totalItems;
+
+                document.getElementById('bar-urgency').style.width = (state.urgency / state.urgencyMax * 100) + '%';
+                document.getElementById('bar-feasibility').style.width = (state.feasibility / state.feasibilityMax * 100) + '%';
+                document.getElementById('bar-total').style.width = (total / totalMax * 100) + '%';
+                document.getElementById('bar-items').style.width = (itemsChecked / state.totalItems * 100) + '%';
+
+                document.getElementById('urgency-count').textContent = state.urgencyChecked + '/8 validés';
+                document.getElementById('feasibility-count').textContent = state.feasibilityChecked + '/12 validés';
+            }
+
+            // Save state to localStorage
+            function saveState() {
+                const checkboxes = {};
+                document.querySelectorAll('.checkbox').forEach(cb => {
+                    checkboxes[cb.id] = cb.checked;
+                });
+                
+                const data = {
+                    checkboxes,
+                    notes: document.getElementById('decision-notes').value,
+                    decision: document.querySelector('input[name="decision"]:checked')?.value || null
+                };
+                
+                localStorage.setItem('warroom-resistance-cognitive', JSON.stringify(data));
+            }
+
+            // Load state from localStorage
+            function loadState() {
+                const saved = localStorage.getItem('warroom-resistance-cognitive');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    
+                    Object.entries(data.checkboxes || {}).forEach(([id, checked]) => {
+                        const cb = document.getElementById(id);
+                        if (cb) cb.checked = checked;
+                    });
+                    
+                    if (data.notes) {
+                        document.getElementById('decision-notes').value = data.notes;
+                    }
+                    
+                    if (data.decision) {
+                        const radio = document.querySelector(`input[name="decision"][value="${data.decision}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                    
+                    updateScores();
+                }
+            }
+
+            // Reset all
+            window.resetAll = function() {
+                if (confirm('Réinitialiser toutes les cases et notes ?')) {
+                    document.querySelectorAll('.checkbox').forEach(cb => cb.checked = false);
+                    document.querySelectorAll('input[name="decision"]').forEach(r => r.checked = false);
+                    document.getElementById('decision-notes').value = '';
+                    localStorage.removeItem('warroom-resistance-cognitive');
+                    updateScores();
+                }
+            };
+
+            // Export data
+            window.exportData = function() {
+                const data = {
+                    date: new Date().toISOString(),
+                    project: 'Résistance Cognitive — Auderghem 1160',
+                    scores: {
+                        urgency: state.urgency + '/' + state.urgencyMax,
+                        feasibility: state.feasibility + '/' + state.feasibilityMax,
+                        total: (state.urgency + state.feasibility) + '/' + (state.urgencyMax + state.feasibilityMax)
+                    },
+                    itemsValidated: (state.urgencyChecked + state.feasibilityChecked) + '/' + state.totalItems,
+                    notes: document.getElementById('decision-notes').value,
+                    decision: document.querySelector('input[name="decision"]:checked')?.value || 'Non décidé'
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'warroom-resistance-cognitive-' + new Date().toISOString().split('T')[0] + '.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            };
+
+            // Decision radio styling
+            document.querySelectorAll('input[name="decision"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    document.querySelectorAll('input[name="decision"]').forEach(r => {
+                        r.closest('label').style.borderColor = 'var(--border)';
+                        r.closest('label').style.background = 'transparent';
+                    });
+                    
+                    if (this.checked) {
+                        const colors = {
+                            approved: 'var(--medium)',
+                            conditional: 'var(--high)',
+                            rejected: 'var(--critical)'
+                        };
+                        this.closest('label').style.borderColor = colors[this.value];
+                        this.closest('label').style.background = colors[this.value].replace(')', ', 0.1)').replace('var(', 'rgba(').replace('--medium', '46, 213, 115').replace('--high', '255, 165, 2').replace('--critical', '255, 71, 87');
+                    }
+                    
+                    saveState();
+                });
+            });
+
+            // Event listeners
+            document.querySelectorAll('.checkbox').forEach(cb => {
+                cb.addEventListener('change', updateScores);
+            });
+
+            document.getElementById('decision-notes').addEventListener('input', saveState);
+
+            // Initialize
+            initScores();
+            loadState();
+
+        })();
+    </script>
+</body>
+</html>
