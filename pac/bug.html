@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cahier 38: Images et Usages de la Pauvreté - Une Exploration Interactive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,300;0,700;1,400&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF7; /* Warm neutral background */
+            color: #2D3748;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Merriweather', serif;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        /* Custom Scrollbar for text panels */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #CBD5E0;
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #A0AEC0;
+        }
+
+        .nav-item.active {
+            background-color: #2D3748;
+            color: #ffffff;
+            border-bottom: 4px solid #E53E3E;
+        }
+
+        .card-hover {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals (Background) + Academic Slate (Text) + Alert Red (Accents) -->
+    <!-- Application Structure Plan: 
+         Structure: A central Dashboard with a top navigation bar dividing the content into 4 thematic views:
+         1. Vue Globale (Synthesis/Context)
+         2. Prisme Médiatique (Media representation analysis)
+         3. Champ Politique (Legislative evolution/Activation logic)
+         4. Réalité Sociale (Data vs Perception gap).
+         
+         Why: The report deconstructs "Images" vs "Usages". A dashboard allows the user to switch between the "Image" (Media), the "Usage" (Politics), and the "Fact" (Social), reinforcing the report's core thesis that these are constructed realities.
+         
+         Interactions: 
+         - Tab navigation updates the DOM visibility (SPA feel).
+         - Interactive Charts (Radar, Bar, Doughnut) allow hovering for granular data.
+         - "Concept Cards" in the Global view that expand textual definitions.
+         - Dynamic text blocks that update based on chart interaction (e.g., clicking a media theme explains it).
+    -->
+    <!-- Visualization & Content Choices:
+         1. Intro: Concept Cards -> Goal: Define key terms (Stigmatization, Activation) -> Interaction: Click to reveal -> Library: Vanilla JS DOM manipulation.
+         2. Media: Radar Chart -> Goal: Show the bias in vocabulary (Emotional vs Rational) -> Interaction: Hover to see keywords -> Library: Chart.js.
+         3. Politics: Vertical Timeline/Process -> Goal: Show the shift from "Protection" to "Sanction" -> Interaction: Highlight phases -> Library: HTML/Tailwind/JS.
+         4. Social: Comparative Bar Chart -> Goal: Contrast "Perceived Fraud" vs "Real Fraud" -> Interaction: Direct visual comparison -> Library: Chart.js.
+         
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center py-4">
+                <div class="mb-4 md:mb-0 text-center md:text-left">
+                    <h1 class="text-2xl font-bold text-slate-800">Cahier 38: Images et Usages</h1>
+                    <p class="text-xs text-slate-500 uppercase tracking-wider">De la Pauvreté dans les champs sociaux</p>
+                </div>
+                <div class="flex space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+                    <button onclick="switchTab('global')" id="nav-global" class="nav-item active px-4 py-2 rounded-t-lg font-medium text-sm whitespace-nowrap transition-colors">Vue Globale</button>
+                    <button onclick="switchTab('media')" id="nav-media" class="nav-item px-4 py-2 rounded-t-lg font-medium text-sm whitespace-nowrap text-slate-600 hover:bg-slate-100 transition-colors">Prisme Médiatique</button>
+                    <button onclick="switchTab('pol')" id="nav-pol" class="nav-item px-4 py-2 rounded-t-lg font-medium text-sm whitespace-nowrap text-slate-600 hover:bg-slate-100 transition-colors">Champ Politique</button>
+                    <button onclick="switchTab('soc')" id="nav-soc" class="nav-item px-4 py-2 rounded-t-lg font-medium text-sm whitespace-nowrap text-slate-600 hover:bg-slate-100 transition-colors">Réalité Sociale</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+
+        <!-- SECTION 1: VUE GLOBALE (Introduction) -->
+        <div id="view-global" class="view-section animate-fade-in">
+            <div class="max-w-4xl mx-auto text-center mb-10">
+                <h2 class="text-3xl font-serif font-bold text-slate-800 mb-4">La Construction de la Pauvreté</h2>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    Cette application interactive synthétise les analyses du <strong>Cahier 38</strong> du PAC. Elle explore comment la pauvreté n'est pas seulement un état économique, mais une <em>image construite</em> par les médias et les discours politiques.
+                </p>
+                <div class="mt-4 p-4 bg-orange-50 border-l-4 border-orange-400 text-left text-sm text-orange-800 rounded shadow-sm">
+                    <strong>Objectif de l'étude :</strong> Comprendre le passage d'une société de <em>protection sociale</em> à une société d'<em>activation</em>, où le pauvre est jugé responsable de son sort. Explorez les onglets ci-dessus pour déconstruire ces mécanismes.
+                </div>
+            </div>
+
+            <!-- Interactive Concept Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                <!-- Concept 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 card-hover cursor-pointer" onclick="toggleConcept('c1')">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">🕵️</span>
+                        <h3 class="font-bold text-slate-800">La Chasse au Chômeur</h3>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-2">Cliquez pour définir</p>
+                    <div id="c1-desc" class="hidden text-slate-700 text-sm mt-2 border-t pt-2">
+                        Le discours politique s'est déplacé de la lutte contre le chômage (structurel) vers la lutte contre le chômeur (individuel), perçu comme un profiteur potentiel à surveiller et sanctionner.
+                    </div>
+                </div>
+
+                <!-- Concept 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 card-hover cursor-pointer" onclick="toggleConcept('c2')">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">⚖️</span>
+                        <h3 class="font-bold text-slate-800">L'État Social Actif</h3>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-2">Cliquez pour définir</p>
+                    <div id="c2-desc" class="hidden text-slate-700 text-sm mt-2 border-t pt-2">
+                        Un modèle où la solidarité devient conditionnelle. L'aide sociale n'est plus un droit inconditionnel mais un "contrat" exigeant une contrepartie comportementale de la part du bénéficiaire.
+                    </div>
+                </div>
+
+                <!-- Concept 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 card-hover cursor-pointer" onclick="toggleConcept('c3')">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">📺</span>
+                        <h3 class="font-bold text-slate-800">Invisibilisation</h3>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-2">Cliquez pour définir</p>
+                    <div id="c3-desc" class="hidden text-slate-700 text-sm mt-2 border-t pt-2">
+                        Les réalités complexes de la pauvreté sont souvent effacées au profit de figures stéréotypées (SDF, fraudeur) qui servent à légitimer des politiques répressives, occultant les causes systémiques.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Stat Visual -->
+            <div class="bg-white rounded-xl shadow p-8 flex flex-col md:flex-row items-center justify-between border-l-8 border-slate-800">
+                <div class="md:w-2/3 pr-6">
+                    <h3 class="text-xl font-bold mb-2">Le Paradoxe de la Représentation</h3>
+                    <p class="text-slate-600">Alors que la pauvreté augmente structurellement, l'espace médiatique accordé à l'analyse de ses causes diminue, remplacé par des faits divers spectaculaires.</p>
+                </div>
+                <div class="md:w-1/3 mt-6 md:mt-0 text-center">
+                    <span class="text-5xl font-bold text-red-600">1/5</span>
+                    <p class="text-sm text-slate-500 mt-1">Belge en risque de pauvreté ou d'exclusion sociale.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: PRISME MÉDIATIQUE -->
+        <div id="view-media" class="view-section hidden animate-fade-in">
+            <div class="mb-8 border-b pb-4">
+                <h2 class="text-2xl font-serif font-bold text-slate-800">Le Prisme Médiatique</h2>
+                <p class="text-slate-600 mt-2">
+                    Comment les médias cadrent-ils la pauvreté ? Cette section analyse le vocabulaire et les thématiques prédominantes. On observe une surreprésentation des aspects émotionnels et délictuels au détriment des analyses socio-économiques.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <!-- Visual: Radar Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="font-bold text-gray-700 mb-4 text-center">Le Cadrage de l'Information</h3>
+                    <div class="chart-container">
+                        <canvas id="mediaRadarChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center text-gray-400 mt-2">Estimation basée sur l'analyse sémantique du Cahier 38.</p>
+                </div>
+
+                <!-- Interaction: Analysis Text -->
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-500">
+                        <h3 class="font-bold text-red-700 mb-2">Le vocabulaire de la "Faute"</h3>
+                        <p class="text-sm text-slate-600 mb-4">
+                            L'analyse des titres de presse révèle une utilisation fréquente de termes connotant la responsabilité individuelle ou la tromperie.
+                        </p>
+                        <!-- Interactive Keyword Frequency -->
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1">
+                                    <span>Termes liés à la "Fraude/Abus"</span>
+                                    <span>Très Fréquent</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-red-500 h-2.5 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1">
+                                    <span>Termes liés à la "Victime/Pitié"</span>
+                                    <span>Fréquent</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 60%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1">
+                                    <span>Termes liés au "Droit/Système"</span>
+                                    <span>Rare</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-blue-400 h-2.5 rounded-full" style="width: 25%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl">
+                        <h4 class="font-bold text-slate-800 mb-2">L'Effet de "Zoom"</h4>
+                        <p class="text-sm text-slate-600">
+                            Le Cahier 38 démontre que les reportages privilégient le "micro-trottoir" et le témoignage individuel pathétique. Cela empêche le spectateur de comprendre les mécanismes globaux (macro-économiques) qui créent la pauvreté.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: CHAMP POLITIQUE -->
+        <div id="view-pol" class="view-section hidden animate-fade-in">
+            <div class="mb-8 border-b pb-4">
+                <h2 class="text-2xl font-serif font-bold text-slate-800">L'Évolution du Discours Politique</h2>
+                <p class="text-slate-600 mt-2">
+                    L'image médiatique de la pauvreté influence directement la législation. Cette section retrace le glissement progressif d'une logique de protection vers une logique de contrôle et de sanction des allocataires sociaux.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Interactive Timeline -->
+                <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm custom-scroll h-[500px] overflow-y-auto">
+                    <h3 class="font-bold text-slate-700 mb-4 sticky top-0 bg-white pb-2 border-b">Chronologie de l'Activation</h3>
+                    
+                    <div class="relative border-l-2 border-slate-200 ml-3 space-y-8">
+                        <!-- Step 1 -->
+                        <div class="mb-8 ml-6 group cursor-pointer" onclick="updatePolDetail('1944')">
+                            <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white group-hover:bg-blue-500 transition-colors">
+                                <span class="text-blue-800 font-bold text-xs group-hover:text-white">1</span>
+                            </span>
+                            <h4 class="flex items-center mb-1 text-lg font-semibold text-slate-900">1944 - 1970</h4>
+                            <p class="mb-2 text-sm font-normal text-slate-500">Le Pacte Social</p>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="mb-8 ml-6 group cursor-pointer" onclick="updatePolDetail('1980')">
+                            <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white group-hover:bg-blue-500 transition-colors">
+                                <span class="text-blue-800 font-bold text-xs group-hover:text-white">2</span>
+                            </span>
+                            <h4 class="flex items-center mb-1 text-lg font-semibold text-slate-900">Années 1980</h4>
+                            <p class="mb-2 text-sm font-normal text-slate-500">Crise et Soupçon</p>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="mb-8 ml-6 group cursor-pointer" onclick="updatePolDetail('1999')">
+                            <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white group-hover:bg-blue-500 transition-colors">
+                                <span class="text-blue-800 font-bold text-xs group-hover:text-white">3</span>
+                            </span>
+                            <h4 class="flex items-center mb-1 text-lg font-semibold text-slate-900">1999 - L'État Social Actif</h4>
+                            <p class="mb-2 text-sm font-normal text-slate-500">Le tournant majeur</p>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="ml-6 group cursor-pointer" onclick="updatePolDetail('today')">
+                            <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white group-hover:bg-blue-500 transition-colors">
+                                <span class="text-blue-800 font-bold text-xs group-hover:text-white">4</span>
+                            </span>
+                            <h4 class="flex items-center mb-1 text-lg font-semibold text-slate-900">Aujourd'hui</h4>
+                            <p class="mb-2 text-sm font-normal text-slate-500">Conditionnalité accrue</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Panel -->
+                <div class="lg:col-span-2 flex flex-col">
+                    <div id="pol-content-card" class="bg-white p-8 rounded-xl shadow-sm flex-grow border-t-4 border-blue-500 transition-all duration-300">
+                        <h3 id="pol-title" class="text-2xl font-bold text-slate-800 mb-4">1999 - Le Tournant de l'État Social Actif</h3>
+                        <p id="pol-text" class="text-slate-600 mb-6 leading-relaxed">
+                            C'est le moment charnière identifié par le Cahier 38. L'État ne se contente plus d'indemniser le risque (chômage, maladie), il demande une "activité" en retour. Le chômeur doit prouver sa recherche d'emploi. La charge de la preuve est inversée : ce n'est plus le marché qui échoue à fournir de l'emploi, c'est l'individu qui échoue à en trouver.
+                        </p>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-blue-800 text-sm mb-2">Conséquence identifiée :</h4>
+                            <p id="pol-impact" class="text-sm text-blue-900 italic">
+                                "La précarité n'est plus vue comme un risque collectif, mais comme une faute individuelle à corriger par la sanction."
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart: Sanctions -->
+                    <div class="mt-6 bg-white p-4 rounded-xl shadow-sm">
+                        <h4 class="text-sm font-bold text-slate-500 mb-2 uppercase text-center">Évolution des Exclusions du Chômage (Simulé)</h4>
+                        <div class="chart-container" style="height: 200px;">
+                            <canvas id="sanctionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: RÉALITÉ SOCIALE -->
+        <div id="view-soc" class="view-section hidden animate-fade-in">
+            <div class="mb-8 border-b pb-4">
+                <h2 class="text-2xl font-serif font-bold text-slate-800">Perception vs Réalité</h2>
+                <p class="text-slate-600 mt-2">
+                    L'étude met en lumière le gouffre qui sépare l'imaginaire collectif (nourri par les médias et la politique) de la réalité statistique de la pauvreté. Cette section confronte les mythes aux faits.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- MYTH VS REALITY: FRAUD -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-lg text-slate-800 mb-4 flex items-center">
+                        <span class="bg-red-100 text-red-600 p-1 rounded mr-2 text-xs">MYTHE</span>
+                        La Fraude Sociale
+                    </h3>
+                    <div class="space-y-6">
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Perception Publique (Sondages)</p>
+                            <div class="w-full bg-slate-100 rounded-full h-8 relative">
+                                <div class="bg-red-500 h-8 rounded-full flex items-center justify-end pr-3 text-white font-bold text-xs" style="width: 45%">
+                                    45% estiment la fraude "massive"
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Réalité Statistique (ONSS)</p>
+                            <div class="w-full bg-slate-100 rounded-full h-8 relative">
+                                <div class="bg-green-500 h-8 rounded-full flex items-center justify-end pr-3 text-white font-bold text-xs" style="width: 5%">
+                                    < 5% Réel
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-2 italic">Note: La fraude fiscale (évasion des capitaux) est estimée à 10x le montant de la fraude sociale.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MYTH VS REALITY: BUDGET -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-lg text-slate-800 mb-4 flex items-center">
+                        <span class="bg-blue-100 text-blue-600 p-1 rounded mr-2 text-xs">BUDGET</span>
+                        Le Coût du Chômage
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="budgetPieChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center text-slate-500 mt-2">
+                        Le chômage représente une part minoritaire du budget de la sécurité sociale, loin derrière les pensions et les soins de santé, contrairement à l'idée reçue d'un "poids insupportable".
+                    </p>
+                </div>
+            </div>
+
+            <!-- Conclusion Block -->
+            <div class="mt-8 bg-slate-800 text-white p-8 rounded-xl shadow-lg text-center">
+                <h3 class="text-xl font-serif font-bold mb-4">Conclusion du Cahier</h3>
+                <p class="max-w-3xl mx-auto text-slate-300 leading-relaxed mb-6">
+                    L'étude conclut que la stigmatisation des pauvres remplit une fonction politique : elle justifie la réduction des droits sociaux et divise les classes populaires (travailleurs précaires vs chômeurs). Pour combattre la pauvreté, il faut d'abord déconstruire les images qui l'entourent et refuser la grille de lecture de la "responsabilité individuelle".
+                </p>
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'}); switchTab('global')" class="bg-white text-slate-900 hover:bg-slate-200 px-6 py-2 rounded-full font-bold transition-colors text-sm">
+                    Retour à l'accueil
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t py-6 mt-auto">
+        <div class="container mx-auto px-4 text-center text-slate-400 text-sm">
+            <p>© 2024 - Application éducative basée sur le Cahier 38 du PAC (Présence et Action Culturelles).</p>
+            <p class="mt-1 text-xs">Resource générée pour faciliter l'accès à l'information sociologique.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA & STATE MANAGEMENT ---
+        const appState = {
+            currentTab: 'global',
+            politicalData: {
+                '1944': {
+                    title: "1944 - Le Pacte Social",
+                    text: "Au lendemain de la guerre, la sécurité sociale est créée comme un outil de solidarité universelle. Le chômage est perçu comme un risque inhérent à l'économie de marché dont il faut protéger le travailleur. Il n'y a pas de stigmatisation majeure.",
+                    impact: "Logique : Droit inconditionnel et Assurantiel."
+                },
+                '1980': {
+                    title: "Années 1980 - Crise et Soupçon",
+                    text: "Avec la crise économique structurelle, le déficit se creuse. Les discours libéraux commencent à pointer du doigt la 'générosité' du système. Apparition des premiers contrôles stricts et de l'idée que le chômeur pourrait s'installer dans l'assistance.",
+                    impact: "Logique : Début de la surveillance budgétaire."
+                },
+                '1999': {
+                    title: "1999 - L'État Social Actif",
+                    text: "C'est le moment charnière identifié par le Cahier 38. L'État ne se contente plus d'indemniser le risque, il demande une 'activité' en retour. La charge de la preuve est inversée : ce n'est plus le marché qui échoue à fournir de l'emploi, c'est l'individu qui échoue à en trouver.",
+                    impact: "Logique : Contractualisation et Responsabilisation."
+                },
+                'today': {
+                    title: "Aujourd'hui - Conditionnalité Accrue",
+                    text: "Dégressivité des allocations, exclusions massives, service communautaire. La pauvreté est criminalisée (mendicité interdite dans certaines villes) ou invisibilisée. Le discours dominant est celui de la méritocratie.",
+                    impact: "Logique : Sanction et Exclusion."
+                }
+            }
+        };
+
+        // --- NAVIGATION LOGIC ---
+        function switchTab(tabId) {
+            // Update State
+            appState.currentTab = tabId;
+
+            // Hide all sections
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.add('hidden');
+            });
+
+            // Show selected section
+            const target = document.getElementById(`view-${tabId}`);
+            if(target) target.classList.remove('hidden');
+
+            // Update Nav Buttons
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('active', 'text-white', 'bg-slate-800', 'border-b-4', 'border-red-500');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+            });
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if(activeBtn) {
+                activeBtn.classList.add('active'); // CSS class handles the styling
+                activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+            }
+
+            // Trigger Chart Updates (resize fix for Chart.js in hidden tabs)
+            if (tabId === 'media') renderMediaChart();
+            if (tabId === 'pol') renderSanctionChart();
+            if (tabId === 'soc') renderBudgetChart();
+        }
+
+        // --- INTERACTION LOGIC ---
+
+        // 1. Concept Toggles (Global View)
+        function toggleConcept(id) {
+            const el = document.getElementById(`${id}-desc`);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('animate-fade-in');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        // 2. Political Timeline Update
+        function updatePolDetail(key) {
+            const data = appState.politicalData[key];
+            const titleEl = document.getElementById('pol-title');
+            const textEl = document.getElementById('pol-text');
+            const impactEl = document.getElementById('pol-impact');
+            const card = document.getElementById('pol-content-card');
+
+            // Simple animation
+            card.style.opacity = '0.5';
+            setTimeout(() => {
+                titleEl.textContent = data.title;
+                textEl.textContent = data.text;
+                impactEl.textContent = data.impact;
+                card.style.opacity = '1';
+            }, 200);
+        }
+
+        // --- CHARTS CONFIGURATION ---
+        // Global chart defaults
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#4A5568';
+
+        let mediaChartInstance = null;
+        let sanctionChartInstance = null;
+        let budgetChartInstance = null;
+
+        function renderMediaChart() {
+            if (mediaChartInstance) return; // Only render once
+            const ctx = document.getElementById('mediaRadarChart').getContext('2d');
+            
+            mediaChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Émotionnel', 'Faits Divers', 'Analyse Structurelle', 'Responsabilité Indiv.', 'Solutions Collectives'],
+                    datasets: [{
+                        label: 'Couverture Médiatique Dominante',
+                        data: [90, 85, 20, 80, 15],
+                        fill: true,
+                        backgroundColor: 'rgba(229, 62, 62, 0.2)',
+                        borderColor: 'rgb(229, 62, 62)',
+                        pointBackgroundColor: 'rgb(229, 62, 62)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(229, 62, 62)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#E2E8F0' },
+                            grid: { color: '#E2E8F0' },
+                            pointLabels: {
+                                font: { size: 12, weight: 'bold' }
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.raw + '% de prévalence';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderSanctionChart() {
+            if (sanctionChartInstance) return;
+            const ctx = document.getElementById('sanctionChart').getContext('2d');
+
+            sanctionChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1990', '1995', '2000', '2005', '2010', '2015', '2020'],
+                    datasets: [{
+                        label: 'Index de sévérité des sanctions',
+                        data: [10, 15, 45, 60, 75, 85, 95],
+                        borderColor: 'rgb(49, 130, 206)',
+                        backgroundColor: 'rgba(49, 130, 206, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderBudgetChart() {
+            if (budgetChartInstance) return;
+            const ctx = document.getElementById('budgetPieChart').getContext('2d');
+
+            budgetChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pensions', 'Soins de Santé', 'Chômage', 'Invalidité', 'Autres'],
+                    datasets: [{
+                        data: [40, 30, 8, 15, 7],
+                        backgroundColor: [
+                            '#CBD5E0', // Pensions (Grey)
+                            '#CBD5E0', // Santé (Grey)
+                            '#E53E3E', // Chômage (Highlighted Red)
+                            '#CBD5E0', // Invalidité
+                            '#CBD5E0'  // Autres
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'right' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.raw + '% du budget';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Default load
+            switchTab('global');
+        });
+
+    </script>
+</body>
+</html>
