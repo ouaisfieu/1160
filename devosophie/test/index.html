@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>◈ Auderghem Démocratie Directe - Proof of Concept</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /*
+    ══════════════════════════════════════════════════════════════════════════════
+    AUDERGHEM DÉMOCRATIE DIRECTE - PROOF OF CONCEPT
+    ══════════════════════════════════════════════════════════════════════════════
+    
+    DONNÉES VÉRIFIÉES (sources officielles) :
+    - Population: 35 350 hab. (1er jan 2024, Wikipedia/IBSA)
+    - Superficie: 8,97 km²
+    - Bourgmestre: Sophie de Vos (DéFI) depuis mars 2022
+    - Budget Partagé: ~520 000€ (auderghem.be)
+    - 10 Assemblées de Quartier × 10 membres = 100 représentants
+    - Taux participation BP 2021: >20% (4 216 votants) - record européen
+    - 31 projets élus en 2021
+    
+    ══════════════════════════════════════════════════════════════════════════════
+    */
+    
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-tertiary: #1a1a2e;
+      --accent-1: #FF6B6B;
+      --accent-2: #4ECDC4;
+      --accent-3: #45B7D1;
+      --accent-4: #96CEB4;
+      --accent-5: #9b59b6;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.4);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    
+    /* Canvas particules */
+    #particles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    
+    /* Onboarding */
+    .onboarding {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .onboarding.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    
+    .onboarding-card {
+      width: 90%; max-width: 700px;
+      background: linear-gradient(180deg, var(--bg-tertiary), var(--bg-secondary));
+      border-radius: 32px;
+      padding: 50px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+      animation: scaleIn 0.5s ease forwards;
+    }
+    @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    
+    .onboarding-logo {
+      font-size: 64px;
+      color: var(--accent-2);
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    
+    .onboarding h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 32px;
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, #fff, var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .onboarding p { color: var(--text-secondary); margin-bottom: 30px; }
+    
+    .onboarding .data-source {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.03);
+      padding: 10px 16px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    .feature-item {
+      padding: 16px 10px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.3s;
+    }
+    .feature-item:hover { background: rgba(255,255,255,0.06); transform: translateY(-3px); }
+    .feature-icon { font-size: 28px; display: block; margin-bottom: 8px; }
+    .feature-label { font-size: 11px; color: var(--text-muted); }
+    
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 40px;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+      border: none;
+      border-radius: 100px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .cta-button:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(78,205,196,0.3); }
+    
+    /* Navigation */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      padding: 14px 32px;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-icon { font-size: 32px; color: var(--accent-2); }
+    .brand-name { font-family: 'Space Grotesk'; font-size: 18px; font-weight: 700; letter-spacing: 2px; }
+    .brand-sub { font-size: 9px; color: var(--text-muted); letter-spacing: 3px; }
+    
+    .nav-links { display: flex; gap: 6px; }
+    .nav-link {
+      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 100px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-link:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+    .nav-link.active { background: rgba(78,205,196,0.15); color: var(--accent-2); }
+    
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .demo-badge {
+      padding: 6px 14px;
+      background: rgba(255,107,107,0.15);
+      border: 1px solid rgba(255,107,107,0.3);
+      border-radius: 100px;
+      font-size: 11px;
+      color: var(--accent-1);
+      font-weight: 600;
+    }
+    .auth-button {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+      border: none;
+      border-radius: 100px;
+      color: white;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    
+    /* Sections */
+    section {
+      min-height: 100vh;
+      padding: 100px 32px;
+      position: relative;
+      z-index: 1;
+      display: none;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    section.active { display: block; }
+    
+    .section-header { text-align: center; margin-bottom: 50px; }
+    .section-header h2 {
+      font-family: 'Space Grotesk';
+      font-size: 42px;
+      margin-bottom: 12px;
+    }
+    .section-header p { color: var(--text-secondary); font-size: 17px; }
+    
+    /* Hero */
+    #hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    #hero.active { display: flex; }
+    
+    .hero-badge {
+      padding: 10px 24px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 100px;
+      font-size: 14px;
+      margin-bottom: 32px;
+      animation: fadeInDown 0.6s ease;
+    }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .hero-title {
+      font-family: 'Space Grotesk';
+      font-size: clamp(42px, 7vw, 80px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero-title span { display: block; animation: fadeInUp 0.7s ease both; }
+    .hero-title span:nth-child(2) {
+      animation-delay: 0.15s;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .hero-subtitle { font-size: 22px; color: var(--text-secondary); margin-bottom: 50px; animation: fadeInUp 0.7s ease 0.3s both; }
+    
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      margin-bottom: 50px;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.7s ease 0.45s both;
+    }
+    .hero-stat { text-align: center; }
+    .stat-value { font-family: 'Space Grotesk'; font-size: 48px; font-weight: 700; }
+    .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .stat-source { font-size: 10px; color: var(--accent-2); margin-top: 2px; opacity: 0.7; }
+    
+    .hero-ctas { display: flex; gap: 16px; animation: fadeInUp 0.7s ease 0.6s both; }
+    .hero-cta {
+      padding: 16px 32px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .hero-cta.primary {
+      background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+      border: none;
+      color: white;
+    }
+    .hero-cta.primary:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(78,205,196,0.3); }
+    .hero-cta.secondary {
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.2);
+      color: white;
+    }
+    .hero-cta.secondary:hover { border-color: var(--accent-2); background: rgba(78,205,196,0.1); }
+    
+    /* Quartiers */
+    .quartiers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .quartier-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .quartier-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(78,205,196,0.3);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .quartier-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .quartier-num {
+      width: 36px; height: 36px;
+      background: var(--accent-2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .quartier-email { font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono'; }
+    .quartier-name { font-family: 'Space Grotesk'; font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+    .quartier-info { font-size: 13px; color: var(--text-secondary); }
+    .quartier-info span { display: block; margin-bottom: 4px; }
+    
+    /* Budget Partagé */
+    .bp-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .bp-stat-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .bp-stat-value {
+      font-family: 'Space Grotesk';
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--accent-2);
+    }
+    .bp-stat-label { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+    .bp-stat-source { font-size: 10px; color: var(--text-muted); margin-top: 4px; opacity: 0.6; }
+    
+    .bp-themes {
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 30px;
+      border: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 30px;
+    }
+    .bp-themes h3 { font-size: 18px; margin-bottom: 20px; }
+    .theme-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    .theme-icon { font-size: 24px; }
+    .theme-name { flex: 1; font-weight: 500; }
+    .theme-count {
+      font-family: 'JetBrains Mono';
+      font-size: 14px;
+      color: var(--accent-2);
+      background: rgba(78,205,196,0.1);
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+    
+    .bp-projects h3 { font-size: 18px; margin-bottom: 20px; }
+    .project-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border-left: 3px solid var(--accent-2);
+    }
+    .project-num {
+      font-family: 'JetBrains Mono';
+      font-size: 12px;
+      color: var(--text-muted);
+      min-width: 40px;
+    }
+    .project-name { flex: 1; font-size: 14px; }
+    .project-status {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: rgba(78,205,196,0.15);
+      color: var(--accent-2);
+    }
+    
+    /* Vision */
+    .vision-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .vision-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 30px;
+      border: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .vision-card:hover { transform: translateY(-4px); border-color: rgba(78,205,196,0.3); }
+    .vision-icon { font-size: 40px; margin-bottom: 16px; }
+    .vision-title { font-family: 'Space Grotesk'; font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+    .vision-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .vision-tech { font-size: 11px; color: var(--accent-2); margin-top: 12px; font-family: 'JetBrains Mono'; }
+    
+    .benchmark-section { margin-top: 50px; }
+    .benchmark-section h3 { font-size: 20px; margin-bottom: 24px; text-align: center; }
+    .benchmarks {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .benchmark-card {
+      background: rgba(255,255,255,0.02);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .benchmark-flag { font-size: 28px; margin-bottom: 8px; }
+    .benchmark-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .benchmark-project { font-size: 12px; color: var(--accent-2); }
+    .benchmark-stat { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+    
+    /* Footer */
+    footer {
+      background: var(--bg-secondary);
+      padding: 50px 32px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-brand { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; }
+    .footer-logo { font-size: 32px; color: var(--accent-2); }
+    .footer-name { font-family: 'Space Grotesk'; font-size: 18px; font-weight: 700; }
+    .footer-links { display: flex; justify-content: center; gap: 32px; margin-bottom: 24px; }
+    .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 13px; }
+    .footer-links a:hover { color: var(--accent-2); }
+    .footer-copy { color: var(--text-muted); font-size: 12px; margin-bottom: 16px; }
+    .footer-disclaimer {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.02);
+      padding: 12px 20px;
+      border-radius: 8px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .vision-grid { grid-template-columns: 1fr; }
+      .benchmarks { grid-template-columns: repeat(2, 1fr); }
+      .bp-stats { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero-stats { gap: 30px; }
+      .stat-value { font-size: 36px; }
+      .quartiers-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+  
+  <!-- Onboarding -->
+  <div class="onboarding" id="onboarding">
+    <div class="onboarding-card">
+      <div class="onboarding-logo">◈</div>
+      <h1>Plateforme de Démocratie Directe</h1>
+      <p>Auderghem, pionnière de la participation citoyenne en Belgique francophone, explore les possibilités d'une plateforme numérique intégrée.</p>
+      
+      <div class="data-source">
+        ⚠️ <strong>PROOF OF CONCEPT</strong> — Données réelles issues de auderghem.be, Wikipedia et IBSA. 
+        Les fonctionnalités présentées sont une projection du projet proposé.
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-item">
+          <span class="feature-icon">🏛️</span>
+          <span class="feature-label">Assemblée des Habitants</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">💰</span>
+          <span class="feature-label">Budget Partagé</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🗣️</span>
+          <span class="feature-label">Délibération</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">📊</span>
+          <span class="feature-label">Open Data</span>
+        </div>
+      </div>
+      
+      <button class="cta-button" onclick="closeOnboarding()">
+        Découvrir le concept
+        <span>→</span>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="brand">
+      <span class="brand-icon">◈</span>
+      <div>
+        <div class="brand-name">AUDERGHEM</div>
+        <div class="brand-sub">DÉMOCRATIE DIRECTE</div>
+      </div>
+    </div>
+    
+    <div class="nav-links">
+      <button class="nav-link active" onclick="showSection('hero')">🏠 Accueil</button>
+      <button class="nav-link" onclick="showSection('quartiers')">🏘️ Quartiers</button>
+      <button class="nav-link" onclick="showSection('budget')">💰 Budget Partagé</button>
+      <button class="nav-link" onclick="showSection('vision')">🔮 Vision</button>
+    </div>
+    
+    <div class="nav-right">
+      <span class="demo-badge">PROOF OF CONCEPT</span>
+      <button class="auth-button">itsme® (démo)</button>
+    </div>
+  </nav>
+  
+  <!-- Hero -->
+  <section id="hero" class="active">
+    <div class="hero-badge">🏛️ Commune d'Auderghem • Région de Bruxelles-Capitale</div>
+    
+    <h1 class="hero-title">
+      <span>La démocratie</span>
+      <span>participative</span>
+    </h1>
+    
+    <p class="hero-subtitle">Une commune pionnière qui a déjà battu des records européens de participation</p>
+    
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-value">35 350</span>
+        <span class="stat-label">habitants</span>
+        <span class="stat-source">IBSA, 1er jan 2024</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-value">10</span>
+        <span class="stat-label">assemblées de quartier</span>
+        <span class="stat-source">auderghem.be</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-value">100</span>
+        <span class="stat-label">citoyens tirés au sort</span>
+        <span class="stat-source">auderghem.be</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-value">>20%</span>
+        <span class="stat-label">participation BP 2021</span>
+        <span class="stat-source">Record européen</span>
+      </div>
+    </div>
+    
+    <div class="hero-ctas">
+      <button class="hero-cta primary" onclick="showSection('quartiers')">Découvrir les quartiers</button>
+      <button class="hero-cta secondary" onclick="showSection('vision')">Voir la vision</button>
+    </div>
+  </section>
+  
+  <!-- Quartiers -->
+  <section id="quartiers">
+    <div class="section-header">
+      <h2>🏘️ Les 10 Assemblées de Quartier</h2>
+      <p>Chaque quartier est représenté par 10 citoyens tirés au sort pour un mandat de 2 ans</p>
+    </div>
+    
+    <div class="quartiers-grid" id="quartiersGrid"></div>
+  </section>
+  
+  <!-- Budget Partagé -->
+  <section id="budget">
+    <div class="section-header">
+      <h2>💰 Budget Partagé</h2>
+      <p>Le dispositif unique en Belgique où les citoyens décident de A à Z</p>
+    </div>
+    
+    <div class="bp-stats">
+      <div class="bp-stat-card">
+        <div class="bp-stat-value">~520K€</div>
+        <div class="bp-stat-label">Enveloppe annuelle</div>
+        <div class="bp-stat-source">auderghem.be</div>
+      </div>
+      <div class="bp-stat-card">
+        <div class="bp-stat-value">4 216</div>
+        <div class="bp-stat-label">Votants en 2021</div>
+        <div class="bp-stat-source">>20% participation</div>
+      </div>
+      <div class="bp-stat-card">
+        <div class="bp-stat-value">31</div>
+        <div class="bp-stat-label">Projets élus (2021)</div>
+        <div class="bp-stat-source">auderghem.be</div>
+      </div>
+      <div class="bp-stat-card">
+        <div class="bp-stat-value">dès 10 ans</div>
+        <div class="bp-stat-label">Âge minimum</div>
+        <div class="bp-stat-source">Unique en Europe</div>
+      </div>
+    </div>
+    
+    <div class="bp-themes">
+      <h3>📋 Thématiques 2021 (définies par l'Assemblée des Habitants)</h3>
+      <div class="theme-item">
+        <span class="theme-icon">🌿</span>
+        <span class="theme-name">Climat et environnement</span>
+        <span class="theme-count">16 projets élus</span>
+      </div>
+      <div class="theme-item">
+        <span class="theme-icon">🤝</span>
+        <span class="theme-name">Resserrer les liens entre habitants</span>
+        <span class="theme-count">11 projets élus</span>
+      </div>
+      <div class="theme-item">
+        <span class="theme-icon">🎭</span>
+        <span class="theme-name">Loisirs et culture participative</span>
+        <span class="theme-count">4 projets élus</span>
+      </div>
+    </div>
+    
+    <div class="bp-projects">
+      <h3>✅ Exemples de projets élus (source: auderghem.be)</h3>
+      <div class="project-item">
+        <span class="project-num">N°33</span>
+        <span class="project-name">Mettre une grainothèque à disposition des habitants</span>
+        <span class="project-status">Élu 2021</span>
+      </div>
+      <div class="project-item">
+        <span class="project-num">N°06</span>
+        <span class="project-name">Construire cinq spirales mellifères à travers Auderghem</span>
+        <span class="project-status">Élu 2021</span>
+      </div>
+      <div class="project-item">
+        <span class="project-num">N°44</span>
+        <span class="project-name">Favoriser le retour des abeilles grâce à des plantes mellifères</span>
+        <span class="project-status">Élu 2021</span>
+      </div>
+      <div class="project-item">
+        <span class="project-num">—</span>
+        <span class="project-name">Création d'un kiosque à musique</span>
+        <span class="project-status">Élu 2021</span>
+      </div>
+      <div class="project-item">
+        <span class="project-num">—</span>
+        <span class="project-name">Installation de Give box</span>
+        <span class="project-status">Élu 2021</span>
+      </div>
+      <div class="project-item">
+        <span class="project-num">—</span>
+        <span class="project-name">Aménagement parc rue Vanhaelen</span>
+        <span class="project-status">Élu 2021</span>
+      </div>
+      <div class="project-item">
+        <span class="project-num">—</span>
+        <span class="project-name">Réseau de nichoirs connectés</span>
+        <span class="project-status">Élu 2021</span>
+      </div>
+      <div class="project-item">
+        <span class="project-num">—</span>
+        <span class="project-name">Réaménagement de la place Pinoy</span>
+        <span class="project-status">Élu 2021</span>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Vision -->
+  <section id="vision">
+    <div class="section-header">
+      <h2>🔮 Vision : Plateforme Intégrée</h2>
+      <p>Construire sur les acquis d'Auderghem pour aller plus loin</p>
+    </div>
+    
+    <div class="vision-grid">
+      <div class="vision-card">
+        <div class="vision-icon">📊</div>
+        <div class="vision-title">Open Data Communal</div>
+        <div class="vision-desc">Publication automatique des délibérations, budgets et données de participation en format ouvert DCAT-AP</div>
+        <div class="vision-tech">Eleventy + GitHub Actions</div>
+      </div>
+      <div class="vision-card">
+        <div class="vision-icon">🗳️</div>
+        <div class="vision-title">Vote Quadratique</div>
+        <div class="vision-desc">Modernisation du Budget Partagé avec un système permettant d'exprimer l'intensité des préférences</div>
+        <div class="vision-tech">Decidim + module custom</div>
+      </div>
+      <div class="vision-card">
+        <div class="vision-icon">🗣️</div>
+        <div class="vision-title">Délibération Structurée</div>
+        <div class="vision-desc">Outils inspirés de vTaiwan pour identifier les consensus sur les grands dossiers (PAD Herrmann-Debroux)</div>
+        <div class="vision-tech">Pol.is</div>
+      </div>
+      <div class="vision-card">
+        <div class="vision-icon">🔬</div>
+        <div class="vision-title">Science Citoyenne</div>
+        <div class="vision-desc">Intégration des données Telraam (trafic) et sensor.community (qualité de l'air) dans les décisions</div>
+        <div class="vision-tech">APIs ouvertes</div>
+      </div>
+      <div class="vision-card">
+        <div class="vision-icon">🔐</div>
+        <div class="vision-title">Souveraineté des Données</div>
+        <div class="vision-desc">Chaque citoyen contrôle ses données personnelles grâce au protocole Solid développé au MIT</div>
+        <div class="vision-tech">Solid Protocol + SolidLab</div>
+      </div>
+      <div class="vision-card">
+        <div class="vision-icon">🔑</div>
+        <div class="vision-title">Authentification Sécurisée</div>
+        <div class="vision-desc">Connexion via itsme® ou eID pour garantir l'identité des votants tout en préservant l'anonymat</div>
+        <div class="vision-tech">CSAM / itsme®</div>
+      </div>
+    </div>
+    
+    <div class="benchmark-section">
+      <h3>🌍 Inspirations internationales</h3>
+      <div class="benchmarks">
+        <div class="benchmark-card">
+          <div class="benchmark-flag">🇪🇸</div>
+          <div class="benchmark-name">Barcelone</div>
+          <div class="benchmark-project">Decidim</div>
+          <div class="benchmark-stat">400K+ utilisateurs</div>
+        </div>
+        <div class="benchmark-card">
+          <div class="benchmark-flag">🇹🇼</div>
+          <div class="benchmark-name">Taiwan</div>
+          <div class="benchmark-project">vTaiwan + Pol.is</div>
+          <div class="benchmark-stat">26 lois co-créées</div>
+        </div>
+        <div class="benchmark-card">
+          <div class="benchmark-flag">🇮🇸</div>
+          <div class="benchmark-name">Reykjavik</div>
+          <div class="benchmark-project">Better Reykjavik</div>
+          <div class="benchmark-stat">70% inscrits</div>
+        </div>
+        <div class="benchmark-card">
+          <div class="benchmark-flag">🇧🇪</div>
+          <div class="benchmark-name">Ostbelgien</div>
+          <div class="benchmark-project">Bürgerrat</div>
+          <div class="benchmark-stat">1ère mondiale 2019</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer>
+    <div class="footer-brand">
+      <span class="footer-logo">◈</span>
+      <span class="footer-name">AUDERGHEM</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.auderghem.be" target="_blank">auderghem.be</a>
+      <a href="https://www.auderghem.be/reglement-relatif-lassemblee-des-habitants" target="_blank">Assemblée des Habitants</a>
+      <a href="https://www.auderghem.be/reglement-relatif-au-budget-partage-dauderghem" target="_blank">Budget Partagé</a>
+    </div>
+    <p class="footer-copy">© 2025 • Proof of Concept • Non officiel</p>
+    <div class="footer-disclaimer">
+      ⚠️ Ce prototype est une proposition conceptuelle. Les données statistiques proviennent de sources officielles (auderghem.be, IBSA, Wikipedia). 
+      Les fonctionnalités avancées (vote quadratique, Pol.is, Solid) sont des projections du projet proposé.
+    </div>
+  </footer>
+
+  <script>
+    // ══════════════════════════════════════════════════════════════════════════════
+    // DONNÉES 100% VÉRIFIÉES - Sources officielles auderghem.be
+    // ══════════════════════════════════════════════════════════════════════════════
+    
+    const QUARTIERS = [
+      { num: 1, nom: 'Parc des Princes - Grand Forestier', email: 'parcdesprinces-grandforestier@auderghem.brussels' },
+      { num: 2, nom: 'Blankedelle - Transvaal', email: 'blankedelle-transvaal@auderghem.brussels' },
+      { num: 3, nom: 'Pinoy - Kalkoven', email: 'pinoy-kalkoven@auderghem.brussels' },
+      { num: 4, nom: 'Centre - Vieil Auderghem', email: 'centre-vieilauderghem@auderghem.brussels' },
+      { num: 5, nom: 'Valduchesse - Sainte-Anne', email: 'valduchesse-sainteanne@auderghem.brussels' },
+      { num: 6, nom: 'Chant d\'Oiseau - Luxor', email: 'chantdoiseau-luxor@auderghem.brussels' },
+      { num: 7, nom: 'Saint-Julien', email: 'saintjulien@auderghem.brussels' },
+      { num: 8, nom: 'Melati', email: 'melati@auderghem.brussels' },
+      { num: 9, nom: 'Pêcheries - Triangle Vert', email: 'pecheries-trianglevert@auderghem.brussels' },
+      { num: 10, nom: 'Henrard - Chasse Royale', email: 'henrard-chasseroyale@auderghem.brussels' }
+    ];
+    
+    // ══════════════════════════════════════════════════════════════════════════════
+    // PARTICLES
+    // ══════════════════════════════════════════════════════════════════════════════
+    
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < 60; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          size: Math.random() * 2 + 1,
+          opacity: Math.random() * 0.3 + 0.1
+        });
+      }
+    }
+    
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(78, 205, 196, ${p.opacity})`;
+        ctx.fill();
+        
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 100) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(78, 205, 196, ${0.08 * (1 - dist / 100)})`;
+            ctx.stroke();
+          }
+        }
+      });
+      
+      requestAnimationFrame(animateParticles);
+    }
+    
+    window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+    resizeCanvas();
+    initParticles();
+    animateParticles();
+    
+    // ══════════════════════════════════════════════════════════════════════════════
+    // NAVIGATION
+    // ══════════════════════════════════════════════════════════════════════════════
+    
+    function showSection(id) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
+      if (event && event.target) event.target.classList.add('active');
+    }
+    
+    function closeOnboarding() {
+      document.getElementById('onboarding').classList.add('hidden');
+    }
+    
+    // ══════════════════════════════════════════════════════════════════════════════
+    // RENDER QUARTIERS
+    // ══════════════════════════════════════════════════════════════════════════════
+    
+    function renderQuartiers() {
+      const grid = document.getElementById('quartiersGrid');
+      grid.innerHTML = QUARTIERS.map(q => `
+        <div class="quartier-card">
+          <div class="quartier-header">
+            <div class="quartier-num">${q.num}</div>
+            <div class="quartier-email">${q.email.split('@')[0]}@...</div>
+          </div>
+          <div class="quartier-name">${q.nom}</div>
+          <div class="quartier-info">
+            <span>👥 10 représentants tirés au sort</span>
+            <span>📅 Mandat de 2 ans</span>
+            <span>📧 ${q.email}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // ══════════════════════════════════════════════════════════════════════════════
+    // INIT
+    // ══════════════════════════════════════════════════════════════════════════════
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      renderQuartiers();
+    });
+  </script>
+</body>
+</html>
