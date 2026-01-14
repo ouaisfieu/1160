@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet PAC Auderghem - Dossier Stratégique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f4; /* Warm Neutral Background */
+            color: #1c1917;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-red {
+            color: #dc2626; /* PAC Red approximation */
+        }
+        
+        .bg-pac-red {
+            background-color: #dc2626;
+        }
+
+        .hidden-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a8a29e;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #78716c;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Chosen Palette: Warm Neutral (Stone-100) background, Corporate Red (PAC identity), Slate Grey (Text) for a professional yet revolutionary tone. -->
+
+    <!-- Application Structure Plan:
+         1. Header/Hero: Immediate Mission Statement ("Guerre Hybride Bienveillante").
+         2. Situation Room (Context): Re-framing the user's status (BIM/Incapacity) as a strategic asset for P2P connection.
+         3. Audit Radar: Visualizing the "Culture Gap" in Auderghem to justify the need.
+         4. Strategy 3M: Interactive columns explaining Micro/Meso/Macro tactics.
+         5. The Cognitive Weapon (ARG): A simulation tool showing how gamification boosts engagement vs traditional methods.
+         6. Roadmap: A timeline for the rollout.
+         Structure is designed to flow from "Who/Why" -> "Where" -> "How" -> "The Unique Tool".
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white shadow-md border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-black tracking-tighter text-stone-800">PAC <span class="text-red-600">AUDERGHEM</span></span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <button onclick="scrollToSection('mission')" class="text-stone-600 hover:text-red-600 font-medium transition">Mission</button>
+                    <button onclick="scrollToSection('profil')" class="text-stone-600 hover:text-red-600 font-medium transition">L'Agent</button>
+                    <button onclick="scrollToSection('audit')" class="text-stone-600 hover:text-red-600 font-medium transition">Audit</button>
+                    <button onclick="scrollToSection('strategie')" class="text-stone-600 hover:text-red-600 font-medium transition">Stratégie 3M</button>
+                    <button onclick="scrollToSection('arg')" class="text-stone-600 hover:text-red-600 font-medium transition">L'Arme ARG</button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-stone-600 hover:text-red-600 focus:outline-none">
+                        ☰
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-stone-200 p-4">
+            <div class="flex flex-col space-y-3">
+                <button onclick="scrollToSection('mission')" class="text-left text-stone-600 font-medium">Mission</button>
+                <button onclick="scrollToSection('profil')" class="text-left text-stone-600 font-medium">L'Agent</button>
+                <button onclick="scrollToSection('audit')" class="text-left text-stone-600 font-medium">Audit</button>
+                <button onclick="scrollToSection('strategie')" class="text-left text-stone-600 font-medium">Stratégie 3M</button>
+                <button onclick="scrollToSection('arg')" class="text-left text-stone-600 font-medium">L'Arme ARG</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div id="mission" class="bg-stone-900 text-white py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#dc2626_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <h1 class="text-4xl md:text-6xl font-black mb-6 tracking-tight">
+                GUERRE HYBRIDE <span class="text-red-600">COGNITIVE</span> BIENVEILLANTE
+            </h1>
+            <p class="text-xl md:text-2xl text-stone-300 mb-8 font-light">
+                Proposition de création d'une section locale PAC à Auderghem.
+                <br>Objectif : Réactivation citoyenne par l'innovation sociale.
+            </p>
+            <div class="inline-block bg-red-600 text-white font-bold py-3 px-8 rounded-none border border-red-500 hover:bg-red-700 transition cursor-pointer" onclick="scrollToSection('profil')">
+                OUVRIR LE DOSSIER
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+
+        <!-- SECTION 1: LE PROFIL (Turning weaknesses into strengths) -->
+        <section id="profil">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-stone-800 border-l-4 border-red-600 pl-4">L'Agent & Le Terrain</h2>
+                <p class="mt-4 text-lg text-stone-600">
+                    Cette section analyse le profil de l'initiateur du projet. Loin d'être un frein, le statut social actuel est le levier principal de cette stratégie de réinsertion et de légitimité de terrain.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- User Card -->
+                <div class="card bg-white p-8 rounded-xl shadow-sm border border-stone-100">
+                    <h3 class="text-xl font-bold text-stone-800 mb-4">Profil de l'Initiateur</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-2xl mr-3">🏥</span>
+                            <div>
+                                <strong class="block text-stone-800">Statut : Incapacité Longue Durée</strong>
+                                <span class="text-sm text-stone-500">Disponibilité temporelle totale pour le développement stratégique.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-2xl mr-3">💶</span>
+                            <div>
+                                <strong class="block text-stone-800">Bénéficiaire Intervention Majorée (BIM)</strong>
+                                <span class="text-sm text-stone-500">Connexion organique avec le public cible précarisé (pair-aidance implicite).</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-2xl mr-3">🚀</span>
+                            <div>
+                                <strong class="block text-stone-800">Motivation</strong>
+                                <span class="text-sm text-stone-500">Besoin vital de réinsertion sociale et structurelle. Création de son propre emploi/fonction.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Strategic Pivot Text -->
+                <div class="card bg-stone-800 text-white p-8 rounded-xl shadow-sm flex flex-col justify-center">
+                    <h3 class="text-xl font-bold text-red-500 mb-4">La Force de la Fragilité</h3>
+                    <p class="mb-4 text-stone-300">
+                        "Pour parler aux invisibles, il faut connaître l'invisibilité."
+                    </p>
+                    <p class="text-sm leading-relaxed text-stone-400">
+                        La création de cette section n'est pas un hobby, c'est une nécessité de survie sociale pour l'initiateur. Cette énergie vitale est le moteur qui manque souvent aux structures institutionnalisées. Le statut BIM offre une légitimité immédiate pour aborder les thématiques de la précarité cachée à Auderghem.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: AUDIT (Radar Chart) -->
+        <section id="audit">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-stone-800 border-l-4 border-red-600 pl-4">Audit de Zone: Auderghem</h2>
+                <p class="mt-4 text-lg text-stone-600">
+                    Visualisation du "Vide Stratégique". Auderghem est souvent perçue comme une commune riche, masquant des poches de précarité et un manque d'éducation permanente critique.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <div class="lg:col-span-2">
+                    <!-- Visualization & Content Choices: 
+                         Goal: Compare. 
+                         Method: Radar Chart (Chart.js). 
+                         Why: To visually demonstrate the discrepancy between current "Standard Culture" (high) and "Critical/Social Culture" (low) in the target area.
+                    -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
+                        <div class="chart-container">
+                            <canvas id="auditRadar"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-white p-6 rounded-lg border-l-4 border-yellow-400 shadow-sm">
+                        <h4 class="font-bold text-stone-800">Constat 1: Zone Blanche</h4>
+                        <p class="text-sm text-stone-600 mt-2">PAC est absent. Le terrain est occupé par une culture de "consommation" et non d'émancipation.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border-l-4 border-red-600 shadow-sm">
+                        <h4 class="font-bold text-stone-800">Constat 2: Précarité Invisible</h4>
+                        <p class="text-sm text-stone-600 mt-2">Les isolés, les aînés et les nouveaux précaires (BIM) n'ont pas de structure de voix collective à gauche.</p>
+                    </div>
+                    <button id="toggle-data-btn" class="w-full py-3 bg-stone-800 text-white text-sm font-bold hover:bg-stone-700 transition">
+                        AFFICHER LES DONNÉES BRUTES
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hidden Data Table -->
+            <div id="raw-data-panel" class="hidden-content mt-6 bg-white p-6 rounded-xl border border-stone-200">
+                <h4 class="font-bold text-stone-800 mb-4">Données de l'Audit (Estimations Tactiques)</h4>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left text-stone-600">
+                        <thead class="text-xs text-stone-700 uppercase bg-stone-100">
+                            <tr>
+                                <th class="px-6 py-3">Indicateur</th>
+                                <th class="px-6 py-3">Offre Actuelle</th>
+                                <th class="px-6 py-3">Potentiel PAC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b">
+                                <td class="px-6 py-4 font-medium text-stone-900">Éducation Permanente</td>
+                                <td class="px-6 py-4">20%</td>
+                                <td class="px-6 py-4 text-green-600 font-bold">90%</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <td class="px-6 py-4 font-medium text-stone-900">Réseau Solidaire</td>
+                                <td class="px-6 py-4">35%</td>
+                                <td class="px-6 py-4 text-green-600 font-bold">85%</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="px-6 py-4 font-medium text-stone-900">Innovation Numérique</td>
+                                <td class="px-6 py-4">10%</td>
+                                <td class="px-6 py-4 text-green-600 font-bold">95% (ARG)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: STRATÉGIE 3M (Interactive Columns) -->
+        <section id="strategie">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-stone-800 border-l-4 border-red-600 pl-4">Stratégie 3M : Totale & Hybride</h2>
+                <p class="mt-4 text-lg text-stone-600">
+                    Une approche holistique pour résoudre les problématiques à trois échelles simultanées. Cliquez sur les cartes pour révéler les actions tactiques.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- MICRO -->
+                <div class="group cursor-pointer perspective" onclick="toggleStrategy('micro')">
+                    <div id="card-micro" class="bg-white p-6 rounded-xl border-t-4 border-blue-500 shadow-md h-full hover:bg-blue-50 transition duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-stone-800">MICRO</h3>
+                            <span class="text-3xl">👤</span>
+                        </div>
+                        <p class="text-stone-600 font-medium mb-4">L'Individu & Le Voisin</p>
+                        <p class="text-sm text-stone-500">Briser l'isolement par le contact direct.</p>
+                        
+                        <div id="detail-micro" class="hidden-content mt-6 pt-4 border-t border-blue-100">
+                            <ul class="text-sm space-y-2 text-stone-700">
+                                <li>• <strong>Réinsertion :</strong> L'initiateur comme pilote (test).</li>
+                                <li>• <strong>Porte-à-porte bienveillant :</strong> Écoute active.</li>
+                                <li>• <strong>Cafés Citoyens :</strong> "Tu n'es pas seul".</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 text-center text-blue-500 text-xs font-bold uppercase tracking-wider">▼ Voir Tactiques</div>
+                    </div>
+                </div>
+
+                <!-- MESO -->
+                <div class="group cursor-pointer perspective" onclick="toggleStrategy('meso')">
+                    <div id="card-meso" class="bg-white p-6 rounded-xl border-t-4 border-yellow-500 shadow-md h-full hover:bg-yellow-50 transition duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-stone-800">MÉSO</h3>
+                            <span class="text-3xl">🏘️</span>
+                        </div>
+                        <p class="text-stone-600 font-medium mb-4">Le Quartier & Le Réseau</p>
+                        <p class="text-sm text-stone-500">Tisser du lien entre les bulles sociales.</p>
+
+                        <div id="detail-meso" class="hidden-content mt-6 pt-4 border-t border-yellow-100">
+                            <ul class="text-sm space-y-2 text-stone-700">
+                                <li>• <strong>Alliances :</strong> Maison de Quartier, CPAS.</li>
+                                <li>• <strong>L'ARG Local :</strong> Le jeu comme terrain commun.</li>
+                                <li>• <strong>Ateliers Droits Sociaux :</strong> Savoir, c'est pouvoir.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 text-center text-yellow-600 text-xs font-bold uppercase tracking-wider">▼ Voir Tactiques</div>
+                    </div>
+                </div>
+
+                <!-- MACRO -->
+                <div class="group cursor-pointer perspective" onclick="toggleStrategy('macro')">
+                    <div id="card-macro" class="bg-white p-6 rounded-xl border-t-4 border-red-600 shadow-md h-full hover:bg-red-50 transition duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-stone-800">MACRO</h3>
+                            <span class="text-3xl">🏛️</span>
+                        </div>
+                        <p class="text-stone-600 font-medium mb-4">Politique & Structure</p>
+                        <p class="text-sm text-stone-500">Influencer la Cité et la Régionale.</p>
+
+                        <div id="detail-macro" class="hidden-content mt-6 pt-4 border-t border-red-100">
+                            <ul class="text-sm space-y-2 text-stone-700">
+                                <li>• <strong>Modèle Pilote :</strong> Auderghem comme laboratoire.</li>
+                                <li>• <strong>Plaidoyer :</strong> Remonter les besoins invisibles.</li>
+                                <li>• <strong>Kit Corporate :</strong> Scaler la méthode ailleurs.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 text-center text-red-600 text-xs font-bold uppercase tracking-wider">▼ Voir Tactiques</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: L'ARME COGNITIVE (ARG - Serious Game) -->
+        <section id="arg" class="bg-stone-900 rounded-2xl p-8 text-white">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <div class="inline-block px-3 py-1 bg-red-600 text-xs font-bold rounded mb-4">TOP SECRET / INNOVATION</div>
+                    <h2 class="text-3xl font-bold mb-6">Projet: CIVITAS LUDENS</h2>
+                    <p class="text-stone-300 mb-6">
+                        Un <strong>ARG (Alternate Reality Game)</strong> local. Le principe : utiliser une narration fictionnelle superposée à la réalité d'Auderghem pour inciter les citoyens à résoudre des énigmes qui nécessitent de l'action sociale réelle.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center">
+                            <span class="w-8 h-8 rounded-full bg-stone-700 flex items-center justify-center mr-3 font-bold text-red-500">1</span>
+                            <span>Découverte d'une "anomalie" dans le quartier (QR Codes).</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-8 h-8 rounded-full bg-stone-700 flex items-center justify-center mr-3 font-bold text-red-500">2</span>
+                            <span>Enquête nécessitant de consulter les archives ou interroger les voisins.</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-8 h-8 rounded-full bg-stone-700 flex items-center justify-center mr-3 font-bold text-red-500">3</span>
+                            <span>Résolution menant à une réunion PAC "déguisée" en QG de résistance.</span>
+                        </li>
+                    </ul>
+                    <div class="bg-stone-800 p-4 rounded border border-stone-700">
+                        <h4 class="font-bold text-sm mb-2">Simulateur d'Engagement</h4>
+                        <p class="text-xs text-stone-400 mb-4">Ajustez l'intensité de la gamification pour voir l'impact estimé sur la participation des jeunes adultes.</p>
+                        <input type="range" min="0" max="100" value="50" class="w-full h-2 bg-stone-600 rounded-lg appearance-none cursor-pointer" id="gameSlider">
+                        <div class="flex justify-between text-xs mt-2 text-stone-500">
+                            <span>Réunion Classique</span>
+                            <span>Guerre Hybride Totale</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <!-- Visualization & Content Choices:
+                         Goal: Change/Model.
+                         Method: Bar Chart (Chart.js) updated by slider.
+                         Why: To simulate the projected effectiveness of the ARG strategy vs traditional methods, engaging the stakeholder in the "what if" scenario.
+                    -->
+                    <h3 class="text-xl font-bold mb-4 text-center">Projection d'Impact</h3>
+                    <div class="bg-white rounded-xl p-4 text-stone-900 chart-container">
+                        <canvas id="argChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-stone-400 mt-3 italic">
+                        *Projection basée sur les taux de conversion moyens de la gamification urbaine.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: PLAN DE BATAILLE (Roadmap) -->
+        <section id="roadmap" class="pb-12">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-stone-800 border-l-4 border-red-600 pl-4">Plan de Bataille : T-0 à T+6 Mois</h2>
+                <p class="mt-4 text-lg text-stone-600">
+                    Phasage opérationnel pour une implantation durable.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Step 1 -->
+                <div class="flex flex-col md:flex-row bg-white p-6 rounded-xl shadow-sm border border-stone-100 items-center">
+                    <div class="md:w-1/4 font-bold text-stone-400 mb-2 md:mb-0">MOIS 1</div>
+                    <div class="md:w-3/4">
+                        <h4 class="font-bold text-stone-800 text-lg">Reconnaissance & Validation</h4>
+                        <p class="text-sm text-stone-600">Audit final du territoire. Rencontre avec PAC Régionale. Validation des statuts de la locale.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex flex-col md:flex-row bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-500 items-center transform translate-x-4">
+                    <div class="md:w-1/4 font-bold text-red-600 mb-2 md:mb-0">MOIS 2-3</div>
+                    <div class="md:w-3/4">
+                        <h4 class="font-bold text-stone-800 text-lg">Lancement de l'Opération "ARG"</h4>
+                        <p class="text-sm text-stone-600">Déploiement des premiers stickers/QR codes. Création de la communauté numérique. Recrutement des premiers "agents" (membres).</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex flex-col md:flex-row bg-white p-6 rounded-xl shadow-sm border border-stone-100 items-center">
+                    <div class="md:w-1/4 font-bold text-stone-400 mb-2 md:mb-0">MOIS 6</div>
+                    <div class="md:w-3/4">
+                        <h4 class="font-bold text-stone-800 text-lg">L'Assemblée Constituante</h4>
+                        <p class="text-sm text-stone-600">Premier grand événement physique. Transformation des joueurs en militants. Élection du comité.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-2xl font-bold mb-4">PRÊT POUR L'ACTIVATION ?</h2>
+            <p class="mb-8 text-stone-400">Ce kit est prêt à être déployé. En attente du feu vert de la Régionale.</p>
+            <div class="flex justify-center space-x-4">
+                <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded transition">
+                    Contacter l'Initiateur
+                </button>
+                <button class="border border-stone-600 hover:border-white text-stone-300 hover:text-white font-bold py-2 px-6 rounded transition">
+                    Télécharger PDF
+                </button>
+            </div>
+            <p class="mt-12 text-xs text-stone-600">© 2024 PAC Auderghem (Projet) - Guerre Cognitive Bienveillante.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Navigation Logic ---
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                // Close mobile menu if open
+                document.getElementById('mobile-menu').classList.add('hidden');
+            }
+        }
+
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // --- Interaction: Toggle Strategy Details ---
+        // Simple state management for the 3M strategy cards
+        function toggleStrategy(type) {
+            const detailId = `detail-${type}`;
+            const detailEl = document.getElementById(detailId);
+            
+            // Close others (optional, but keeps UI clean)
+            ['micro', 'meso', 'macro'].forEach(t => {
+                if (t !== type) {
+                    document.getElementById(`detail-${t}`).style.display = 'none';
+                }
+            });
+
+            // Toggle current
+            if (detailEl.style.display === 'block') {
+                detailEl.style.display = 'none';
+            } else {
+                detailEl.style.display = 'block';
+            }
+        }
+
+        // --- Interaction: Toggle Raw Data ---
+        document.getElementById('toggle-data-btn').addEventListener('click', function() {
+            const panel = document.getElementById('raw-data-panel');
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
+                this.textContent = "AFFICHER LES DONNÉES BRUTES";
+            } else {
+                panel.style.display = 'block';
+                this.textContent = "MASQUER LES DONNÉES";
+            }
+        });
+
+        // --- Chart.js: Audit Radar Chart ---
+        const ctxRadar = document.getElementById('auditRadar').getContext('2d');
+        const auditRadarChart = new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: [
+                    'Présence PAC', 
+                    'Activisme Jeunes', 
+                    'Soutien BIM', 
+                    'Culture Critique', 
+                    'Lien Social', 
+                    'Innovation'
+                ],
+                datasets: [{
+                    label: 'État Actuel Auderghem',
+                    data: [10, 20, 30, 25, 40, 15],
+                    fill: true,
+                    backgroundColor: 'rgba(120, 113, 108, 0.2)', // Stone grey
+                    borderColor: 'rgb(120, 113, 108)',
+                    pointBackgroundColor: 'rgb(120, 113, 108)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(120, 113, 108)'
+                }, {
+                    label: 'Objectif Projet PAC',
+                    data: [90, 85, 95, 80, 90, 100],
+                    fill: true,
+                    backgroundColor: 'rgba(220, 38, 38, 0.2)', // Red
+                    borderColor: 'rgb(220, 38, 38)',
+                    pointBackgroundColor: 'rgb(220, 38, 38)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(220, 38, 38)'
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                elements: {
+                    line: { borderWidth: 3 }
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(0,0,0,0.1)' },
+                        grid: { color: 'rgba(0,0,0,0.1)' },
+                        pointLabels: {
+                            font: { size: 12, family: 'Inter' },
+                            color: '#444'
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+
+        // --- Chart.js: ARG Simulation Chart ---
+        const ctxArg = document.getElementById('argChart').getContext('2d');
+        
+        // Initial Data
+        const initialArgData = {
+            labels: ['Engagement Passif', 'Participation Active', 'Nouveaux Publics'],
+            datasets: [{
+                label: 'Impact Estimé',
+                data: [60, 20, 10], // Base scenario
+                backgroundColor: [
+                    'rgba(168, 162, 158, 0.8)', // Stone 400
+                    'rgba(220, 38, 38, 0.8)',   // Red 600
+                    'rgba(252, 165, 165, 0.8)'  // Red 200
+                ],
+                borderWidth: 0
+            }]
+        };
+
+        const argChart = new Chart(ctxArg, {
+            type: 'bar',
+            data: initialArgData,
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: { display: true, text: 'Pourcentage (%)' }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- Logic: Slider Interaction for ARG Chart ---
+        const slider = document.getElementById('gameSlider');
+        
+        slider.addEventListener('input', function() {
+            const intensity = parseInt(this.value);
+            
+            // Algorithmic simulation logic:
+            // Higher gamification = Lower Passive, Higher Active, Higher New Publics
+            const passive = Math.max(10, 80 - (intensity * 0.7)); 
+            const active = Math.min(80, 10 + (intensity * 0.5));
+            const newPublics = Math.min(60, 5 + (intensity * 0.4));
+
+            // Update chart data
+            argChart.data.datasets[0].data = [passive, active, newPublics];
+            argChart.update();
+        });
+
+    </script>
+</body>
+</html>
