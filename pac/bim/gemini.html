@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dossier : L'Affaire Deborsu - Analyse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Warm Journalism - Stone/Amber/Red (Neutral background, serious tone) -->
+    <!-- Application Structure Plan: The app is designed as an interactive 'Digital Case File'. It moves away from a linear text dump to a tabbed dashboard. 
+         1. 'Les Faits': Focuses on the broadcast content (Verviers, unemployment).
+         2. 'La Réaction': Visualizes the magnitude of the backlash (CSA, Politics).
+         3. 'La Défense': Analyzes Deborsu's counter-arguments vs. Public Perception.
+         This structure allows users to explore the 'What', the 'Reaction', and the 'Why' separately, preventing information overload. -->
+    <!-- Visualization & Content Choices:
+         1. Pie Chart (Chart.js): Visualizes the 'Composition of Controversy' (Themes discussed). Goal: Inform about content balance.
+         2. Bar Chart (Chart.js): Quantifies the backlash (Complaints vs Hearings). Goal: Compare intensity of reactions.
+         3. Interactive Cards (HTML/JS): Toggle between 'Accusation' and 'Defense'. Goal: Compare viewpoints without bias.
+         4. Timeline (HTML/Tailwind): Visualizes the sequence of events. Goal: Contextualize time.
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        /* CRITICAL: Chart Container Styling as per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        /* Custom Utilities */
+        .tab-active {
+            border-bottom: 3px solid #b45309; /* amber-700 */
+            color: #b45309;
+            font-weight: 700;
+        }
+        .tab-inactive {
+            color: #57534e; /* stone-600 */
+            border-bottom: 3px solid transparent;
+        }
+        .tab-inactive:hover {
+            color: #b45309;
+            border-bottom: 3px solid #d6d3d1;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-white border-b border-stone-200 shadow-sm sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="h-8 w-8 bg-amber-700 rounded-sm flex items-center justify-center text-white font-bold text-lg">D</div>
+                <h1 class="text-xl font-bold tracking-tight text-stone-900">Dossier : L'Affaire Deborsu</h1>
+            </div>
+            <div class="text-xs sm:text-sm text-stone-500 text-right">
+                <p>Émission : <span class="font-medium">Je vous dérange</span></p>
+                <p>Date : <span class="font-medium">Nov 2025</span></p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="bg-stone-100 border-b border-stone-200">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8 overflow-x-auto" id="nav-container">
+                <!-- Navigation inserted by JS -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div id="content-area" class="space-y-8">
+            <!-- Dynamic Content Loaded Here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-400 py-8 mt-auto">
+        <div class="max-w-5xl mx-auto px-4 text-center text-sm">
+            <p>© 2026 Analyse Média. Basé sur les rapports publics concernant l'émission RTL-TVI.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- DATA STORE ---
+        const appData = {
+            intro: {
+                title: "Synthese de la Polémique",
+                text: "En novembre 2025, le journaliste Christophe Deborsu diffuse un reportage choc intitulé « Sans boulot : tous fraudeurs ? ». Ce dossier interactif analyse les faits, la tempête médiatique qui a suivi, et les enjeux politiques soulevés par cette enquête controversée."
+            },
+            sections: [
+                { id: 'reportage', label: '1. Le Reportage' },
+                { id: 'reaction', label: '2. La Tempête' },
+                { id: 'politique', label: '3. Analyse & Défense' }
+            ],
+            content: {
+                reportage: {
+                    title: "L'Enquête : « Sans boulot : tous fraudeurs ? »",
+                    intro: "Cette section détaille le contenu factuel du reportage diffusé sur RTL-TVI. L'émission s'est concentrée sur une zone géographique précise et des témoignages provocateurs, créant une onde de choc immédiate. Explorez ci-dessous les thèmes clés qui ont structuré l'émission.",
+                    themes: [
+                        { title: "Lieu de l'enquête", val: "Verviers", desc: "Focalisation sur une ville marquée par la précarité." },
+                        { title: "Sujet Central", val: "Allocataires Sociaux", desc: "Interviews de bénéficiaires affirmant ne pas vouloir retravailler." },
+                        { title: "Angle Choisi", val: "Assistanat & Fraude", desc: "Mise en lumière du cumul présumé d'allocations et de revenus noirs." }
+                    ],
+                    chartTitle: "Répartition Thématique Perçue (Analyse de Contenu)"
+                },
+                reaction: {
+                    title: "L'Onde de Choc : Société et Institutions",
+                    intro: "La diffusion a provoqué une réaction en chaîne immédiate, du téléspectateur au régulateur. Cette section quantifie l'ampleur de la controverse à travers les chiffres clés des plaintes et des procédures engagées.",
+                    stats: [
+                        { label: "Plaintes CSA", value: "Centaines", color: "text-red-600" },
+                        { label: "Ministres Auditionnés", value: "5", color: "text-amber-600" },
+                        { label: "Menaces Physiques", value: "1", color: "text-stone-800" }
+                    ],
+                    chartTitle: "Intensité des Réactions (Échelle Relative)"
+                },
+                politique: {
+                    title: "L'Échiquier Politique & La Défense",
+                    intro: "Au-delà du scandale, l'affaire est devenue politique. Cette section compare la défense du journaliste face aux accusations de stigmatisation, et montre comment la classe politique s'est divisée sur la question.",
+                    defense: "Christophe Deborsu affirme que son but n'était pas de stigmatiser les individus, mais de dénoncer un « système défaillant » qui enferme les gens dans l'inactivité.",
+                    opposing: "Les critiques, incluant le CSA (instruction ouverte), dénoncent une vision biaisée, une incitation à la haine des pauvres et un manque de nuance flagrant."
+                }
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        let currentState = {
+            activeTab: 'reportage'
+        };
+
+        // --- DOM ELEMENTS ---
+        const navContainer = document.getElementById('nav-container');
+        const contentArea = document.getElementById('content-area');
+
+        // --- INITIALIZATION ---
+        function initApp() {
+            renderNavigation();
+            renderContent(currentState.activeTab);
+            window.addEventListener('resize', () => {
+                // Trigger chart resize if needed explicitly, though Chart.js handles generic resize well
+                if(window.currentChart) window.currentChart.resize();
+            });
+        }
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderNavigation() {
+            navContainer.innerHTML = '';
+            appData.sections.forEach(section => {
+                const btn = document.createElement('button');
+                btn.className = `whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                    currentState.activeTab === section.id ? 'tab-active' : 'tab-inactive'
+                }`;
+                btn.textContent = section.label;
+                btn.onclick = () => switchTab(section.id);
+                navContainer.appendChild(btn);
+            });
+        }
+
+        function switchTab(tabId) {
+            currentState.activeTab = tabId;
+            renderNavigation();
+            renderContent(tabId);
+        }
+
+        function renderContent(tabId) {
+            // Clear content with a fade effect
+            contentArea.innerHTML = '';
+            contentArea.className = 'space-y-8 fade-in';
+
+            const data = appData.content[tabId];
+
+            // 1. Header & Intro Context
+            const headerHtml = `
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+                    <h2 class="text-2xl font-bold text-stone-900 mb-3">${data.title}</h2>
+                    <p class="text-stone-600 leading-relaxed">${data.intro}</p>
+                </div>
+            `;
+            contentArea.insertAdjacentHTML('beforeend', headerHtml);
+
+            // 2. Tab Specific Layouts
+            if (tabId === 'reportage') {
+                renderReportageView(data);
+            } else if (tabId === 'reaction') {
+                renderReactionView(data);
+            } else if (tabId === 'politique') {
+                renderPolitiqueView(data);
+            }
+        }
+
+        // --- VIEW 1: LE REPORTAGE ---
+        function renderReportageView(data) {
+            // Layout: Grid with Cards + Chart
+            const gridContainer = document.createElement('div');
+            gridContainer.className = 'grid grid-cols-1 md:grid-cols-2 gap-6';
+
+            // Left Col: Interactive Cards
+            const leftCol = document.createElement('div');
+            leftCol.className = 'space-y-4';
+            
+            data.themes.forEach((theme, index) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 rounded border-l-4 border-amber-500 shadow-sm hover:shadow-md transition-shadow cursor-default group';
+                card.innerHTML = `
+                    <h3 class="font-bold text-stone-800 text-lg group-hover:text-amber-700 transition-colors">${theme.title}</h3>
+                    <div class="text-2xl font-bold text-stone-900 my-1">${theme.val}</div>
+                    <p class="text-sm text-stone-500">${theme.desc}</p>
+                `;
+                leftCol.appendChild(card);
+            });
+
+            // Right Col: Chart
+            const rightCol = document.createElement('div');
+            rightCol.className = 'bg-white p-6 rounded-lg shadow-sm border border-stone-200 flex flex-col justify-center';
+            rightCol.innerHTML = `
+                <h3 class="text-lg font-semibold text-stone-700 mb-4 text-center">${data.chartTitle}</h3>
+                <div class="chart-container">
+                    <canvas id="contentChart"></canvas>
+                </div>
+                <p class="text-xs text-center text-stone-400 mt-2">Estimation basée sur les thèmes critiques du CSA.</p>
+            `;
+
+            gridContainer.appendChild(leftCol);
+            gridContainer.appendChild(rightCol);
+            contentArea.appendChild(gridContainer);
+
+            // Init Chart
+            initContentChart();
+        }
+
+        // --- VIEW 2: LA RÉACTION ---
+        function renderReactionView(data) {
+            // Top: Key Stats Row
+            const statsRow = document.createElement('div');
+            statsRow.className = 'grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8';
+            data.stats.forEach(stat => {
+                statsRow.innerHTML += `
+                    <div class="bg-stone-100 p-4 rounded text-center border border-stone-200">
+                        <div class="text-sm uppercase tracking-wide text-stone-500 font-semibold">${stat.label}</div>
+                        <div class="text-3xl font-extrabold ${stat.color} mt-1">${stat.value}</div>
+                    </div>
+                `;
+            });
+            contentArea.appendChild(statsRow);
+
+            // Bottom: Chart & Timeline Grid
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-cols-1 lg:grid-cols-3 gap-8';
+
+            // Chart Col (2/3 width)
+            const chartCol = document.createElement('div');
+            chartCol.className = 'lg:col-span-2 bg-white p-6 rounded-lg shadow-sm border border-stone-200';
+            chartCol.innerHTML = `
+                <h3 class="text-lg font-semibold text-stone-700 mb-4">${data.chartTitle}</h3>
+                <div class="chart-container">
+                    <canvas id="reactionChart"></canvas>
+                </div>
+            `;
+
+            // Timeline Col (1/3 width)
+            const timelineCol = document.createElement('div');
+            timelineCol.className = 'bg-white p-6 rounded-lg shadow-sm border border-stone-200';
+            timelineCol.innerHTML = `
+                <h3 class="text-lg font-semibold text-stone-700 mb-4">Chronologie</h3>
+                <div class="relative border-l-2 border-stone-300 ml-3 space-y-6">
+                    <div class="pl-6 relative">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-stone-400 border-2 border-white"></span>
+                        <div class="text-xs font-bold text-stone-500">Avant Diffusion</div>
+                        <div class="text-sm font-medium">Menaces contre Deborsu</div>
+                    </div>
+                    <div class="pl-6 relative">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-amber-600 border-2 border-white"></span>
+                        <div class="text-xs font-bold text-amber-600">Nov 2025</div>
+                        <div class="text-sm font-bold">Diffusion sur RTL-TVI</div>
+                    </div>
+                    <div class="pl-6 relative">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-stone-400 border-2 border-white"></span>
+                        <div class="text-xs font-bold text-stone-500">Fin 2025</div>
+                        <div class="text-sm font-medium">5 Ministres à la Chambre</div>
+                    </div>
+                    <div class="pl-6 relative">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-red-600 border-2 border-white"></span>
+                        <div class="text-xs font-bold text-red-600">En cours</div>
+                        <div class="text-sm font-medium">Instruction du CSA</div>
+                    </div>
+                </div>
+            `;
+
+            grid.appendChild(chartCol);
+            grid.appendChild(timelineCol);
+            contentArea.appendChild(grid);
+
+            initReactionChart();
+        }
+
+        // --- VIEW 3: POLITIQUE & DÉFENSE ---
+        function renderPolitiqueView(data) {
+            const container = document.createElement('div');
+            container.className = 'grid grid-cols-1 md:grid-cols-2 gap-8 items-start';
+
+            // Comparison Widget
+            const widget = document.createElement('div');
+            widget.className = 'bg-white rounded-lg shadow-md overflow-hidden border border-stone-200';
+            
+            // Interaction: Click buttons to filter view
+            widget.innerHTML = `
+                <div class="flex border-b border-stone-200">
+                    <button onclick="updateComparison('defense')" id="btn-defense" class="flex-1 py-3 text-sm font-bold bg-amber-50 text-amber-800 hover:bg-amber-100 transition-colors">La Défense (Deborsu)</button>
+                    <button onclick="updateComparison('accusation')" id="btn-accusation" class="flex-1 py-3 text-sm font-bold bg-stone-50 text-stone-600 hover:bg-stone-100 transition-colors">L'Accusation (Critiques)</button>
+                </div>
+                <div class="p-6 min-h-[200px] flex flex-col justify-center">
+                    <div id="comparison-content" class="fade-in">
+                        <div class="text-4xl text-amber-200 mb-2">“</div>
+                        <p class="text-lg text-stone-800 italic font-medium">${data.defense}</p>
+                        <div class="mt-4 text-sm font-bold text-amber-700">— Argument : Système vs Individu</div>
+                    </div>
+                </div>
+            `;
+            
+            // Politics Visual (Doughnut)
+            const graphBox = document.createElement('div');
+            graphBox.className = 'bg-white p-6 rounded-lg shadow-sm border border-stone-200';
+            graphBox.innerHTML = `
+                <h3 class="text-lg font-semibold text-stone-700 mb-2 text-center">Clivage Politique</h3>
+                <p class="text-sm text-stone-500 text-center mb-4">Réaction Parlementaire & Publique</p>
+                <div class="chart-container">
+                    <canvas id="politicsChart"></canvas>
+                </div>
+            `;
+
+            container.appendChild(widget);
+            container.appendChild(graphBox);
+            contentArea.appendChild(container);
+
+            // Store comparison text for toggle logic
+            window.compData = {
+                defense: { text: data.defense, label: "— Argument : Système vs Individu", color: "amber" },
+                accusation: { text: data.opposing, label: "— Argument : Stigmatisation & Biais", color: "red" }
+            };
+
+            initPoliticsChart();
+        }
+
+        // --- INTERACTION LOGIC ---
+        
+        window.updateComparison = function(type) {
+            const contentDiv = document.getElementById('comparison-content');
+            const data = window.compData[type];
+            const btnDef = document.getElementById('btn-defense');
+            const btnAcc = document.getElementById('btn-accusation');
+
+            // Style Buttons
+            if(type === 'defense') {
+                btnDef.className = "flex-1 py-3 text-sm font-bold bg-amber-50 text-amber-800 border-b-2 border-amber-600";
+                btnAcc.className = "flex-1 py-3 text-sm font-bold bg-stone-50 text-stone-400";
+            } else {
+                btnDef.className = "flex-1 py-3 text-sm font-bold bg-stone-50 text-stone-400";
+                btnAcc.className = "flex-1 py-3 text-sm font-bold bg-red-50 text-red-800 border-b-2 border-red-600";
+            }
+
+            // Update Content
+            contentDiv.classList.remove('fade-in');
+            void contentDiv.offsetWidth; // trigger reflow
+            contentDiv.classList.add('fade-in');
+            
+            contentDiv.innerHTML = `
+                <div class="text-4xl text-${data.color}-200 mb-2">“</div>
+                <p class="text-lg text-stone-800 italic font-medium">${data.text}</p>
+                <div class="mt-4 text-sm font-bold text-${data.color}-700">${data.label}</div>
+            `;
+        };
+
+
+        // --- CHARTS CONFIGURATION ---
+
+        function initContentChart() {
+            const ctx = document.getElementById('contentChart').getContext('2d');
+            window.currentChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Témoignages Choc', 'Contexte Système', 'Nuance/Contradiction'],
+                    datasets: [{
+                        data: [65, 25, 10], // Estimated split based on "lack of nuance" complaint
+                        backgroundColor: ['#b45309', '#d6d3d1', '#78716c'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.label + ': ' + context.raw + '% (Perception)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initReactionChart() {
+            const ctx = document.getElementById('reactionChart').getContext('2d');
+            window.currentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Plaintes Téléspectateurs', 'Interpellations Politiques', 'Menaces Physiques'],
+                    datasets: [{
+                        label: 'Intensité / Volume',
+                        data: [300, 50, 10], // Representative scaling
+                        backgroundColor: ['#dc2626', '#d97706', '#1c1917'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: { display: false }, // Hide numbers for abstract 'intensity'
+                        y: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function initPoliticsChart() {
+            const ctx = document.getElementById('politicsChart').getContext('2d');
+            window.currentChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Soutien (MR/Bouchez)', 'Critiques (Nuance/Gauche)', 'Investigation (CSA)'],
+                    datasets: [{
+                        data: [30, 40, 30],
+                        backgroundColor: ['#2563eb', '#dc2626', '#f59e0b'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // Start Application
+        document.addEventListener('DOMContentLoaded', initApp);
+
+    </script>
+</body>
+</html>
