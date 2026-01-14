@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ WAR ROOM — Résistance Cognitive | PAC Auderghem 1160</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mint: #98E4B9;
+      --mint-soft: #B8F0D0;
+      --mint-dark: #4ADE80;
+      --lilas: #C4B5FD;
+      --lilas-soft: #DDD6FE;
+      --lilas-dark: #A78BFA;
+      --violet-deep: #7C3AED;
+      --bg-void: #0A0B12;
+      --bg-panel: #0F1019;
+      --bg-card: #151621;
+      --bg-elevated: #1A1B2E;
+      --glow-mint: 0 0 20px rgba(152, 228, 185, 0.5), 0 0 40px rgba(152, 228, 185, 0.3);
+      --glow-lilas: 0 0 20px rgba(196, 181, 253, 0.5), 0 0 40px rgba(196, 181, 253, 0.3);
+      --glow-text-mint: 0 0 10px rgba(152, 228, 185, 0.8), 0 0 20px rgba(152, 228, 185, 0.4);
+      --glow-text-lilas: 0 0 10px rgba(196, 181, 253, 0.8), 0 0 20px rgba(196, 181, 253, 0.4);
+      --text-primary: #E8E6F0;
+      --text-muted: #8B8A9E;
+      --border-subtle: rgba(152, 228, 185, 0.15);
+      --border-lilas: rgba(196, 181, 253, 0.2);
+      --font-display: 'Orbitron', sans-serif;
+      --font-body: 'Syne', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--mint) var(--bg-void); }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-void); }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--mint), var(--lilas)); border-radius: 4px; }
+    body { min-height: 100vh; font-family: var(--font-body); background: var(--bg-void); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
+    
+    /* Scanlines CRT Effect */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.15) 2px, rgba(0, 0, 0, 0.15) 4px);
+      z-index: 9999;
+      animation: scanlines 8s linear infinite;
+    }
+    @keyframes scanlines { 0% { transform: translateY(0); } 100% { transform: translateY(4px); } }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(10, 11, 18, 0.3) 100%);
+      z-index: 9998;
+    }
+
+    /* Glitch Animations */
+    @keyframes glitch-text {
+      0% { text-shadow: 2px 0 var(--mint), -2px 0 var(--lilas); transform: translate(0); }
+      20% { text-shadow: -2px 0 var(--mint), 2px 0 var(--lilas); transform: translate(-2px, 1px); }
+      40% { text-shadow: 2px 0 var(--lilas), -2px 0 var(--mint); transform: translate(2px, -1px); }
+      60% { text-shadow: -2px 0 var(--lilas), 2px 0 var(--mint); transform: translate(-1px, 2px); }
+      80% { text-shadow: 2px 0 var(--mint), -2px 0 var(--lilas); transform: translate(1px, -2px); }
+      100% { text-shadow: 2px 0 var(--mint), -2px 0 var(--lilas); transform: translate(0); }
+    }
+    @keyframes neon-flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; text-shadow: var(--glow-text-mint); }
+      20%, 24%, 55% { opacity: 0.8; text-shadow: none; }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: var(--glow-mint); border-color: var(--mint); }
+      50% { box-shadow: var(--glow-lilas); border-color: var(--lilas); }
+    }
+    @keyframes data-stream { 0% { background-position: 0% 0%; } 100% { background-position: 100% 100%; } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: linear-gradient(180deg, var(--bg-panel) 0%, rgba(15, 16, 25, 0.95) 100%);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1rem 2rem;
+    }
+    .header-grid {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+    .logo-block { display: flex; align-items: center; gap: 1rem; }
+    .logo-glyph {
+      width: 60px;
+      height: 60px;
+      border: 2px solid var(--mint);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-elevated) 100%);
+      animation: pulse-glow 4s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--mint);
+      text-shadow: var(--glow-text-mint);
+    }
+    .brand-text h1 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--mint);
+      text-shadow: var(--glow-text-mint);
+      animation: neon-flicker 4s ease-in-out infinite;
+    }
+    .brand-text .tagline {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--lilas);
+      letter-spacing: 0.1em;
+      margin-top: 2px;
+    }
+    .status-bar { display: flex; gap: 1.5rem; font-family: var(--font-mono); font-size: 0.75rem; }
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 10px var(--mint);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    .status-dot.warning { background: #FBBF24; box-shadow: 0 0 10px #FBBF24; }
+    .header-actions { display: flex; gap: 0.75rem; }
+
+    /* Main Layout */
+    main {
+      display: grid;
+      grid-template-columns: 320px 1fr 350px;
+      gap: 1rem;
+      padding: 1rem;
+      min-height: calc(100vh - 100px);
+      max-width: 1900px;
+      margin: 0 auto;
+    }
+    @media (max-width: 1400px) { main { grid-template-columns: 280px 1fr 300px; } }
+    @media (max-width: 1100px) {
+      main { grid-template-columns: 1fr 1fr; }
+      .sidebar-right { grid-column: 1 / -1; }
+    }
+    @media (max-width: 768px) { main { grid-template-columns: 1fr; } }
+
+    /* Panels */
+    .panel {
+      background: linear-gradient(135deg, var(--bg-panel) 0%, var(--bg-card) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+    }
+    .panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--mint), var(--lilas), var(--mint));
+      background-size: 200% 100%;
+      animation: data-stream 3s linear infinite;
+    }
+    .panel-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--mint);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .panel-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 0.25rem 0.5rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--lilas);
+      border-radius: var(--radius-sm);
+      color: var(--lilas);
+    }
+    .panel-content { padding: 1rem; max-height: 600px; overflow-y: auto; }
+
+    /* Search & Filters */
+    .search-box { position: relative; margin-bottom: 1rem; }
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    .search-box input:focus { border-color: var(--mint); box-shadow: 0 0 15px rgba(152, 228, 185, 0.2); }
+    .search-box::before { content: "⌕"; position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .filter-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 0.4rem 0.75rem;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+    }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--mint); color: var(--mint); background: rgba(152, 228, 185, 0.1); }
+
+    /* Modules */
+    .module-group { margin-bottom: 1.5rem; }
+    .group-label {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--lilas);
+      margin-bottom: 0.75rem;
+      padding-left: 0.5rem;
+      border-left: 2px solid var(--lilas);
+    }
+    .module-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: var(--bg-void);
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .module-item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--mint);
+      transform: scaleY(0);
+      transition: transform 0.2s ease;
+    }
+    .module-item:hover { border-color: var(--border-subtle); background: var(--bg-card); }
+    .module-item:hover::before { transform: scaleY(1); }
+    .module-item.active { border-color: var(--mint); background: rgba(152, 228, 185, 0.08); }
+    .module-item.active::before { transform: scaleY(1); }
+    .module-info { flex: 1; min-width: 0; }
+    .module-name { font-size: 0.85rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .module-desc { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+    .module-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .tag-strategie { background: rgba(152, 228, 185, 0.2); color: var(--mint); border: 1px solid var(--mint); }
+    .tag-methodo { background: rgba(196, 181, 253, 0.2); color: var(--lilas); border: 1px solid var(--lilas); }
+    .tag-tech { background: rgba(251, 191, 36, 0.2); color: #FBBF24; border: 1px solid #FBBF24; }
+    .tag-ops { background: rgba(96, 165, 250, 0.2); color: #60A5FA; border: 1px solid #60A5FA; }
+
+    /* Viewer */
+    .viewer-main .panel { height: 100%; display: flex; flex-direction: column; }
+    .viewer-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: var(--bg-void);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .viewer-meta { display: flex; align-items: center; gap: 1rem; }
+    .viewer-title-display { font-family: var(--font-display); font-size: 1rem; font-weight: 600; }
+    .viewer-category {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.3rem 0.6rem;
+      background: linear-gradient(135deg, var(--mint), var(--lilas));
+      border-radius: var(--radius-sm);
+      color: var(--bg-void);
+      font-weight: 600;
+    }
+    .viewer-controls { display: flex; gap: 0.5rem; }
+    .ctrl-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 1rem;
+      text-decoration: none;
+    }
+    .ctrl-btn:hover { border-color: var(--mint); color: var(--mint); box-shadow: 0 0 10px rgba(152, 228, 185, 0.3); }
+    .viewer-frame-container { flex: 1; background: var(--bg-void); position: relative; min-height: 400px; }
+    .viewer-frame-container iframe { width: 100%; height: 100%; border: none; background: var(--bg-void); }
+    .placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      color: var(--text-muted);
+    }
+    .placeholder-icon { font-size: 4rem; opacity: 0.3; animation: float 3s ease-in-out infinite; }
+    .viewer-info-bar {
+      padding: 0.75rem 1rem;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+    }
+    .info-url { color: var(--text-muted); max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .info-actions { display: flex; gap: 0.75rem; }
+    .action-link { color: var(--lilas); text-decoration: none; cursor: pointer; }
+    .action-link:hover { color: var(--mint); text-shadow: var(--glow-text-mint); }
+
+    /* Embeds & Stats */
+    .embed-section { margin-bottom: 1.5rem; }
+    .embed-section-title {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--lilas);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .embed-section-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--lilas), transparent); }
+    .embed-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+    .embed-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 0.75rem;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+    .embed-btn:hover { border-color: var(--mint); background: rgba(152, 228, 185, 0.08); transform: translateY(-2px); }
+    .embed-btn .emoji { font-size: 1.1rem; }
+    .embed-btn.full-width { grid-column: 1 / -1; justify-content: center; }
+    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+    .stat-card {
+      padding: 1rem;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--mint), var(--lilas));
+    }
+    .stat-value { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--mint); text-shadow: var(--glow-text-mint); }
+    .stat-label { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-top: 0.25rem; }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 1.5rem; }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--mint), var(--lilas), var(--mint));
+    }
+    .timeline-item { position: relative; padding-bottom: 1.25rem; }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -1.5rem;
+      top: 0.25rem;
+      width: 10px;
+      height: 10px;
+      background: var(--bg-void);
+      border: 2px solid var(--mint);
+      border-radius: 50%;
+    }
+    .timeline-item.active::before { background: var(--mint); box-shadow: 0 0 10px var(--mint); }
+    .timeline-item.future::before { border-color: var(--lilas); opacity: 0.5; }
+    .timeline-date { font-family: var(--font-mono); font-size: 0.65rem; color: var(--lilas); margin-bottom: 0.25rem; }
+    .timeline-title { font-size: 0.8rem; font-weight: 500; }
+    .timeline-desc { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+    /* Document Viewer Modal */
+    .doc-viewer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(10, 11, 18, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    .doc-viewer.active { display: block; }
+    .doc-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .doc-header {
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .doc-title { font-family: var(--font-display); font-size: 1.1rem; color: var(--mint); }
+    .doc-close {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    .doc-close:hover { border-color: #EF4444; color: #EF4444; }
+    .doc-body { padding: 2rem; font-size: 0.9rem; line-height: 1.8; }
+    .doc-body h1, .doc-body h2, .doc-body h3 { font-family: var(--font-display); color: var(--mint); margin: 1.5rem 0 1rem; }
+    .doc-body h1 { font-size: 1.5rem; }
+    .doc-body h2 { font-size: 1.25rem; color: var(--lilas); }
+    .doc-body h3 { font-size: 1.1rem; }
+    .doc-body ul, .doc-body ol { margin: 1rem 0; padding-left: 1.5rem; }
+    .doc-body li { margin-bottom: 0.5rem; }
+    .doc-body strong { color: var(--mint); }
+    .doc-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+    .doc-body th, .doc-body td { padding: 0.75rem; border: 1px solid var(--border-subtle); text-align: left; }
+    .doc-body th { background: var(--bg-card); color: var(--mint); font-family: var(--font-display); font-size: 0.75rem; text-transform: uppercase; }
+    .doc-body blockquote { border-left: 3px solid var(--lilas); padding-left: 1rem; margin: 1rem 0; color: var(--text-muted); font-style: italic; }
+
+    /* Footer */
+    footer {
+      padding: 1rem 2rem;
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    footer a { color: var(--lilas); text-decoration: none; }
+    footer a:hover { color: var(--mint); text-shadow: var(--glow-text-mint); }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    /* Custom Embed Input */
+    .custom-input {
+      width: 100%;
+      padding: 0.6rem;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .custom-input:focus { outline: none; border-color: var(--mint); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-grid">
+    <div class="logo-block">
+      <div class="logo-glyph">RC</div>
+      <div class="brand-text">
+        <h1>Résistance Cognitive</h1>
+        <div class="tagline">PAC Auderghem 1160 · War Room v2.0</div>
+      </div>
+    </div>
+    <div class="status-bar">
+      <div class="status-item"><div class="status-dot"></div><span>Phase 1 Active</span></div>
+      <div class="status-item"><div class="status-dot warning"></div><span>Lancement: 1 Mai 2026</span></div>
+      <div class="status-item"><span style="color: var(--mint);">Noyau: 5-8 membres</span></div>
+    </div>
+    <div class="header-actions">
+      <button class="ctrl-btn" title="Notifications">🔔</button>
+      <button class="ctrl-btn" title="Settings">⚙️</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <aside class="sidebar-left">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><span class="icon">📂</span> Modules & Docs</div>
+        <span class="panel-badge" id="moduleCount">9 fichiers</span>
+      </div>
+      <div class="panel-content">
+        <div class="search-box"><input type="text" id="searchInput" placeholder="Rechercher..." onkeyup="filterModules()"></div>
+        <div class="filter-row">
+          <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Tous</button>
+          <button class="filter-btn" data-filter="strategie" onclick="setFilter('strategie')">Stratégie</button>
+          <button class="filter-btn" data-filter="methodo" onclick="setFilter('methodo')">Méthodo</button>
+          <button class="filter-btn" data-filter="tech" onclick="setFilter('tech')">Tech</button>
+          <button class="filter-btn" data-filter="ops" onclick="setFilter('ops')">Ops</button>
+        </div>
+        <div id="modulesContainer"></div>
+      </div>
+    </div>
+  </aside>
+
+  <section class="viewer-main">
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title"><span class="icon">👁️</span> Visualiseur</div></div>
+      <div class="viewer-toolbar">
+        <div class="viewer-meta">
+          <span class="viewer-title-display" id="viewerTitle">Sélectionnez un module</span>
+          <span class="viewer-category" id="viewerCategory">—</span>
+        </div>
+        <div class="viewer-controls">
+          <button class="ctrl-btn" title="Rafraîchir" onclick="refreshViewer()">🔄</button>
+          <button class="ctrl-btn" title="Plein écran" onclick="toggleFullscreen()">⛶</button>
+          <a href="#" class="ctrl-btn" id="openNewTab" title="Nouvel onglet" target="_blank">↗</a>
+        </div>
+      </div>
+      <div class="viewer-frame-container" id="viewerContainer">
+        <div class="placeholder" id="placeholder">
+          <div class="placeholder-icon">⚡</div>
+          <div style="font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.2em;">Guerre Cognitive Bienveillante</div>
+          <div style="font-family: var(--font-mono); font-size: 0.75rem;">Sélectionnez un module ou un embed</div>
+        </div>
+        <iframe id="viewerFrame" style="display: none;"></iframe>
+      </div>
+      <div class="viewer-info-bar">
+        <span class="info-url" id="viewerUrl">—</span>
+        <div class="info-actions">
+          <span class="action-link" onclick="copyUrl()">Copier URL</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="sidebar-right">
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title"><span class="icon">🎯</span> Outils & Embeds</div></div>
+      <div class="panel-content">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-value">22%</div><div class="stat-label">Chômage Transvaal</div></div>
+          <div class="stat-card"><div class="stat-value">16.6%</div><div class="stat-label">Seniors isolés</div></div>
+          <div class="stat-card"><div class="stat-value">~16K€</div><div class="stat-label">Budget annuel</div></div>
+          <div class="stat-card"><div class="stat-value">500K-2M€</div><div class="stat-label">Potentiel fonds</div></div>
+        </div>
+        
+        <div class="embed-section">
+          <div class="embed-section-title">🎬 Médias</div>
+          <div class="embed-grid">
+            <button class="embed-btn" onclick="loadEmbed('youtube')"><span class="emoji">▶️</span> YouTube</button>
+            <button class="embed-btn" onclick="loadEmbed('spotify')"><span class="emoji">🎵</span> Spotify</button>
+            <button class="embed-btn" onclick="loadEmbed('vimeo')"><span class="emoji">🎥</span> Vimeo</button>
+            <button class="embed-btn" onclick="loadEmbed('soundcloud')"><span class="emoji">🔊</span> SoundCloud</button>
+          </div>
+        </div>
+
+        <div class="embed-section">
+          <div class="embed-section-title">🛠️ Outils Projet</div>
+          <div class="embed-grid">
+            <button class="embed-btn" onclick="loadEmbed('decidim')"><span class="emoji">🗳️</span> Decidim</button>
+            <button class="embed-btn" onclick="loadEmbed('nyxo')"><span class="emoji">💎</span> NYXO (ECP)</button>
+            <button class="embed-btn" onclick="loadEmbed('solid')"><span class="emoji">🔒</span> Solid Pods</button>
+            <button class="embed-btn" onclick="loadEmbed('github')"><span class="emoji">🐙</span> GitHub</button>
+          </div>
+        </div>
+
+        <div class="embed-section">
+          <div class="embed-section-title">🏛️ Institutions</div>
+          <div class="embed-grid">
+            <button class="embed-btn full-width" onclick="loadEmbed('pac')"><span class="emoji">🌿</span> PAC - Présence et Action Culturelles</button>
+            <button class="embed-btn" onclick="loadEmbed('innoviris')"><span class="emoji">🚀</span> Innoviris</button>
+            <button class="embed-btn" onclick="loadEmbed('cocof')"><span class="emoji">📋</span> COCOF</button>
+          </div>
+        </div>
+
+        <div class="embed-section">
+          <div class="embed-section-title">📎 Embed Personnalisé</div>
+          <input type="text" id="customEmbedUrl" class="custom-input" placeholder="Coller URL (YouTube, Spotify, PDF...)">
+          <button class="embed-btn full-width" onclick="loadCustomEmbed()"><span class="emoji">⚡</span> Charger</button>
+        </div>
+
+        <div class="embed-section">
+          <div class="embed-section-title">📅 Roadmap 2026</div>
+          <div class="timeline">
+            <div class="timeline-item active">
+              <div class="timeline-date">Jan - Mars 2026</div>
+              <div class="timeline-title">Phase 1: Préparation</div>
+              <div class="timeline-desc">Constitution noyau 5-8 personnes</div>
+            </div>
+            <div class="timeline-item future">
+              <div class="timeline-date">Avril 2026</div>
+              <div class="timeline-title">Adoubement PAC</div>
+              <div class="timeline-desc">Présentation Bureau Régionale</div>
+            </div>
+            <div class="timeline-item future">
+              <div class="timeline-date">1er Mai 2026</div>
+              <div class="timeline-title">🎉 Lancement Public</div>
+              <div class="timeline-desc">Événement inaugural</div>
+            </div>
+            <div class="timeline-item future">
+              <div class="timeline-date">Sept 2026</div>
+              <div class="timeline-title">Forum Associations</div>
+              <div class="timeline-desc">Déploiement ARG</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<div class="doc-viewer" id="docViewer">
+  <div class="doc-container">
+    <div class="doc-header">
+      <div class="doc-title" id="docTitle">Document</div>
+      <button class="doc-close" onclick="closeDocViewer()">✕</button>
+    </div>
+    <div class="doc-body" id="docBody"></div>
+  </div>
+</div>
+
+<footer>
+  <div><span style="color: var(--mint);">⚡ Résistance Cognitive</span> · PAC Auderghem 1160 · Contact: <a href="mailto:bruxelles@pac-g.be">bruxelles@pac-g.be</a></div>
+  <div class="footer-links">
+    <a href="#" onclick="openDoc('note-intention')">Note d'intention</a>
+    <a href="#" onclick="openDoc('proposition')">Proposition complète</a>
+    <a href="https://www.pac-g.be" target="_blank">PAC National ↗</a>
+  </div>
+</footer>
+
+<script>
+const modules = [
+  { id: "proposition-projet", title: "Proposition de Projet Complète", description: "Document fondateur - Création Section Locale", tag: "strategie", type: "doc", content: "proposition" },
+  { id: "note-intention", title: "Note d'Intention Officielle", description: "À l'attention de Stéphanie Gillet", tag: "strategie", type: "doc", content: "note-intention" },
+  { id: "innovation-jeu", title: "L'Innovation par le Jeu", description: "Déploiement ARG et méthodologie ludique", tag: "methodo", type: "doc", content: "innovation-jeu" },
+  { id: "fondation-locale", title: "Fondation de la Locale", description: "Modalités pour rejoindre le noyau", tag: "ops", type: "doc", content: "fondation" },
+  { id: "architecture-contrepouvoir", title: "Architecture de Contre-Pouvoir", description: "Stack technique souveraineté", tag: "tech", type: "doc", content: "architecture" },
+  { id: "fondation-noyau-2026", title: "Fondation Noyau 2026", description: "Phase 1 - Constitution groupe initial", tag: "ops", type: "doc", content: "noyau-2026" },
+  { id: "strategie-audit", title: "Stratégie & Audit Opérationnel", description: "Analyse complète territoire 1160", tag: "strategie", type: "doc", content: "audit" },
+  { id: "education-gouvernance", title: "Éducation & Gouvernance Liquide", description: "Méthodologie ACI et ARG", tag: "methodo", type: "doc", content: "gouvernance" },
+  { id: "synthese-enjeux", title: "Synthèse Enjeux Sociaux", description: "Innovations civiques et infrastructures", tag: "tech", type: "doc", content: "synthese" }
+];
+
+const embeds = {
+  youtube: { label: "YouTube", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+  spotify: { label: "Spotify", url: "https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M" },
+  vimeo: { label: "Vimeo", url: "https://player.vimeo.com/video/76979871" },
+  soundcloud: { label: "SoundCloud", url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/293" },
+  decidim: { label: "Decidim", url: "https://decidim.org" },
+  nyxo: { label: "NYXO", url: "https://nyxo.io" },
+  solid: { label: "Solid", url: "https://solidproject.org" },
+  github: { label: "GitHub", url: "https://github.com" },
+  pac: { label: "PAC", url: "https://www.pac-g.be" },
+  innoviris: { label: "Innoviris", url: "https://innoviris.brussels" },
+  cocof: { label: "COCOF", url: "https://www.cocof.be" }
+};
+
+const documents = {
+  "proposition": `<h1>Proposition de Projet : Création de la Section Locale PAC "Résistance Cognitive"</h1><h2>1.0 Introduction</h2><p>Cette proposition vise à établir les fondations d'une nouvelle initiative pour <strong>Présence et Action Culturelles (PAC)</strong> : la création de la section locale "Résistance Cognitive" à Auderghem. Ce projet est conçu comme un <strong>laboratoire de démocratie générative</strong>.</p><p>La mission principale est d'articuler les trois valeurs fondatrices de PAC — <strong>l'écosocialisme, la laïcité et le progressisme</strong> — avec la <strong>"Guerre Cognitive Bienveillante"</strong>.</p><h2>2.0 Diagnostic Territorial</h2><p>Auderghem présente le profil d'une "commune à deux vitesses".</p><h3>Indicateurs de précarité :</h3><ul><li><strong>Quartier du Transvaal</strong> : 22% de chômage, 50% de logements sociaux</li><li><strong>12%</strong> de la population bénéficie du statut BIM</li><li><strong>19%</strong> de chômage chez les 15-24 ans</li><li><strong>16,6%</strong> de seniors isolés</li></ul><h2>3.0 Innovation Méthodologique</h2><h3>L'Arpentage Citoyen (ACI)</h3><ol><li><strong>Phase Asynchrone</strong> : lecture individuelle + partage numérique</li><li><strong>Phase Présentiel</strong> : mise en commun collective</li></ol><h3>ARG « Souveraineté Fantôme »</h3><p>Dès le <strong>seuil critique de 9 inscrits</strong>, le groupe co-construit un ARG transformant des démarches administratives en missions citoyennes immersives.</p><h2>4.0 Architecture Technologique</h2><table><tr><th>Composant</th><th>Bénéfice</th></tr><tr><td>Protocole Solid</td><td>Souveraineté des données</td></tr><tr><td>Static-First (Eleventy + USWDS)</td><td>Lighthouse 100/100</td></tr><tr><td>Standard FHIR</td><td>Pont CPAS-Santé</td></tr><tr><td>Git Scraping</td><td>Archives inaltérables</td></tr><tr><td>Vote Quadratique</td><td>Intensité des préférences</td></tr></table><h2>5.0 Modèle Économique</h2><ul><li><strong>Budget</strong> : ~16 000 €/an</li><li><strong>Potentiel</strong> : 500 000 € à 2 000 000 €</li><li><strong>Sources</strong> : Innoviris PYSI, COCOF Impulsion, Horizon Europe</li></ul><h2>6.0 Déploiement</h2><ul><li><strong>Phase 1 (Jan-Mars 2026)</strong> : Constitution noyau 5-8 personnes</li><li><strong>Avril 2026</strong> : Adoubement Régionale PAC</li><li><strong>1er Mai 2026</strong> : Lancement public officiel</li></ul>`,
+  "note-intention": `<h1>Note d'Intention</h1><p><em>À l'attention de <strong>Stéphanie Gillet</strong>, Coordinatrice de la Régionale PAC Bruxelles</em></p><h2>Objet : Création de la section locale PAC Auderghem « Résistance Cognitive »</h2><p>Madame la Coordinatrice,</p><p>Nous soumettons notre projet de création d'une section locale <strong>PAC</strong> sur <strong>Auderghem</strong>, l'un des derniers « angles morts » en Région bruxelloise.</p><p>Notre initiative <strong>« Résistance Cognitive »</strong> s'inscrit dans les valeurs <strong>écosocialistes, laïques et progressistes</strong> de PAC.</p><p>Le cœur du projet : la <strong>« Guerre Cognitive Bienveillante »</strong> via un <strong>ARG « Souveraineté Fantôme »</strong>.</p><h3>Zones d'action prioritaires :</h3><ul><li><strong>Transvaal</strong> : 22% de chômage</li><li><strong>Pinoy</strong> : laboratoire transition écologique</li></ul><h3>Publics cibles :</h3><ul><li>Seniors isolés (16,6%)</li><li>Jeunes adultes</li></ul><p>Noyau fondateur : <strong>5 à 8 personnes</strong></p><p><strong>Objectif : 1er Mai 2026</strong></p><p><em>Pour le noyau fondateur de PAC Auderghem</em></p>`,
+  "innovation-jeu": `<h1>L'Innovation par le Jeu à Auderghem</h1><h2>Piliers Stratégiques</h2><h3>1. Inclusion des publics vulnérables</h3><p>Projet porté par des profils en <strong>statut BIM</strong>, sécurisés par l'<strong>Économie Contributive Provisionnée (ECP)</strong> via <strong>NYXO</strong>.</p><h3>2. Accessibilité Radicale</h3><p>Stack <strong>« Static-First »</strong> (Eleventy + USWDS), score <strong>Lighthouse 100/100</strong>.</p><h3>3. Souveraineté des Données</h3><p><strong>Protocole Solid</strong> et <strong>Solid Pods</strong> — première en Belgique francophone.</p><h3>4. Interopérabilité Sociale</h3><p>Standard <strong>FHIR</strong> : ponts social-santé.</p><p><strong>Contact :</strong> bruxelles@pac-g.be</p>`,
+  "fondation": `<h1>Fondation de la Locale PAC Auderghem</h1><h2>Comment rejoindre le noyau ?</h2><p><strong>Phase 1 : Janvier - Mars 2026</strong></p><h3>Critères</h3><ul><li>Groupe de <strong>5 à 8 personnes</strong></li><li>Valeurs : écosocialisme, laïcité, progressisme</li><li>Profils diversifiés (compétences ARG, réseaux locaux)</li><li>2 personnes non-BIM pour le CA</li></ul><h3>Contact</h3><p><strong>Stéphanie Gillet</strong> — bruxelles@pac-g.be</p><h3>Missions initiales</h3><ol><li>Note d'intention (2 pages)</li><li>Identification local partenaire</li><li>Préparation adoubement</li></ol><p><strong>Lancement : 1er Mai 2026</strong></p>`,
+  "architecture": `<h1>Architecture de Contre-Pouvoir</h1><h2>1. Récit d'urgence</h2><ul><li>Fractures invisibles : Transvaal, Ten-Reuken</li><li>Catalyseur Herrmann-Debroux</li><li>Coût inactivité : 21-24 Mds €/an</li></ul><h2>2. Stack technique</h2><ul><li><strong>Eleventy + USWDS</strong> : Lighthouse 100/100</li><li><strong>Solid</strong> : Pods personnels</li><li><strong>FHIR</strong> : pont santé-social</li><li><strong>Git Scraping</strong> : archives immuables</li></ul><h2>3. Méthodologies</h2><ul><li><strong>ARG « Souveraineté Fantôme »</strong></li><li><strong>Vote Quadratique</strong></li></ul><h2>4. Structure en 4 Couches</h2><ol><li>Vitrine : attirer</li><li>Réseau : coordonner</li><li>Communs : partager</li><li>Sortie Propre : autonomie</li></ol>`,
+  "noyau-2026": `<h1>Fondation du Noyau 2026</h1><p><strong>Phase 1 : janvier à mars 2026</strong></p><h2>Contact</h2><p>Stéphanie Gillet — bruxelles@pac-g.be</p><h2>Profil recherché</h2><ul><li>5 à 8 personnes</li><li>Valeurs PAC</li><li>Compétences ARG</li><li>2 non-BIM pour CA</li></ul><h2>Missions</h2><ol><li>Note d'intention</li><li>Local partenaire</li><li>Adoubement Régionale</li></ol><p><strong>Lancement : 1er Mai 2026</strong></p>`,
+  "audit": `<h1>Stratégie et Audit Opérationnel</h1><h2>1. Audit Territoire</h2><ul><li><strong>Transvaal</strong> : 50% logements sociaux, 22% chômage</li><li><strong>Ten-Reuken</strong> : revenus en baisse</li><li><strong>Bd du Triomphe</strong> : étudiants précaires</li></ul><h2>2. Audit PAC</h2><ul><li>Identité : écosocialiste, laïque, progressiste</li><li>Intégration Régionale (pas nouvelle ASBL)</li></ul><h2>3. Méthodologie</h2><ul><li>Déclencheur : Arpentage Citoyen</li><li>Seuil 9 inscrits → ARG "Souveraineté Fantôme"</li></ul><h2>4. Roadmap</h2><table><tr><th>Phase</th><th>Période</th><th>Action</th></tr><tr><td>Préparation</td><td>Jan-Mars</td><td>Noyau 5-8</td></tr><tr><td>Lancement</td><td>Avril-Mai</td><td>Adoubement + 1er Mai</td></tr><tr><td>Rentrée</td><td>Sept</td><td>Forum + QR codes</td></tr></table>`,
+  "gouvernance": `<h1>Éducation Populaire et Gouvernance Liquide</h1><h2>1. Identité</h2><p><strong>« Guerre Cognitive Bienveillante »</strong> : identifier biais, vérifier sources.</p><h3>Zones d'ancrage</h3><ul><li><strong>Transvaal</strong> : 22% chômage</li><li><strong>Pinoy</strong> : transition écologique</li></ul><h2>2. Arpentage (ACI)</h2><ol><li>6 jours distanciel asynchrone</li><li>7ème jour : réunion IRL</li></ol><h2>3. ARG « Souveraineté Fantôme »</h2><p>Seuil <strong>9 inscrits</strong> → co-construction</p><ul><li>Participants = « agents de résistance »</li><li>Plateforme <strong>Decidim</strong></li><li>Missions : Git Scraping, Solid Pod</li></ul><h2>4. Viabilité</h2><ul><li>Budget tech : ~16 000 €/an</li><li>Lighthouse 100/100</li></ul>`,
+  "synthese": `<h1>Synthèse Enjeux Sociaux</h1><h2>Enjeux Identifiés</h2><ul><li>Fractures invisibles</li><li>Isolement seniors (16,6%)</li><li>Chômage jeunes (19%)</li><li>Piège inactivité</li></ul><h2>Innovations Civiques</h2><ul><li>ARG Souveraineté Fantôme</li><li>Arpentage Citoyen</li><li>Vote Quadratique</li><li>Économie Contributive</li></ul><h2>Infrastructures</h2><table><tr><th>Tech</th><th>Usage</th></tr><tr><td>Solid Pods</td><td>Souveraineté données</td></tr><tr><td>Eleventy + USWDS</td><td>Accessibilité</td></tr><tr><td>FHIR</td><td>Interopérabilité</td></tr><tr><td>Git Scraping</td><td>Archives</td></tr><tr><td>Decidim</td><td>Démocratie</td></tr><tr><td>NYXO</td><td>Économie contributive</td></tr></table><h2>Financement</h2><ul><li>Budget : ~16K€/an</li><li>Potentiel : 500K-2M€</li></ul>`
+};
+
+let currentFilter = 'all';
+let currentModule = null;
+
+function renderModules() {
+  const container = document.getElementById('modulesContainer');
+  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  const groups = { strategie: { label: 'Stratégie & Vision', items: [] }, methodo: { label: 'Méthodologie', items: [] }, tech: { label: 'Architecture Technique', items: [] }, ops: { label: 'Opérations', items: [] } };
+  
+  modules.forEach(mod => {
+    if (currentFilter !== 'all' && mod.tag !== currentFilter) return;
+    if (searchTerm && !mod.title.toLowerCase().includes(searchTerm) && !mod.description.toLowerCase().includes(searchTerm)) return;
+    const group = groups[mod.tag] || groups.ops;
+    group.items.push(mod);
+  });
+
+  let html = '';
+  Object.entries(groups).forEach(([key, group]) => {
+    if (group.items.length === 0) return;
+    html += `<div class="module-group"><div class="group-label">${group.label}</div>`;
+    group.items.forEach(mod => {
+      const activeClass = currentModule === mod.id ? 'active' : '';
+      html += `<div class="module-item ${activeClass}" onclick="selectModule('${mod.id}')"><div class="module-info"><div class="module-name">${mod.title}</div><div class="module-desc">${mod.description}</div></div><span class="module-tag tag-${mod.tag}">${mod.tag}</span></div>`;
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html || '<div style="color: var(--text-muted); padding: 1rem;">Aucun résultat</div>';
+  
+  const visibleCount = modules.filter(m => {
+    if (currentFilter !== 'all' && m.tag !== currentFilter) return false;
+    if (searchTerm && !m.title.toLowerCase().includes(searchTerm) && !m.description.toLowerCase().includes(searchTerm)) return false;
+    return true;
+  }).length;
+  document.getElementById('moduleCount').textContent = `${visibleCount} fichiers`;
+}
+
+function setFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.filter === filter));
+  renderModules();
+}
+
+function filterModules() { renderModules(); }
+
+function selectModule(id) {
+  currentModule = id;
+  const mod = modules.find(m => m.id === id);
+  if (!mod) return;
+  renderModules();
+  document.getElementById('viewerTitle').textContent = mod.title;
+  document.getElementById('viewerCategory').textContent = mod.tag.toUpperCase();
+  if (mod.type === 'doc') openDoc(mod.content);
+}
+
+function openDoc(docKey) {
+  const content = documents[docKey];
+  if (!content) return;
+  const mod = modules.find(m => m.content === docKey);
+  document.getElementById('docTitle').textContent = mod ? mod.title : 'Document';
+  document.getElementById('docBody').innerHTML = content;
+  document.getElementById('docViewer').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDocViewer() {
+  document.getElementById('docViewer').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function loadEmbed(key) {
+  const embed = embeds[key];
+  if (!embed) return;
+  currentModule = null;
+  renderModules();
+  document.getElementById('viewerTitle').textContent = embed.label;
+  document.getElementById('viewerCategory').textContent = 'EMBED';
+  document.getElementById('placeholder').style.display = 'none';
+  const frame = document.getElementById('viewerFrame');
+  frame.style.display = 'block';
+  frame.src = embed.url;
+  document.getElementById('viewerUrl').textContent = embed.url;
+  document.getElementById('openNewTab').href = embed.url;
+}
+
+function loadCustomEmbed() {
+  const input = document.getElementById('customEmbedUrl');
+  let url = input.value.trim();
+  if (!url) return alert('Veuillez entrer une URL');
+  url = transformUrl(url);
+  document.getElementById('viewerTitle').textContent = 'Embed Personnalisé';
+  document.getElementById('viewerCategory').textContent = 'CUSTOM';
+  document.getElementById('placeholder').style.display = 'none';
+  const frame = document.getElementById('viewerFrame');
+  frame.style.display = 'block';
+  frame.src = url;
+  document.getElementById('viewerUrl').textContent = url;
+  document.getElementById('openNewTab').href = url;
+  input.value = '';
+}
+
+function transformUrl(url) {
+  if (url.includes('youtube.com/watch')) { const vid = new URL(url).searchParams.get('v'); return `https://www.youtube.com/embed/${vid}`; }
+  if (url.includes('youtu.be/')) { const vid = url.split('youtu.be/')[1].split('?')[0]; return `https://www.youtube.com/embed/${vid}`; }
+  if (url.includes('vimeo.com/') && !url.includes('player.vimeo.com')) { const vid = url.split('vimeo.com/')[1].split('?')[0]; return `https://player.vimeo.com/video/${vid}`; }
+  if (url.includes('open.spotify.com') && !url.includes('/embed/')) return url.replace('open.spotify.com/', 'open.spotify.com/embed/');
+  if (url.endsWith('.pdf')) return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+  return url;
+}
+
+function refreshViewer() { const frame = document.getElementById('viewerFrame'); if (frame.src) frame.src = frame.src; }
+function toggleFullscreen() { const c = document.getElementById('viewerContainer'); document.fullscreenElement ? document.exitFullscreen() : c.requestFullscreen(); }
+function copyUrl() { const url = document.getElementById('viewerUrl').textContent; if (url && url !== '—') navigator.clipboard.writeText(url).then(() => alert('URL copiée !')); }
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDocViewer(); });
+document.getElementById('docViewer').addEventListener('click', e => { if (e.target.id === 'docViewer') closeDocViewer(); });
+document.addEventListener('DOMContentLoaded', () => renderModules());
+</script>
+</body>
+</html>
