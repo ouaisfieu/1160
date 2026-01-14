@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1160 Connect | Portail Citoyen & Architecture</title>
+    
+    <!-- Chosen Palette: Warm Neutrals & Nature (Stone/Emerald) - Reflecting Auderghem's green character -->
+    <!-- Application Structure Plan: 
+         The app is designed as a dual-purpose dashboard:
+         1. 'Experience Citoyenne': A simulated public-facing portal to demonstrate usability.
+         2. 'Architecture de l'Information': An interactive sitemap tool to visualize the hierarchy requested.
+         This structure allows stakeholders to both SEE the content plan (sitemap) and FEEL the user experience (portal).
+         Navigation is tab-based for easy context switching.
+    -->
+    <!-- Visualization & Content Choices:
+         - Sitemap: Interactive Tree (HTML/JS) -> Goal: Organize -> Allows users to expand/collapse branches to understand depth without overwhelming.
+         - Services: Filterable Grid (HTML/JS) -> Goal: Inform -> Quick access to services with categorical filtering.
+         - Data: Chart.js (Donut/Bar) -> Goal: Context -> Visualizing population and land use to give context to the '1160' identity.
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Chart Container Styles - Strictly enforced as per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+
+        /* Custom Scrollbar for cleaner look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f5f5f4; }
+        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+
+        /* Tree View Styles for Sitemap */
+        .tree-node {
+            position: relative;
+            padding-left: 1.5rem;
+            border-left: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        .tree-node:last-child { border-left: none; }
+        .tree-node::before {
+            content: '';
+            position: absolute;
+            top: 1rem; /* Adjust based on line-height */
+            left: 0;
+            width: 1rem;
+            height: 2px;
+            background-color: #e5e7eb;
+        }
+        .tree-node:last-child::before {
+            border-left: 2px solid #e5e7eb;
+            height: 1rem;
+            top: 0;
+        }
+        
+        .active-tab {
+            border-bottom: 2px solid #059669;
+            color: #059669;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased selection:bg-emerald-100 selection:text-emerald-800">
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app" class="min-h-screen flex flex-col">
+
+        <!-- HEADER -->
+        <header class="bg-white shadow-sm sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Logo / Brand -->
+                    <div class="flex items-center gap-3">
+                        <div class="bg-emerald-600 text-white w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg shadow-sm">
+                            1160
+                        </div>
+                        <div class="hidden md:block">
+                            <h1 class="text-xl font-bold text-stone-900 leading-tight">Auderghem Connect</h1>
+                            <p class="text-xs text-stone-500">Portail Citoyen & Architecture Numérique</p>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <nav class="flex space-x-1 sm:space-x-4">
+                        <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-3 py-2 text-sm font-medium transition-colors active-tab flex items-center gap-2">
+                            <i class="fa-solid fa-house"></i> <span class="hidden sm:inline">Accueil</span>
+                        </button>
+                        <button onclick="switchTab('sitemap')" id="tab-sitemap" class="px-3 py-2 text-sm font-medium text-stone-500 hover:text-stone-700 transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-sitemap"></i> <span class="hidden sm:inline">Sitemap Interactif</span>
+                        </button>
+                        <button onclick="switchTab('services')" id="tab-services" class="px-3 py-2 text-sm font-medium text-stone-500 hover:text-stone-700 transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-briefcase"></i> <span class="hidden sm:inline">Services</span>
+                        </button>
+                        <button onclick="switchTab('data')" id="tab-data" class="px-3 py-2 text-sm font-medium text-stone-500 hover:text-stone-700 transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie"></i> <span class="hidden sm:inline">Données</span>
+                        </button>
+                    </nav>
+
+                    <!-- User Actions -->
+                    <div class="flex items-center">
+                        <button class="p-2 text-stone-400 hover:text-emerald-600 transition-colors">
+                            <i class="fa-solid fa-search text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+            <!-- VIEW: DASHBOARD (Home) -->
+            <section id="view-dashboard" class="space-y-8 animate-fade-in">
+                <!-- Welcome Banner -->
+                <div class="bg-gradient-to-r from-emerald-700 to-teal-600 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+                    <div class="relative z-10 max-w-2xl">
+                        <h2 class="text-3xl font-bold mb-4">Bienvenue à Auderghem (1160)</h2>
+                        <p class="text-emerald-50 text-lg mb-6">Explorez la structure de notre nouveau portail numérique. Cette application combine l'architecture de l'information (Sitemap) et un prototype fonctionnel pour les citoyens.</p>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="switchTab('sitemap')" class="bg-white text-emerald-700 hover:bg-emerald-50 px-5 py-2.5 rounded-lg font-semibold shadow-sm transition-all transform hover:-translate-y-0.5">
+                                Voir l'Arborescence
+                            </button>
+                            <button onclick="switchTab('services')" class="bg-emerald-800 bg-opacity-40 hover:bg-opacity-60 text-white px-5 py-2.5 rounded-lg font-semibold transition-all border border-emerald-500">
+                                Accéder aux Services
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Decorative Icon -->
+                    <i class="fa-solid fa-leaf absolute -bottom-10 -right-10 text-9xl text-white opacity-10"></i>
+                </div>
+
+                <!-- Quick Stats Row -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:shadow-md transition-shadow">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-blue-100 text-blue-600 rounded-full">
+                                <i class="fa-solid fa-users text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-stone-500">Population Estimée</p>
+                                <p class="text-2xl font-bold text-stone-800">34,500+</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:shadow-md transition-shadow">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-green-100 text-green-600 rounded-full">
+                                <i class="fa-solid fa-tree text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-stone-500">Espaces Verts</p>
+                                <p class="text-2xl font-bold text-stone-800">35%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:shadow-md transition-shadow">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-amber-100 text-amber-600 rounded-full">
+                                <i class="fa-solid fa-file-signature text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-stone-500">Services en Ligne</p>
+                                <p class="text-2xl font-bold text-stone-800">42</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Highlight: Actualités -->
+                <div>
+                    <div class="flex justify-between items-end mb-4">
+                        <h3 class="text-xl font-bold text-stone-800">À la une à Auderghem</h3>
+                        <a href="#" class="text-sm text-emerald-600 hover:text-emerald-700 font-medium">Toutes les actualités &rarr;</a>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="news-container">
+                        <!-- News items injected by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: SITEMAP (Interactive Tree) -->
+            <section id="view-sitemap" class="hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 md:p-8">
+                    <div class="border-b border-stone-100 pb-6 mb-6">
+                        <h2 class="text-2xl font-bold text-stone-800 mb-2">Architecture du Site (Sitemap)</h2>
+                        <p class="text-stone-600 max-w-3xl">
+                            Cette vue interactive détaille la structure hiérarchique proposée pour le portail. 
+                            Cliquez sur les nœuds (catégories) pour explorer les sous-sections et découvrir le contenu prévu pour chaque page.
+                        </p>
+                    </div>
+
+                    <!-- Sitemap Controls -->
+                    <div class="flex flex-wrap gap-4 mb-6">
+                        <button onclick="expandAll()" class="text-xs font-medium bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded text-stone-700 transition-colors">
+                            <i class="fa-solid fa-expand mr-1"></i> Tout Déplier
+                        </button>
+                        <button onclick="collapseAll()" class="text-xs font-medium bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded text-stone-700 transition-colors">
+                            <i class="fa-solid fa-compress mr-1"></i> Tout Replier
+                        </button>
+                        <div class="flex-grow"></div>
+                        <div class="relative">
+                            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-stone-400 text-xs"></i>
+                            <input type="text" id="sitemap-search" placeholder="Rechercher une page..." class="pl-8 pr-3 py-1.5 text-sm border border-stone-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none w-full sm:w-64">
+                        </div>
+                    </div>
+
+                    <!-- Sitemap Visualization Container -->
+                    <div class="bg-stone-50 rounded-lg p-6 overflow-x-auto min-h-[500px]" id="sitemap-tree-root">
+                        <!-- Tree injected by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: SERVICES (Catalog) -->
+            <section id="view-services" class="hidden space-y-6">
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <h2 class="text-3xl font-bold text-stone-800 mb-4">Guichet Électronique</h2>
+                    <p class="text-stone-600">Accédez rapidement aux démarches administratives. Filtrez par catégorie ou par profil pour trouver le service adéquat.</p>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-stone-200 flex flex-wrap gap-4 items-center justify-center sticky top-20 z-40">
+                    <span class="text-sm font-semibold text-stone-500 uppercase tracking-wide mr-2">Filtrer par:</span>
+                    <button class="filter-btn active px-4 py-2 rounded-full text-sm font-medium bg-stone-100 text-stone-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all ring-2 ring-transparent focus:ring-emerald-500" data-filter="all">Tous</button>
+                    <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-stone-100 text-stone-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all" data-filter="population">Population & État Civil</button>
+                    <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-stone-100 text-stone-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all" data-filter="urbanisme">Urbanisme</button>
+                    <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-stone-100 text-stone-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all" data-filter="mobility">Mobilité</button>
+                    <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-stone-100 text-stone-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all" data-filter="loisirs">Loisirs</button>
+                </div>
+
+                <!-- Services Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="services-grid">
+                    <!-- Cards injected by JS -->
+                </div>
+            </section>
+
+            <!-- VIEW: DATA (Charts) -->
+            <section id="view-data" class="hidden space-y-8">
+                <div class="bg-white rounded-xl p-8 border border-stone-200">
+                    <h2 class="text-2xl font-bold text-stone-800 mb-4">La Commune en Chiffres</h2>
+                    <p class="text-stone-600 mb-8">Visualisation des données clés de la commune pour une meilleure transparence.</p>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                        <!-- Chart 1: Land Use -->
+                        <div class="flex flex-col">
+                            <h3 class="text-lg font-semibold text-stone-700 mb-4 flex items-center">
+                                <i class="fa-solid fa-map text-emerald-600 mr-2"></i> Répartition du Territoire
+                            </h3>
+                            <div class="bg-stone-50 rounded-lg p-4 border border-stone-100 flex-grow flex items-center justify-center">
+                                <div class="chart-container">
+                                    <canvas id="landUseChart"></canvas>
+                                </div>
+                            </div>
+                            <p class="text-sm text-stone-500 mt-3 italic">Auderghem est réputée pour sa couverture végétale importante, incluant une partie de la Forêt de Soignes.</p>
+                        </div>
+
+                        <!-- Chart 2: Population Age Structure -->
+                        <div class="flex flex-col">
+                            <h3 class="text-lg font-semibold text-stone-700 mb-4 flex items-center">
+                                <i class="fa-solid fa-chart-column text-blue-600 mr-2"></i> Pyramide des Âges (Simplifiée)
+                            </h3>
+                            <div class="bg-stone-50 rounded-lg p-4 border border-stone-100 flex-grow flex items-center justify-center">
+                                <div class="chart-container">
+                                    <canvas id="populationChart"></canvas>
+                                </div>
+                            </div>
+                            <p class="text-sm text-stone-500 mt-3 italic">Répartition démographique montrant l'équilibre entre les générations actives, les jeunes et les séniors.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Budget Visualization (Interactive List) -->
+                <div class="bg-white rounded-xl p-8 border border-stone-200">
+                    <h3 class="text-lg font-semibold text-stone-700 mb-6">Répartition Budgétaire (Exemple)</h3>
+                    <div class="space-y-4" id="budget-bars">
+                        <!-- Budget bars injected by JS -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="bg-stone-900 text-stone-400 py-12 mt-12">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4 text-white">
+                        <div class="bg-emerald-600 w-8 h-8 rounded flex items-center justify-center font-bold">A</div>
+                        <span class="font-bold text-lg">1160 Auderghem</span>
+                    </div>
+                    <p class="text-sm mb-4">Maison Communale<br>Rue Emile Idiers 12<br>1160 Auderghem</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Accès Rapide</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-emerald-400 transition-colors">Heures d'ouverture</a></li>
+                        <li><a href="#" class="hover:text-emerald-400 transition-colors">Nous contacter</a></li>
+                        <li><a href="#" class="hover:text-emerald-400 transition-colors">Jobs</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Urgences</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><span class="text-red-400 font-bold">112</span> (Médical & Pompiers)</li>
+                        <li><span class="text-blue-400 font-bold">101</span> (Police)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Restez informés</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-facebook text-xl"></i></a>
+                        <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-twitter text-xl"></i></a>
+                        <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-instagram text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="container mx-auto px-4 mt-12 pt-8 border-t border-stone-800 text-center text-xs">
+                &copy; 2024 Administration Communale d'Auderghem. Prototype conceptuel.
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA STORE ---
+
+        // 1. SITEMAP DATA (Hierarchical Structure)
+        const sitemapData = [
+            {
+                id: 'home', title: 'Accueil', icon: 'fa-house', type: 'root', description: 'Point d\'entrée principal. Recherche, actualités urgentes, accès rapide.',
+                children: [
+                    {
+                        id: 'admin', title: 'Administration & Services', icon: 'fa-building-columns', description: 'Tous les services communaux administratifs.',
+                        children: [
+                            { id: 'civil', title: 'État Civil / Population', description: 'Cartes d\'identité, passeports, changement d\'adresse.' },
+                            { id: 'urban', title: 'Urbanisme & Environnement', description: 'Permis, enquêtes publiques, abattage d\'arbres.' },
+                            { id: 'taxes', title: 'Taxes & Finances', description: 'Taxes communales, primes.' }
+                        ]
+                    },
+                    {
+                        id: 'life', title: 'Vivre à Auderghem', icon: 'fa-heart', description: 'Loisirs, culture et vie quotidienne.',
+                        children: [
+                            { id: 'mobility', title: 'Mobilité & Travaux', description: 'Stationnement, chantiers, cartes riverains.' },
+                            { id: 'culture', title: 'Culture & Loisirs', description: 'Centre culturel, bibliothèque, agenda.' },
+                            { id: 'sport', title: 'Sport', description: 'Centres sportifs, clubs, infrastructures.' },
+                            { id: 'seniors', title: 'Séniors', description: 'Activités, aides, pension.' },
+                            { id: 'youth', title: 'Enfance & Jeunesse', description: 'Crèches, écoles, plaines de jeux.' }
+                        ]
+                    },
+                    {
+                        id: 'demo', title: 'Vie Démocratique', icon: 'fa-users-rectangle', description: 'Participation citoyenne et politique.',
+                        children: [
+                            { id: 'council', title: 'Conseil Communal', description: 'Ordres du jour, PV, retransmission.' },
+                            { id: 'cpas', title: 'CPAS', description: 'Aide sociale, structure.' },
+                            { id: 'participate', title: 'Participation Citoyenne', description: 'Enquêtes, budgets participatifs.' }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // 2. SERVICES DATA (Flat list for catalog)
+        const servicesData = [
+            { title: "Carte d'identité", category: "population", icon: "fa-id-card", desc: "Renouvellement, perte ou vol." },
+            { title: "Changement d'adresse", category: "population", icon: "fa-truck-moving", desc: "Déclarer votre déménagement." },
+            { title: "Permis d'urbanisme", category: "urbanisme", icon: "fa-city", desc: "Demandes et consultations de dossiers." },
+            { title: "Carte riverain", category: "mobility", icon: "fa-car", desc: "Stationnement dans votre zone." },
+            { title: "Extrait de casier judiciaire", category: "population", icon: "fa-file-shield", desc: "Document administratif." },
+            { title: "Primes communales", category: "urbanisme", icon: "fa-hand-holding-dollar", desc: "Rénovation, sécurisation, énergie." },
+            { title: "Inscription crèche", category: "loisirs", icon: "fa-baby", desc: "Liste d'attente communale." },
+            { title: "Location de salle", category: "loisirs", icon: "fa-champagne-glasses", desc: "Fêtes et événements privés." },
+            { title: "Compost de quartier", category: "urbanisme", icon: "fa-leaf", desc: "Rejoindre une initiative locale." },
+            { title: "Acte de naissance", category: "population", icon: "fa-scroll", desc: "Commandez vos actes en ligne." },
+            { title: "Occupation voirie", category: "mobility", icon: "fa-road-barrier", desc: "Pour déménagement ou travaux." }
+        ];
+
+        // 3. NEWS DATA
+        const newsData = [
+            { title: "Plan Communal de Mobilité", date: "12 Jan 2026", cat: "Mobilité", imgColor: "bg-blue-100", icon: "fa-bicycle" },
+            { title: "Inscriptions stages de Pâques", date: "10 Jan 2026", cat: "Jeunesse", imgColor: "bg-orange-100", icon: "fa-child-reaching" },
+            { title: "Enquête publique: Projet Delta", date: "05 Jan 2026", cat: "Urbanisme", imgColor: "bg-stone-200", icon: "fa-building" }
+        ];
+
+        // --- NAVIGATION LOGIC ---
+
+        function switchTab(tabId) {
+            // Update Tab UI
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('active-tab', 'text-emerald-600');
+                btn.classList.add('text-stone-500');
+            });
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.add('active-tab');
+            activeBtn.classList.remove('text-stone-500');
+
+            // Update View Visibility
+            ['dashboard', 'sitemap', 'services', 'data'].forEach(id => {
+                const section = document.getElementById(`view-${id}`);
+                if (id === tabId) {
+                    section.classList.remove('hidden');
+                    // Initialize charts if data tab is selected and they haven't been drawn
+                    if (id === 'data' && !window.chartsInitialized) {
+                        initCharts();
+                        renderBudget();
+                        window.chartsInitialized = true;
+                    }
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+            
+            // Scroll to top
+            window.scrollTo(0,0);
+        }
+
+        // --- SITEMAP LOGIC (Recursive Render) ---
+        
+        function renderSitemap(nodes, parentElement, level = 0) {
+            nodes.forEach(node => {
+                const nodeEl = document.createElement('div');
+                nodeEl.className = 'tree-node mb-2';
+                // Adjust margin based on level slightly if needed, but CSS handles nesting visually via padding-left
+                
+                const hasChildren = node.children && node.children.length > 0;
+                
+                const contentHtml = `
+                    <div class="flex items-start group">
+                        <div class="flex-shrink-0 mt-1 mr-3 w-8 h-8 rounded-full bg-white border border-stone-200 flex items-center justify-center text-stone-500 shadow-sm z-10 group-hover:border-emerald-400 group-hover:text-emerald-600 transition-colors cursor-pointer toggle-btn">
+                            <i class="fa-solid ${node.icon || 'fa-circle-notch'} text-xs"></i>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg border border-stone-200 shadow-sm hover:shadow-md transition-shadow flex-grow cursor-pointer max-w-2xl sitemap-card">
+                            <div class="flex justify-between items-center mb-1">
+                                <h4 class="font-semibold text-stone-800">${node.title}</h4>
+                                ${hasChildren ? '<span class="text-xs text-stone-400 bg-stone-50 px-2 py-0.5 rounded border border-stone-100"><i class="fa-solid fa-layer-group mr-1"></i>Sous-sections</span>' : ''}
+                            </div>
+                            <p class="text-xs text-stone-500 leading-relaxed">${node.description || ''}</p>
+                        </div>
+                    </div>
+                    ${hasChildren ? `<div class="children-container mt-2 ml-4 hidden transform origin-top transition-all duration-300"></div>` : ''}
+                `;
+                
+                nodeEl.innerHTML = contentHtml;
+                parentElement.appendChild(nodeEl);
+
+                if (hasChildren) {
+                    const container = nodeEl.querySelector('.children-container');
+                    const toggleBtn = nodeEl.querySelector('.toggle-btn');
+                    const card = nodeEl.querySelector('.sitemap-card');
+                    
+                    // Recursive call
+                    renderSitemap(node.children, container, level + 1);
+
+                    // Click interactions
+                    const toggle = () => {
+                        const isHidden = container.classList.contains('hidden');
+                        if (isHidden) {
+                            container.classList.remove('hidden');
+                            container.classList.add('animate-fade-in-down');
+                        } else {
+                            container.classList.add('hidden');
+                            container.classList.remove('animate-fade-in-down');
+                        }
+                    };
+
+                    toggleBtn.addEventListener('click', toggle);
+                    card.addEventListener('click', toggle);
+                }
+            });
+        }
+
+        // Sitemap Expansion Controls
+        function expandAll() {
+            document.querySelectorAll('.children-container').forEach(el => el.classList.remove('hidden'));
+        }
+        function collapseAll() {
+            document.querySelectorAll('.children-container').forEach(el => el.classList.add('hidden'));
+        }
+
+        // --- SERVICES LOGIC ---
+
+        function renderServices(filter = 'all') {
+            const grid = document.getElementById('services-grid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'all' 
+                ? servicesData 
+                : servicesData.filter(s => s.category === filter);
+
+            filtered.forEach(service => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-xl border border-stone-200 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all group cursor-pointer';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="p-3 bg-stone-50 rounded-lg text-stone-600 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors">
+                            <i class="fa-solid ${service.icon} text-xl"></i>
+                        </div>
+                        <span class="text-xs font-bold px-2 py-1 rounded bg-stone-100 text-stone-500 uppercase">${service.category}</span>
+                    </div>
+                    <h3 class="font-bold text-stone-800 mb-2 group-hover:text-emerald-700 transition-colors">${service.title}</h3>
+                    <p class="text-sm text-stone-500">${service.desc}</p>
+                    <div class="mt-4 flex items-center text-xs font-semibold text-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+                        Commencer <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Service Filter Logic
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Remove active class from all
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-emerald-100', 'text-emerald-800', 'ring-2', 'ring-emerald-500', 'ring-offset-1');
+                    b.classList.add('bg-stone-100', 'text-stone-600');
+                });
+                // Add active to clicked
+                e.target.classList.remove('bg-stone-100', 'text-stone-600');
+                e.target.classList.add('bg-emerald-100', 'text-emerald-800', 'ring-2', 'ring-emerald-500', 'ring-offset-1');
+                
+                renderServices(e.target.dataset.filter);
+            });
+        });
+
+        // --- DATA VISUALIZATION LOGIC ---
+
+        function initCharts() {
+            // Chart 1: Land Use (Auderghem is green)
+            const ctx1 = document.getElementById('landUseChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Espaces Verts (Forêt/Parcs)', 'Zone Résidentielle', 'Bureaux/Commerce', 'Voiries'],
+                    datasets: [{
+                        data: [40, 35, 10, 15],
+                        backgroundColor: ['#059669', '#d6d3d1', '#f59e0b', '#78716c'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
+                    }
+                }
+            });
+
+            // Chart 2: Population
+            const ctx2 = document.getElementById('populationChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['0-17 ans', '18-35 ans', '36-64 ans', '65+ ans'],
+                    datasets: [{
+                        label: 'Hommes',
+                        data: [3500, 4200, 7100, 2800],
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4
+                    }, {
+                        label: 'Femmes',
+                        data: [3400, 4500, 7300, 3800],
+                        backgroundColor: '#ec4899',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: false, grid: { display: false } },
+                        y: { beginAtZero: true, grid: { color: '#f5f5f4' } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function renderBudget() {
+            const budgetData = [
+                { label: 'Enseignement', val: 28, color: 'bg-emerald-500' },
+                { label: 'Sécurité & Prévention', val: 18, color: 'bg-blue-500' },
+                { label: 'Administration Générale', val: 15, color: 'bg-stone-500' },
+                { label: 'Action Sociale', val: 14, color: 'bg-orange-500' },
+                { label: 'Voiries & Propreté', val: 12, color: 'bg-stone-700' },
+                { label: 'Culture & Sport', val: 13, color: 'bg-purple-500' }
+            ];
+            
+            const container = document.getElementById('budget-bars');
+            container.innerHTML = '';
+            
+            budgetData.forEach(item => {
+                const el = document.createElement('div');
+                el.innerHTML = `
+                    <div class="flex justify-between text-sm font-medium text-stone-600 mb-1">
+                        <span>${item.label}</span>
+                        <span>${item.val}%</span>
+                    </div>
+                    <div class="w-full bg-stone-100 rounded-full h-2.5">
+                        <div class="${item.color} h-2.5 rounded-full" style="width: ${item.val}%"></div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        // --- DASHBOARD NEWS INJECTION ---
+        function renderNews() {
+            const container = document.getElementById('news-container');
+            newsData.forEach(news => {
+                const el = document.createElement('div');
+                el.className = 'bg-white rounded-lg p-5 border border-stone-100 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow cursor-pointer';
+                el.innerHTML = `
+                    <div class="${news.imgColor} text-stone-600 w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center">
+                        <i class="fa-solid ${news.icon}"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">${news.cat}</span>
+                            <span class="text-xs text-stone-400">• ${news.date}</span>
+                        </div>
+                        <h4 class="font-bold text-stone-800 leading-snug">${news.title}</h4>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSitemap(sitemapData, document.getElementById('sitemap-tree-root'));
+            renderServices('all');
+            renderNews();
+            
+            // Highlight 'All' filter button initially
+            document.querySelector('.filter-btn[data-filter="all"]').classList.add('bg-emerald-100', 'text-emerald-800', 'ring-2', 'ring-emerald-500');
+            document.querySelector('.filter-btn[data-filter="all"]').classList.remove('bg-stone-100', 'text-stone-600');
+        });
+
+    </script>
+</body>
+</html>
