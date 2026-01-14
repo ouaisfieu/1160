@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    SITEMAP XML - 1160 Connect
+    Le paysage associatif d'Auderghem
+    https://ouaisfieu.github.io/1160/
+    
+    Note: Ce site est une Single Page Application (SPA).
+    Les sections sont accessibles via des ancres (#) sur la page principale.
+    Ce sitemap référence la page principale + les ancres majeures pour le SEO.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    
+    <!-- Page principale / Landing -->
+    <url>
+        <loc>https://ouaisfieu.github.io/1160/</loc>
+        <lastmod>2025-01-14</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    
+    <!-- Section: Vue d'ensemble / Dashboard -->
+    <url>
+        <loc>https://ouaisfieu.github.io/1160/#dashboard</loc>
+        <lastmod>2025-01-14</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <!-- Section: Analyses thématiques -->
+    <url>
+        <loc>https://ouaisfieu.github.io/1160/#analytics</loc>
+        <lastmod>2025-01-14</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <!-- Section: Annuaire exploratoire -->
+    <url>
+        <loc>https://ouaisfieu.github.io/1160/#directory</loc>
+        <lastmod>2025-01-14</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+</urlset>
