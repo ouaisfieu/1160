@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💰 RADAR FINANCEMENT — Résistance Cognitive | 500K-2M€ Potentiel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mint: #98E4B9;
+      --mint-soft: #B8F0D0;
+      --mint-dark: #4ADE80;
+      --lilas: #C4B5FD;
+      --lilas-soft: #DDD6FE;
+      --lilas-dark: #A78BFA;
+      --gold: #FBBF24;
+      --gold-soft: #FDE68A;
+      --coral: #F87171;
+      --cyan: #22D3EE;
+      --bg-void: #0A0B12;
+      --bg-panel: #0F1019;
+      --bg-card: #151621;
+      --bg-elevated: #1A1B2E;
+      --glow-mint: 0 0 20px rgba(152, 228, 185, 0.5), 0 0 40px rgba(152, 228, 185, 0.3);
+      --glow-lilas: 0 0 20px rgba(196, 181, 253, 0.5), 0 0 40px rgba(196, 181, 253, 0.3);
+      --glow-gold: 0 0 20px rgba(251, 191, 36, 0.5), 0 0 40px rgba(251, 191, 36, 0.3);
+      --glow-text-mint: 0 0 10px rgba(152, 228, 185, 0.8), 0 0 20px rgba(152, 228, 185, 0.4);
+      --glow-text-gold: 0 0 10px rgba(251, 191, 36, 0.8), 0 0 20px rgba(251, 191, 36, 0.4);
+      --text-primary: #E8E6F0;
+      --text-muted: #8B8A9E;
+      --border-subtle: rgba(152, 228, 185, 0.15);
+      --border-gold: rgba(251, 191, 36, 0.3);
+      --font-display: 'Orbitron', sans-serif;
+      --font-body: 'Syne', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--gold) var(--bg-void); }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-void); }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--gold), var(--mint)); border-radius: 4px; }
+    body { min-height: 100vh; font-family: var(--font-body); background: var(--bg-void); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
+    
+    /* Scanlines */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.12) 2px, rgba(0, 0, 0, 0.12) 4px);
+      z-index: 9999;
+      animation: scanlines 10s linear infinite;
+    }
+    @keyframes scanlines { 0% { transform: translateY(0); } 100% { transform: translateY(4px); } }
+
+    /* Animations */
+    @keyframes pulse-gold {
+      0%, 100% { box-shadow: var(--glow-gold); border-color: var(--gold); }
+      50% { box-shadow: var(--glow-mint); border-color: var(--mint); }
+    }
+    @keyframes data-stream { 0% { background-position: 0% 0%; } 100% { background-position: 200% 200%; } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes counter { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes glitch-money {
+      0% { text-shadow: 2px 0 var(--gold), -2px 0 var(--mint); }
+      25% { text-shadow: -2px 0 var(--gold), 2px 0 var(--lilas); }
+      50% { text-shadow: 2px 0 var(--mint), -2px 0 var(--gold); }
+      75% { text-shadow: -2px 0 var(--lilas), 2px 0 var(--gold); }
+      100% { text-shadow: 2px 0 var(--gold), -2px 0 var(--mint); }
+    }
+    @keyframes progress-shine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: linear-gradient(180deg, var(--bg-panel) 0%, rgba(15, 16, 25, 0.95) 100%);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-gold);
+      padding: 1rem 2rem;
+    }
+    .header-grid {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+    .logo-block { display: flex; align-items: center; gap: 1rem; }
+    .logo-glyph {
+      width: 60px;
+      height: 60px;
+      border: 2px solid var(--gold);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-elevated) 100%);
+      animation: pulse-gold 4s ease-in-out infinite;
+      font-size: 1.8rem;
+    }
+    .brand-text h1 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      text-shadow: var(--glow-text-gold);
+      animation: glitch-money 3s ease-in-out infinite;
+    }
+    .brand-text .tagline {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--mint);
+      letter-spacing: 0.1em;
+      margin-top: 2px;
+    }
+    .total-counter {
+      text-align: right;
+    }
+    .counter-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .counter-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--gold);
+      text-shadow: var(--glow-text-gold);
+      animation: counter 1s ease-out;
+    }
+    .counter-sub {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--mint);
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem 2rem;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-subtle);
+      overflow-x: auto;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+    .nav-tab {
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .nav-tab:hover { border-color: var(--gold); color: var(--gold); }
+    .nav-tab.active { 
+      background: rgba(251, 191, 36, 0.15); 
+      border-color: var(--gold); 
+      color: var(--gold);
+      box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+    }
+    .nav-tab .amount {
+      background: var(--bg-elevated);
+      padding: 0.2rem 0.4rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.65rem;
+    }
+
+    /* Main Layout */
+    main {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 1rem;
+      padding: 1rem;
+      min-height: calc(100vh - 160px);
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+    @media (max-width: 1100px) { main { grid-template-columns: 1fr; } }
+
+    /* Panels */
+    .panel {
+      background: linear-gradient(135deg, var(--bg-panel) 0%, var(--bg-card) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+    }
+    .panel.gold-accent { border-color: var(--border-gold); }
+    .panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--mint), var(--lilas), var(--gold));
+      background-size: 200% 100%;
+      animation: data-stream 4s linear infinite;
+    }
+    .panel-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .panel-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 0.25rem 0.5rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--gold);
+      border-radius: var(--radius-sm);
+      color: var(--gold);
+    }
+    .panel-content { padding: 1rem; overflow-y: auto; max-height: calc(100vh - 280px); }
+
+    /* Sidebar - Filtres & Stats */
+    .filter-section { margin-bottom: 1.5rem; }
+    .filter-title {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--lilas);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .filter-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--lilas), transparent); }
+    
+    .phase-filters { display: flex; flex-direction: column; gap: 0.5rem; }
+    .phase-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .phase-btn:hover { border-color: var(--gold); background: rgba(251, 191, 36, 0.08); }
+    .phase-btn.active { border-color: var(--gold); background: rgba(251, 191, 36, 0.15); color: var(--gold); }
+    .phase-btn .phase-amount { color: var(--mint); font-weight: 600; }
+
+    /* Pertinence Stars */
+    .stars { color: var(--gold); letter-spacing: 2px; }
+    .stars-dim { opacity: 0.3; }
+
+    /* Budget Breakdown */
+    .budget-breakdown { margin-bottom: 1.5rem; }
+    .budget-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .budget-item:last-child { border-bottom: none; }
+    .budget-label { font-size: 0.8rem; color: var(--text-muted); }
+    .budget-value { font-family: var(--font-mono); font-size: 0.85rem; color: var(--mint); font-weight: 600; }
+    .budget-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid var(--gold);
+      border-radius: var(--radius-md);
+      margin-top: 1rem;
+    }
+    .budget-total .label { font-family: var(--font-display); font-size: 0.8rem; color: var(--gold); text-transform: uppercase; }
+    .budget-total .value { font-family: var(--font-display); font-size: 1.3rem; color: var(--gold); font-weight: 700; text-shadow: var(--glow-text-gold); }
+
+    /* Progress Bars */
+    .progress-section { margin-bottom: 1.5rem; }
+    .progress-item { margin-bottom: 1rem; }
+    .progress-header { display: flex; justify-content: space-between; margin-bottom: 0.4rem; }
+    .progress-label { font-size: 0.75rem; color: var(--text-muted); }
+    .progress-value { font-family: var(--font-mono); font-size: 0.75rem; color: var(--gold); }
+    .progress-bar {
+      height: 8px;
+      background: var(--bg-void);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-fill::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: progress-shine 2s infinite;
+    }
+    .progress-fill.gold { background: linear-gradient(90deg, var(--gold), var(--gold-soft)); }
+    .progress-fill.mint { background: linear-gradient(90deg, var(--mint), var(--mint-soft)); }
+    .progress-fill.lilas { background: linear-gradient(90deg, var(--lilas), var(--lilas-soft)); }
+
+    /* Main Content - Funding Cards */
+    .funding-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1rem;
+    }
+    .funding-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .funding-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 40px rgba(251, 191, 36, 0.15);
+    }
+    .funding-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+    .funding-card.priority-high::before { background: var(--gold); }
+    .funding-card.priority-medium::before { background: var(--mint); }
+    .funding-card.priority-low::before { background: var(--lilas); }
+    
+    .card-header {
+      padding: 1rem 1.25rem;
+      background: rgba(0,0,0,0.2);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .card-source {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.25rem;
+    }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .card-body { padding: 1rem 1.25rem; }
+    .card-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .meta-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; }
+    .meta-value { font-family: var(--font-mono); font-size: 0.85rem; color: var(--mint); }
+    .meta-value.amount { color: var(--gold); font-weight: 600; font-size: 1.1rem; }
+    
+    .card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+    .card-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      padding: 0.2rem 0.5rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+    }
+    .card-tag.deadline { border-color: var(--coral); color: var(--coral); }
+    .card-tag.permanent { border-color: var(--mint); color: var(--mint); }
+    
+    .card-footer {
+      padding: 0.75rem 1.25rem;
+      background: rgba(0,0,0,0.1);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-contact {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--lilas);
+      text-decoration: none;
+    }
+    .card-contact:hover { color: var(--mint); text-shadow: var(--glow-text-mint); }
+    .card-action {
+      padding: 0.4rem 0.8rem;
+      background: var(--gold);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--bg-void);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .card-action:hover { box-shadow: var(--glow-gold); transform: scale(1.05); }
+
+    /* Contact Lists */
+    .contact-section { margin-top: 1rem; }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+    }
+    .contact-item:hover { border-color: var(--mint); background: rgba(152, 228, 185, 0.05); }
+    .contact-icon { font-size: 1.2rem; }
+    .contact-info { flex: 1; }
+    .contact-name { font-size: 0.85rem; font-weight: 500; }
+    .contact-email { font-family: var(--font-mono); font-size: 0.7rem; color: var(--lilas); }
+
+    /* Timeline - Plan d'action */
+    .action-timeline { margin-top: 1rem; }
+    .timeline-phase {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      position: relative;
+    }
+    .timeline-phase::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      border-radius: 4px 0 0 4px;
+    }
+    .timeline-phase.phase-1::before { background: var(--mint); }
+    .timeline-phase.phase-2::before { background: var(--lilas); }
+    .timeline-phase.phase-3::before { background: var(--gold); }
+    .timeline-phase.phase-4::before { background: var(--coral); }
+    
+    .phase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .phase-title {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .phase-duration {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      padding: 0.2rem 0.5rem;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-sm);
+    }
+    .phase-tasks { list-style: none; }
+    .phase-task {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.4rem 0;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .phase-task .check { color: var(--mint); }
+    .phase-task.pending .check { color: var(--text-muted); opacity: 0.5; }
+
+    /* Embed Section */
+    .embed-section { margin-top: 1rem; }
+    .embed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+    .embed-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.6rem;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .embed-btn:hover { border-color: var(--gold); background: rgba(251, 191, 36, 0.08); }
+    .custom-embed-input {
+      width: 100%;
+      padding: 0.6rem;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .custom-embed-input:focus { outline: none; border-color: var(--gold); }
+
+    /* Modal Detail */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(10, 11, 18, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    .modal-overlay.active { display: flex; justify-content: center; align-items: flex-start; }
+    .modal-content {
+      max-width: 700px;
+      width: 100%;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    .modal-header {
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title { font-family: var(--font-display); font-size: 1.2rem; color: var(--gold); }
+    .modal-close {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    .modal-close:hover { border-color: var(--coral); color: var(--coral); }
+    .modal-body { padding: 1.5rem; }
+    .modal-body h3 { font-family: var(--font-display); font-size: 1rem; color: var(--mint); margin: 1.5rem 0 0.75rem; }
+    .modal-body h3:first-child { margin-top: 0; }
+    .modal-body p { margin-bottom: 0.75rem; color: var(--text-muted); }
+    .modal-body ul { margin: 0.75rem 0; padding-left: 1.5rem; }
+    .modal-body li { margin-bottom: 0.4rem; }
+    .modal-body strong { color: var(--gold); }
+    .modal-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+    .modal-body th, .modal-body td { padding: 0.6rem; border: 1px solid var(--border-subtle); text-align: left; }
+    .modal-body th { background: var(--bg-card); color: var(--gold); font-family: var(--font-display); font-size: 0.7rem; text-transform: uppercase; }
+
+    /* Footer */
+    footer {
+      padding: 1rem 2rem;
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 1rem;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+    footer a { color: var(--lilas); text-decoration: none; }
+    footer a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-grid">
+    <div class="logo-block">
+      <div class="logo-glyph">💰</div>
+      <div class="brand-text">
+        <h1>Radar Financement</h1>
+        <div class="tagline">Résistance Cognitive · PAC Auderghem 1160</div>
+      </div>
+    </div>
+    <div></div>
+    <div class="total-counter">
+      <div class="counter-label">Potentiel Total Identifié</div>
+      <div class="counter-value">500K€ - 2M€</div>
+      <div class="counter-sub">sur 3 ans · 40+ sources</div>
+    </div>
+  </div>
+</header>
+
+<nav class="nav-tabs">
+  <button class="nav-tab active" data-tab="all" onclick="filterByTab('all')">
+    📊 Vue d'ensemble
+  </button>
+  <button class="nav-tab" data-tab="bruxelles" onclick="filterByTab('bruxelles')">
+    🏛️ Bruxelles <span class="amount">400K€</span>
+  </button>
+  <button class="nav-tab" data-tab="federal" onclick="filterByTab('federal')">
+    🇧🇪 Fédéral <span class="amount">300K€</span>
+  </button>
+  <button class="nav-tab" data-tab="europe" onclick="filterByTab('europe')">
+    🇪🇺 Europe <span class="amount">500K€</span>
+  </button>
+  <button class="nav-tab" data-tab="fondations" onclick="filterByTab('fondations')">
+    🏦 Fondations <span class="amount">5M£</span>
+  </button>
+  <button class="nav-tab" data-tab="contacts" onclick="filterByTab('contacts')">
+    📇 Contacts
+  </button>
+  <button class="nav-tab" data-tab="plan" onclick="filterByTab('plan')">
+    📅 Plan d'action
+  </button>
+</nav>
+
+<main>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="panel gold-accent">
+      <div class="panel-header">
+        <div class="panel-title">💎 Tableau de bord</div>
+      </div>
+      <div class="panel-content">
+        
+        <!-- Budget Potentiel -->
+        <div class="budget-breakdown">
+          <div class="filter-title">Budget potentiel sur 3 ans</div>
+          <div class="budget-item">
+            <span class="budget-label">Subventions BXL</span>
+            <span class="budget-value">200-400K€</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-label">Subventions fédérales</span>
+            <span class="budget-value">50-150K€</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-label">Programmes UE</span>
+            <span class="budget-value">50-500K€</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-label">Fondations</span>
+            <span class="budget-value">50-200K€</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-label">Prix/Fellowships</span>
+            <span class="budget-value">25-100K€</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-label">Ressources tech in-kind</span>
+            <span class="budget-value">50K€/an</span>
+          </div>
+          <div class="budget-total">
+            <span class="label">Total estimé</span>
+            <span class="value">500K€ - 2M€</span>
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-section">
+          <div class="filter-title">Progression candidatures</div>
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-label">Phase 1 - Démarrage</span>
+              <span class="progress-value">0%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill mint" style="width: 0%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-label">Phase 2 - Structuration</span>
+              <span class="progress-value">0%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill lilas" style="width: 0%"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header">
+              <span class="progress-label">Phase 3 - Majeurs</span>
+              <span class="progress-value">0%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill gold" style="width: 0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Filtres par phase -->
+        <div class="filter-section">
+          <div class="filter-title">Filtrer par phase</div>
+          <div class="phase-filters">
+            <button class="phase-btn active" onclick="filterByPhase('all')">
+              <span>Toutes les phases</span>
+              <span class="phase-amount">40+ sources</span>
+            </button>
+            <button class="phase-btn" onclick="filterByPhase('1')">
+              <span>🚀 Phase 1 (0-2 mois)</span>
+              <span class="phase-amount">Démarrage</span>
+            </button>
+            <button class="phase-btn" onclick="filterByPhase('2')">
+              <span>🏗️ Phase 2 (2-4 mois)</span>
+              <span class="phase-amount">Structuration</span>
+            </button>
+            <button class="phase-btn" onclick="filterByPhase('3')">
+              <span>💰 Phase 3 (4-12 mois)</span>
+              <span class="phase-amount">Majeurs</span>
+            </button>
+            <button class="phase-btn" onclick="filterByPhase('4')">
+              <span>📈 Phase 4 (12+ mois)</span>
+              <span class="phase-amount">Scaling</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Embeds -->
+        <div class="embed-section">
+          <div class="filter-title">🔗 Liens rapides</div>
+          <div class="embed-grid">
+            <button class="embed-btn" onclick="openUrl('https://innoviris.brussels')">Innoviris</button>
+            <button class="embed-btn" onclick="openUrl('https://www.cocof.be')">COCOF</button>
+            <button class="embed-btn" onclick="openUrl('https://finance.brussels')">Finance.bxl</button>
+            <button class="embed-btn" onclick="openUrl('https://kbs-frb.be')">FRB</button>
+            <button class="embed-btn" onclick="openUrl('https://wellcome.org')">Wellcome</button>
+            <button class="embed-btn" onclick="openUrl('https://nlnet.nl')">NLnet</button>
+          </div>
+          <input type="text" class="custom-embed-input" id="customUrl" placeholder="Coller une URL..." onkeypress="if(event.key==='Enter')openCustomUrl()">
+        </div>
+
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <section class="main-content">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">📋 Sources de Financement</div>
+        <span class="panel-badge" id="sourceCount">40+ sources</span>
+      </div>
+      <div class="panel-content" id="mainContent">
+        <!-- Content loaded by JS -->
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Détails</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<footer>
+  <div>💰 Radar Financement · Résistance Cognitive · Compilé le 11 janvier 2026</div>
+  <div>Sources : innoviris.brussels, kbs-frb.be, fse.be, nlnet.nl, Funding & Tenders Portal UE</div>
+</footer>
+
+<script>
+// Data
+const fundingSources = {
+  bruxelles: {
+    title: "Subventions Bruxelles-Capitale",
+    total: "400.000€ potentiels",
+    sources: [
+      { name: "PYSI", org: "Innoviris", amount: "100.000€", rate: "100%", deadline: "28 nov 2025", stars: 3, url: "innoviris.brussels/program/prove-your-social-innovation", contact: "info@innoviris.brussels", phase: 3 },
+      { name: "Co-Create", org: "Innoviris", amount: "Variable", rate: "80-100%", deadline: "Permanent", stars: 3, url: "innoviris.brussels/fr/program/co-creation", contact: "info@innoviris.brussels", phase: 3 },
+      { name: "Applied PhD", org: "Innoviris", amount: "4 ans salaire", rate: "100%", deadline: "17 nov 2025", stars: 3, url: "innoviris.brussels/program/applied-phd", contact: "info@innoviris.brussels", phase: 3 },
+      { name: "BRUSEED", org: "Finance.brussels", amount: "250.000€", rate: "Capital/prêt", deadline: "Permanent", stars: 3, url: "finance.brussels", contact: "finance.brussels", phase: 2 },
+      { name: "R&D Projects", org: "Innoviris", amount: "Variable", rate: "15-70%", deadline: "Permanent", stars: 2, url: "innoviris.brussels/programs", contact: "info@innoviris.brussels", phase: 3 },
+      { name: "Impulsion 2026", org: "COCOF", amount: "30.000€/an", rate: "Subvention", deadline: "31 oct 2025", stars: 3, url: "ccf.brussels/appel-a-projets-impulsion-2026", contact: "cohesionsociale@spfb.brussels", phase: 2, eligibility: "ASBL francophone" },
+      { name: "Initiatives Santé", org: "COCOF", amount: "Variable", rate: "Subvention", deadline: "Permanent", stars: 2, url: "ccf.brussels/nos-services/bien-etre-et-sante", contact: "cohesionsociale@spfb.brussels", phase: 2, eligibility: "ASBL" },
+      { name: "Bourse Innovation", org: "COCOF", amount: "15.000€/an x2", rate: "Subvention", deadline: "Variable", stars: 2, url: "ccf.brussels", contact: "subventionsfacultatives@spfb.brussels", phase: 2, eligibility: "ASBL avec antécédent FIPI" },
+      { name: "Prêt Entreprise Sociale", org: "Finance.brussels", amount: "150.000€", rate: "Prêt", deadline: "Permanent", stars: 2, url: "finance.brussels", contact: "finance.brussels", phase: 2, eligibility: "Entreprise sociale agréée" },
+      { name: "Prêt Proxi", org: "Finance.brussels", amount: "Variable", rate: "Prêt", deadline: "Permanent", stars: 2, url: "finance.brussels/proxi", contact: "finance.brussels", phase: 2, eligibility: "Mobilise épargne particuliers" },
+      { name: "Micro-crédit Starter", org: "Finance.brussels", amount: "5-30.000€", rate: "Prêt", deadline: "Permanent", stars: 2, url: "finance.brussels", contact: "finance.brussels", phase: 1, eligibility: "Indépendants" }
+    ]
+  },
+  federal: {
+    title: "Subventions fédérales Belgique",
+    total: "300.000€ potentiels",
+    sources: [
+      { name: "SPP Intégration sociale", org: "Fédéral", amount: "Variable", theme: "E-inclusion groupes vulnérables", stars: 3, contact: "info@mi-is.be", phase: 2 },
+      { name: "Loterie Nationale", org: "Fédéral", amount: "Variable", theme: "Santé, bien-être, participation", stars: 3, contact: "demandesubside.loterie-nationale.be", phase: 2 },
+      { name: "BOSA Digital Skills Fund", org: "Fédéral", amount: "100-750K€", theme: "Compétences numériques vulnérables", stars: 2, contact: "digitalopen@bosa.fgov.be", phase: 3 },
+      { name: "SPF Économie Inclusion", org: "Fédéral", amount: "80-200K€", theme: "Inclusion numérique", stars: 2, contact: "bedigitaltogether@economie.fgov.be", phase: 3 },
+      { name: "BELSPO BRAIN-be", org: "Fédéral", amount: "Via consortium", theme: "Recherche", stars: 1, contact: "belspo.be", phase: 4 }
+    ]
+  },
+  europe: {
+    title: "Programmes européens",
+    total: "500.000€+ potentiels",
+    sources: [
+      { name: "NGI Zero Commons", org: "NLnet/NGI", amount: "5-50K€", theme: "Logiciel libre, communs", stars: 3, deadline: "1er fév 2026", contact: "nlnet.nl/contact", phase: 1 },
+      { name: "Horizon Europe", org: "UE", amount: "Variable", theme: "Recherche & Innovation", stars: 2, contact: "ncp.brussels", phase: 4 },
+      { name: "Erasmus+", org: "UE", amount: "Variable", theme: "Éducation, formation", stars: 2, contact: "erasmusplus-fr.be", phase: 3 },
+      { name: "CERV - Citizens", org: "UE", amount: "Variable", theme: "Citoyenneté, participation", stars: 2, contact: "ec.europa.eu/cerv", phase: 3 },
+      { name: "Digital Europe", org: "UE", amount: "Variable", theme: "Compétences numériques", stars: 2, contact: "digital-strategy.ec.europa.eu", phase: 3 }
+    ]
+  },
+  fondations: {
+    title: "Fondations & Philanthropie",
+    total: "Wellcome Trust en priorité",
+    sources: [
+      { name: "Wellcome Trust", org: "International", amount: "500K-5M£", focus: "Global (BE ok)", process: "Appels ouverts", stars: 3, contact: "wellcome.org/research-funding", phase: 4, note: "Digital Mental Health Interventions" },
+      { name: "European AI Fund", org: "International", amount: "20-150K€", focus: "Europe", process: "Appels périodiques", stars: 3, contact: "europeanaifund.org", phase: 3 },
+      { name: "Mozilla Foundation", org: "International", amount: "50-150K$", focus: "Global", process: "Appels thématiques", stars: 2, contact: "mozilla.org", phase: 3 },
+      { name: "Stiftung Mercator", org: "International", amount: "50-500K€", focus: "Allemagne priorité", process: "Rolling", stars: 2, contact: "stiftung-mercator.de", phase: 3 },
+      { name: "Google.org", org: "International", amount: "Jusqu'à 3M€", focus: "Global", process: "Appels périodiques", stars: 2, contact: "google.org", phase: 3 },
+      { name: "FRB - Digital Brussels", org: "Belgique", amount: "5-15K€", theme: "Inclusion numérique BXL", stars: 2, contact: "info@kbs-frb.be", phase: 2 },
+      { name: "FRB - Venture Philanthropy", org: "Belgique", amount: "80K€/3ans", theme: "Renforcement structurel", stars: 2, contact: "info@kbs-frb.be", phase: 2 },
+      { name: "Cera", org: "Belgique", amount: "Variable", theme: "Santé mentale, innovation sociale", stars: 2, contact: "lies.daenen@cera-holding.be", phase: 2 },
+      { name: "Bernheim", org: "Belgique", amount: "Variable", theme: "Jeunes bruxellois vulnérables", stars: 2, contact: "info@fondationbernheim.be", phase: 2 }
+    ]
+  },
+  autres: {
+    title: "Autres acteurs & Partenariats",
+    sources: [
+      { name: "hub.brussels", type: "Accompagnement", desc: "Accompagnement gratuit startups", contact: "info@hub.brussels" },
+      { name: "Coopcity", type: "Incubateur", desc: "Économie sociale, programme SEEDS 18 mois", contact: "coopcity.be" },
+      { name: "COCOM/Iriscare", type: "Subventions", desc: "Santé mentale SSM agréés", contact: "subsides-subsidies@iriscare.brussels" },
+      { name: "Credal", type: "Finance solidaire", desc: "Crédit coopératif", contact: "credal.be" },
+      { name: "Open Collective", type: "Plateforme", desc: "Collecte transparente", contact: "opencollective.com" },
+      { name: "GitHub Sponsors", type: "Crowdfunding", desc: "Pour projets open source", contact: "github.com/sponsors" }
+    ]
+  },
+  academiques: {
+    title: "Partenariats académiques",
+    sources: [
+      { name: "ULB", lab: "ESP-POLISSI, IRIDIA", contact: "ulb-europe@ulb.be" },
+      { name: "VUB", lab: "FARI (IA pour bien commun)", contact: "rgo@vub.be" },
+      { name: "UCLouvain", lab: "Informatique médicale St-Luc", contact: "uclouvain.be" }
+    ]
+  },
+  corporate: {
+    title: "Mécénat corporate - Santé mentale",
+    sources: [
+      { name: "UCB", program: "Community Health Fund (via FRB)", contact: "ucb.com" },
+      { name: "Lundbeck", program: "Access to Brain Health", contact: "lundbeck.com" },
+      { name: "Janssen", program: "Brain Breakthroughs", contact: "janssen.com/belgium" }
+    ]
+  },
+  mutuelles: {
+    title: "Mutuelles",
+    sources: [
+      { name: "Solidaris", potential: "Partenariat outils santé mentale", contact: "institut-solidaris.be" },
+      { name: "MC", potential: "Prévention santé mentale", contact: "mc.be" }
+    ]
+  }
+};
+
+const contacts = {
+  bruxelles: [
+    { name: "Innoviris", email: "info@innoviris.brussels", icon: "🚀" },
+    { name: "COCOF Cohésion sociale", email: "cohesionsociale@spfb.brussels", icon: "🏛️" },
+    { name: "hub.brussels", email: "info@hub.brussels", icon: "💼" },
+    { name: "finance.brussels", email: "finance.brussels (formulaire web)", icon: "💰" },
+    { name: "Iriscare", email: "subsides-subsidies@iriscare.brussels", icon: "🏥" }
+  ],
+  federal: [
+    { name: "SPP Intégration sociale", email: "info@mi-is.be", icon: "🇧🇪" },
+    { name: "BOSA Digital", email: "digitalopen@bosa.fgov.be", icon: "💻" },
+    { name: "Loterie Nationale FWB", email: "csc-dgca@cfwb.be", icon: "🎰" }
+  ],
+  europe: [
+    { name: "NCP Bruxelles", email: "ncp.brussels", icon: "🇪🇺" },
+    { name: "NGI/NLnet", email: "nlnet.nl/contact", icon: "🌐" }
+  ],
+  fondations: [
+    { name: "FRB", email: "info@kbs-frb.be", phone: "+32 2 500 45 55", icon: "🏦" },
+    { name: "Wellcome", email: "wellcome.org (formulaire)", icon: "🔬" },
+    { name: "Cera", email: "lies.daenen@cera-holding.be", icon: "💎" }
+  ],
+  finance: [
+    { name: "Credal", email: "credal.be", phone: "010/48.33.50", icon: "🤝" },
+    { name: "Coopcity", email: "coopcity.be", icon: "🌱" },
+    { name: "Open Collective", email: "opencollective.com", icon: "💳" }
+  ]
+};
+
+const actionPlan = [
+  {
+    phase: 1,
+    title: "Phase 1 : Démarrage immédiat",
+    duration: "0-2 mois",
+    tasks: [
+      { text: "Activer Open Collective (hôte : Open Source Collective ou Open Collective Brussels)", done: false },
+      { text: "Activer GitHub Sponsors", done: false },
+      { text: "Candidater NGI Zero Commons (deadline 1er février 2026)", done: false },
+      { text: "S'inscrire programmes tech nonprofits (Microsoft, Google, AWS)", done: false }
+    ]
+  },
+  {
+    phase: 2,
+    title: "Phase 2 : Structuration",
+    duration: "2-4 mois",
+    tasks: [
+      { text: "Créer ASBL belge avec siège à Bruxelles", done: false },
+      { text: "Obtenir agrément entreprise sociale (Bruxelles Économie Emploi)", done: false },
+      { text: "Candidater Coopcity SEEDS pour accompagnement", done: false },
+      { text: "Candidater COCOF Impulsion 2026", done: false }
+    ]
+  },
+  {
+    phase: 3,
+    title: "Phase 3 : Financements majeurs",
+    duration: "4-12 mois",
+    tasks: [
+      { text: "Candidater Innoviris PYSI", done: false },
+      { text: "Identifier partenaire académique (ULB/VUB) pour Co-Create", done: false },
+      { text: "Candidater FRB fonds santé mentale", done: false },
+      { text: "Préparer consortium Horizon Europe", done: false }
+    ]
+  },
+  {
+    phase: 4,
+    title: "Phase 4 : Scaling",
+    duration: "12+ mois",
+    tasks: [
+      { text: "Approcher Wellcome Trust", done: false },
+      { text: "Candidater EIT Health (via membership)", done: false },
+      { text: "Répondre marchés publics COCOM/Iriscare", done: false }
+    ]
+  }
+];
+
+let currentTab = 'all';
+let currentPhase = 'all';
+
+// Render functions
+function renderOverview() {
+  let html = '<div class="funding-grid">';
+  
+  // Top priority cards
+  const priorities = [
+    { ...fundingSources.bruxelles.sources[0], category: 'Bruxelles' },
+    { ...fundingSources.bruxelles.sources[5], category: 'Bruxelles' },
+    { ...fundingSources.europe.sources[0], category: 'Europe' },
+    { ...fundingSources.fondations.sources[0], category: 'Fondation' },
+    { ...fundingSources.federal.sources[0], category: 'Fédéral' },
+    { ...fundingSources.fondations.sources[1], category: 'Fondation' }
+  ];
+  
+  priorities.forEach(s => {
+    html += renderFundingCard(s, s.category);
+  });
+  
+  html += '</div>';
+  return html;
+}
+
+function renderFundingCard(source, category) {
+  const priorityClass = source.stars === 3 ? 'priority-high' : source.stars === 2 ? 'priority-medium' : 'priority-low';
+  const stars = '★'.repeat(source.stars || 0) + '<span class="stars-dim">' + '★'.repeat(3 - (source.stars || 0)) + '</span>';
+  const deadlineTag = source.deadline ? (source.deadline === 'Permanent' ? 
+    '<span class="card-tag permanent">Permanent</span>' : 
+    `<span class="card-tag deadline">⏰ ${source.deadline}</span>`) : '';
+  
+  return `
+    <div class="funding-card ${priorityClass}">
+      <div class="card-header">
+        <div class="card-source">${source.org || category}</div>
+        <div class="card-title">${source.name}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <div class="meta-item">
+            <span class="meta-label">Montant</span>
+            <span class="meta-value amount">${source.amount || 'Variable'}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Pertinence</span>
+            <span class="meta-value"><span class="stars">${stars}</span></span>
+          </div>
+          ${source.rate ? `<div class="meta-item"><span class="meta-label">Taux</span><span class="meta-value">${source.rate}</span></div>` : ''}
+          ${source.theme ? `<div class="meta-item"><span class="meta-label">Thème</span><span class="meta-value">${source.theme}</span></div>` : ''}
+        </div>
+        <div class="card-tags">
+          ${deadlineTag}
+          ${source.eligibility ? `<span class="card-tag">${source.eligibility}</span>` : ''}
+          ${source.phase ? `<span class="card-tag">Phase ${source.phase}</span>` : ''}
+        </div>
+      </div>
+      <div class="card-footer">
+        <a href="mailto:${source.contact}" class="card-contact">${source.contact}</a>
+        <button class="card-action" onclick="showDetail('${source.name}')">Détails</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderCategoryCards(category) {
+  const data = fundingSources[category];
+  if (!data) return '<p>Catégorie non trouvée</p>';
+  
+  let html = `<h2 style="font-family: var(--font-display); color: var(--gold); margin-bottom: 1rem;">${data.title}</h2>`;
+  html += `<p style="color: var(--mint); margin-bottom: 1.5rem; font-family: var(--font-mono);">${data.total || ''}</p>`;
+  html += '<div class="funding-grid">';
+  
+  data.sources.forEach(s => {
+    if (currentPhase !== 'all' && s.phase && s.phase.toString() !== currentPhase) return;
+    html += renderFundingCard(s, category);
+  });
+  
+  html += '</div>';
+  return html;
+}
+
+function renderContacts() {
+  let html = '';
+  Object.entries(contacts).forEach(([key, list]) => {
+    const titles = { bruxelles: '🏛️ Bruxelles', federal: '🇧🇪 Fédéral', europe: '🇪🇺 Europe', fondations: '🏦 Fondations', finance: '💰 Finance solidaire' };
+    html += `<div class="contact-section"><div class="filter-title">${titles[key] || key}</div><div class="contact-grid">`;
+    list.forEach(c => {
+      html += `
+        <div class="contact-item">
+          <span class="contact-icon">${c.icon}</span>
+          <div class="contact-info">
+            <div class="contact-name">${c.name}</div>
+            <div class="contact-email">${c.email}${c.phone ? ' · ' + c.phone : ''}</div>
+          </div>
+        </div>
+      `;
+    });
+    html += '</div></div>';
+  });
+  return html;
+}
+
+function renderActionPlan() {
+  let html = '<div class="action-timeline">';
+  actionPlan.forEach(phase => {
+    html += `
+      <div class="timeline-phase phase-${phase.phase}">
+        <div class="phase-header">
+          <span class="phase-title">${phase.title}</span>
+          <span class="phase-duration">${phase.duration}</span>
+        </div>
+        <ul class="phase-tasks">
+          ${phase.tasks.map(t => `
+            <li class="phase-task ${t.done ? '' : 'pending'}">
+              <span class="check">${t.done ? '✅' : '☐'}</span>
+              <span>${t.text}</span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+  });
+  html += '</div>';
+  return html;
+}
+
+// Filter & Navigation
+function filterByTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  updateContent();
+}
+
+function filterByPhase(phase) {
+  currentPhase = phase;
+  document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+  event.target.closest('.phase-btn').classList.add('active');
+  updateContent();
+}
+
+function updateContent() {
+  const content = document.getElementById('mainContent');
+  switch(currentTab) {
+    case 'all': content.innerHTML = renderOverview(); break;
+    case 'bruxelles': content.innerHTML = renderCategoryCards('bruxelles'); break;
+    case 'federal': content.innerHTML = renderCategoryCards('federal'); break;
+    case 'europe': content.innerHTML = renderCategoryCards('europe'); break;
+    case 'fondations': content.innerHTML = renderCategoryCards('fondations'); break;
+    case 'contacts': content.innerHTML = renderContacts(); break;
+    case 'plan': content.innerHTML = renderActionPlan(); break;
+    default: content.innerHTML = renderOverview();
+  }
+}
+
+// Modal
+function showDetail(name) {
+  const modal = document.getElementById('modal');
+  document.getElementById('modalTitle').textContent = name;
+  
+  // Find source
+  let source = null;
+  Object.values(fundingSources).forEach(cat => {
+    if (cat.sources) {
+      const found = cat.sources.find(s => s.name === name);
+      if (found) source = found;
+    }
+  });
+  
+  if (source) {
+    document.getElementById('modalBody').innerHTML = `
+      <h3>Informations générales</h3>
+      <table>
+        <tr><th>Organisme</th><td>${source.org || '-'}</td></tr>
+        <tr><th>Montant</th><td>${source.amount || 'Variable'}</td></tr>
+        <tr><th>Taux de financement</th><td>${source.rate || '-'}</td></tr>
+        <tr><th>Deadline</th><td>${source.deadline || 'Permanent'}</td></tr>
+        <tr><th>Éligibilité</th><td>${source.eligibility || 'À vérifier'}</td></tr>
+        <tr><th>Phase recommandée</th><td>Phase ${source.phase || '-'}</td></tr>
+      </table>
+      <h3>Contact</h3>
+      <p><strong>${source.contact}</strong></p>
+      ${source.url ? `<p>URL: <a href="https://${source.url}" target="_blank" style="color: var(--mint);">${source.url}</a></p>` : ''}
+      ${source.note ? `<h3>Notes</h3><p>${source.note}</p>` : ''}
+      ${source.theme ? `<h3>Thématique</h3><p>${source.theme}</p>` : ''}
+    `;
+  }
+  
+  modal.classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+// Utils
+function openUrl(url) {
+  window.open(url, '_blank');
+}
+
+function openCustomUrl() {
+  const url = document.getElementById('customUrl').value.trim();
+  if (url) {
+    window.open(url.startsWith('http') ? url : 'https://' + url, '_blank');
+    document.getElementById('customUrl').value = '';
+  }
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  updateContent();
+});
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target.id === 'modal') closeModal();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
