@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plan du site 1160 Connect - Naviguer facilement dans l'observatoire du secteur associatif d'Auderghem">
+    <title>Plan du Site — 1160 Connect | Auderghem</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --clr-bg: #FAFBFC;
+            --clr-surface: #FFFFFF;
+            --clr-primary: #2D5A27;
+            --clr-primary-light: #4A7C43;
+            --clr-accent: #E8B931;
+            --clr-text: #1A1A1A;
+            --clr-text-muted: #6B7280;
+            --clr-border: #E5E7EB;
+            --clr-highlight: #F0FDF4;
+            
+            --font-sans: 'DM Sans', system-ui, sans-serif;
+            --font-serif: 'DM Serif Display', Georgia, serif;
+            
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+            
+            --radius: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--clr-text);
+            background: var(--clr-bg);
+            min-height: 100vh;
+        }
+
+        a {
+            color: var(--clr-primary);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+
+        a:hover {
+            color: var(--clr-primary-light);
+        }
+
+        /* Header */
+        .header {
+            background: var(--clr-primary);
+            color: white;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5em;
+            background: rgba(255,255,255,0.15);
+            padding: 0.4em 1em;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .badge svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .header h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Main */
+        .main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* Intro card */
+        .intro {
+            background: var(--clr-surface);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--clr-border);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .intro-icon {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            background: var(--clr-highlight);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .intro-text {
+            color: var(--clr-text-muted);
+            font-size: 0.95rem;
+        }
+
+        .intro-text strong {
+            color: var(--clr-text);
+        }
+
+        /* Sitemap List */
+        .sitemap-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--clr-text);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 1.2em;
+            background: var(--clr-accent);
+            border-radius: 2px;
+        }
+
+        .sitemap-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .sitemap-item {
+            background: var(--clr-surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--clr-border);
+            overflow: hidden;
+            transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+        }
+
+        .sitemap-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+            border-color: var(--clr-primary);
+        }
+
+        .sitemap-link {
+            display: flex;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            gap: 1rem;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .sitemap-icon {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--clr-highlight), #E0F2E9);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            transition: transform var(--transition);
+        }
+
+        .sitemap-item:hover .sitemap-icon {
+            transform: scale(1.1);
+        }
+
+        .sitemap-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sitemap-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--clr-text);
+            margin-bottom: 0.25rem;
+        }
+
+        .sitemap-desc {
+            font-size: 0.9rem;
+            color: var(--clr-text-muted);
+            line-height: 1.4;
+        }
+
+        .sitemap-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.25em 0.75em;
+            border-radius: 50px;
+            background: var(--clr-bg);
+            color: var(--clr-text-muted);
+        }
+
+        .tag.priority-high {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .tag.priority-medium {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .sitemap-arrow {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--clr-text-muted);
+            transition: transform var(--transition), color var(--transition);
+        }
+
+        .sitemap-item:hover .sitemap-arrow {
+            transform: translateX(4px);
+            color: var(--clr-primary);
+        }
+
+        .sitemap-arrow svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Visual sitemap tree */
+        .tree-section {
+            margin-top: 3rem;
+        }
+
+        .tree-container {
+            background: var(--clr-surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--clr-border);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tree {
+            font-family: 'DM Sans', monospace;
+            font-size: 0.95rem;
+            line-height: 2;
+        }
+
+        .tree-root {
+            font-weight: 700;
+            color: var(--clr-primary);
+        }
+
+        .tree-branch {
+            color: var(--clr-text-muted);
+        }
+
+        .tree-leaf {
+            color: var(--clr-text);
+        }
+
+        .tree-leaf a {
+            background: linear-gradient(90deg, var(--clr-highlight), transparent);
+            padding: 0.1em 0.5em;
+            border-radius: 4px;
+            transition: background var(--transition);
+        }
+
+        .tree-leaf a:hover {
+            background: var(--clr-highlight);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: var(--clr-text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--clr-border);
+            margin-top: 2rem;
+        }
+
+        .footer a {
+            font-weight: 500;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5em;
+            margin-top: 1rem;
+            padding: 0.75em 1.5em;
+            background: var(--clr-primary);
+            color: white;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: background var(--transition), transform var(--transition);
+        }
+
+        .back-link:hover {
+            background: var(--clr-primary-light);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .back-link svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .intro {
+                flex-direction: column;
+            }
+            
+            .sitemap-link {
+                flex-wrap: wrap;
+            }
+            
+            .sitemap-arrow {
+                display: none;
+            }
+            
+            .tree-container {
+                padding: 1.5rem;
+                overflow-x: auto;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <span class="badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+                Plan du site
+            </span>
+            <h1>1160 Connect</h1>
+            <p>Naviguez dans l'observatoire associatif d'Auderghem</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="intro">
+            <div class="intro-icon">🗺️</div>
+            <div class="intro-text">
+                <strong>Bienvenue sur le plan du site.</strong> 
+                Cette page vous aide à trouver rapidement toutes les sections de 1160 Connect, 
+                l'observatoire numérique du secteur associatif d'Auderghem (code postal 1160).
+            </div>
+        </div>
+
+        <section class="sitemap-section">
+            <h2 class="section-title">Sections du site</h2>
+            
+            <ul class="sitemap-list">
+                <li class="sitemap-item">
+                    <a href="https://ouaisfieu.github.io/1160/" class="sitemap-link">
+                        <div class="sitemap-icon">🏠</div>
+                        <div class="sitemap-content">
+                            <div class="sitemap-name">Accueil</div>
+                            <div class="sitemap-desc">
+                                Page principale de 1160 Connect — introduction à l'observatoire du tissu associatif auderghemois.
+                            </div>
+                            <div class="sitemap-meta">
+                                <span class="tag priority-high">Page principale</span>
+                            </div>
+                        </div>
+                        <div class="sitemap-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </a>
+                </li>
+                
+                <li class="sitemap-item">
+                    <a href="https://ouaisfieu.github.io/1160/#dashboard" class="sitemap-link">
+                        <div class="sitemap-icon">📊</div>
+                        <div class="sitemap-content">
+                            <div class="sitemap-name">Vue d'ensemble</div>
+                            <div class="sitemap-desc">
+                                Les signaux vitaux du secteur : nombre d'entités recensées (247), bénévoles actifs (~3 200), 
+                                âge moyen des ASBL et emploi direct.
+                            </div>
+                            <div class="sitemap-meta">
+                                <span class="tag">Statistiques</span>
+                                <span class="tag">Indicateurs clés</span>
+                            </div>
+                        </div>
+                        <div class="sitemap-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </a>
+                </li>
+                
+                <li class="sitemap-item">
+                    <a href="https://ouaisfieu.github.io/1160/#analytics" class="sitemap-link">
+                        <div class="sitemap-icon">📈</div>
+                        <div class="sitemap-content">
+                            <div class="sitemap-name">Analyses thématiques</div>
+                            <div class="sitemap-desc">
+                                Explorez la répartition par secteur (sport, culture, social, environnement), 
+                                la densité par quartier (Delta, Chant d'Oiseau, Rouge-Cloître...) et l'évolution historique.
+                            </div>
+                            <div class="sitemap-meta">
+                                <span class="tag">Graphiques</span>
+                                <span class="tag">Quartiers</span>
+                                <span class="tag">Chronologie</span>
+                            </div>
+                        </div>
+                        <div class="sitemap-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </a>
+                </li>
+                
+                <li class="sitemap-item">
+                    <a href="https://ouaisfieu.github.io/1160/#directory" class="sitemap-link">
+                        <div class="sitemap-icon">📇</div>
+                        <div class="sitemap-content">
+                            <div class="sitemap-name">Annuaire exploratoire</div>
+                            <div class="sitemap-desc">
+                                Recherchez parmi les ASBL, collectifs et comités de quartier. 
+                                Filtrez par catégorie : Sport, Culture, Social, Environnement, Jeunesse.
+                            </div>
+                            <div class="sitemap-meta">
+                                <span class="tag priority-medium">Recherche</span>
+                                <span class="tag">Filtres</span>
+                                <span class="tag">Base de données</span>
+                            </div>
+                        </div>
+                        <div class="sitemap-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section class="tree-section">
+            <h2 class="section-title">Arborescence</h2>
+            
+            <div class="tree-container">
+                <div class="tree" role="img" aria-label="Arborescence visuelle du site">
+                    <div class="tree-root">🌐 ouaisfieu.github.io/1160/</div>
+                    <div class="tree-branch">│</div>
+                    <div class="tree-leaf">├── <a href="https://ouaisfieu.github.io/1160/">/ Accueil</a></div>
+                    <div class="tree-branch">│</div>
+                    <div class="tree-leaf">├── <a href="https://ouaisfieu.github.io/1160/#dashboard">#dashboard</a> — Vue d'ensemble</div>
+                    <div class="tree-branch">│</div>
+                    <div class="tree-leaf">├── <a href="https://ouaisfieu.github.io/1160/#analytics">#analytics</a> — Analyses thématiques</div>
+                    <div class="tree-branch">│   ├── Secteurs d'activité</div>
+                    <div class="tree-branch">│   ├── Densité par quartier</div>
+                    <div class="tree-branch">│   └── Chronologie 2010-2024</div>
+                    <div class="tree-branch">│</div>
+                    <div class="tree-leaf">└── <a href="https://ouaisfieu.github.io/1160/#directory">#directory</a> — Annuaire</div>
+                    <div class="tree-branch">    ├── Sport & Loisirs</div>
+                    <div class="tree-branch">    ├── Culture & Arts</div>
+                    <div class="tree-branch">    ├── Social & Solidarité</div>
+                    <div class="tree-branch">    ├── Environnement & Durable</div>
+                    <div class="tree-branch">    └── Jeunesse & Éducation</div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>
+                <strong>1160 Connect</strong> — Observatoire du secteur associatif d'Auderghem
+            </p>
+            <p>
+                Sources : Moniteur Belge, Commune d'Auderghem, Plateforme Francophone du Volontariat
+            </p>
+            <a href="https://ouaisfieu.github.io/1160/" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Retour au site
+            </a>
+        </footer>
+    </main>
+</body>
+</html>
