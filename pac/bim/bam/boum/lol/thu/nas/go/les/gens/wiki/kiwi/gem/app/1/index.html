@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1160 | Documentation & Sitemap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fdfbf7; color: #333; }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            height: 300px; 
+            max-height: 400px; 
+        }
+        /* Custom scrollbar for cleaner look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        
+        /* Interactive Node Styles */
+        .node-hover:hover { background-color: #f3f4f6; }
+        .active-tab { border-bottom: 2px solid #047857; color: #047857; font-weight: 600; }
+        .inactive-tab { color: #6b7280; }
+        .inactive-tab:hover { color: #374151; }
+    </style>
+    <!-- Chosen Palette: "Soignes & Stone" - Warm neutrals (#fdfbf7 background) with deep forest green accents (#047857) reflecting the Auderghem context. -->
+    <!-- Application Structure Plan: Dashboard layout with four main views: Dashboard (Overview), Sitemap (Tree Structure), Wiki (Content), and Analytics (Charts). Designed to allow project managers to visualize the site's architecture and content density simultaneously. -->
+    <!-- Visualization & Content Choices: 
+         1. Sitemap: Recursive HTML list with JS toggles to visualize depth without SVG. Goal: Organize.
+         2. Content Distribution Chart: Doughnut chart to show topic balance. Goal: Inform.
+         3. Wiki Grid: Card-based layout with search filtering. Goal: Inform/Search.
+         4. NO SVG/Mermaid used. Standard HTML/JS implementation. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center gap-2">
+                        <div class="w-8 h-8 bg-green-700 rounded-lg flex items-center justify-center text-white font-bold">11</div>
+                        <span class="font-bold text-xl tracking-tight text-gray-900">Projet 1160 <span class="text-xs font-normal text-gray-500 ml-2">Hub de Documentation</span></span>
+                    </div>
+                </div>
+                <!-- Desktop Nav -->
+                <div class="hidden sm:flex sm:space-x-8 items-center">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="active-tab px-1 pt-1 text-sm transition-colors duration-200">Tableau de Bord</button>
+                    <button onclick="switchTab('sitemap')" id="nav-sitemap" class="inactive-tab px-1 pt-1 text-sm transition-colors duration-200">Sitemap Visuel</button>
+                    <button onclick="switchTab('wiki')" id="nav-wiki" class="inactive-tab px-1 pt-1 text-sm transition-colors duration-200">Wiki & Articles</button>
+                    <button onclick="switchTab('analytics')" id="nav-analytics" class="inactive-tab px-1 pt-1 text-sm transition-colors duration-200">Analyses</button>
+                </div>
+                <!-- Mobile Menu Button (Simplified) -->
+                <div class="flex items-center sm:hidden">
+                    <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-gray-500 hover:text-gray-700 p-2">
+                        Menu
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t border-gray-100 pb-4">
+            <div class="flex flex-col space-y-2 px-4 pt-2">
+                <button onclick="switchTab('dashboard')" class="text-left py-2 font-medium">Tableau de Bord</button>
+                <button onclick="switchTab('sitemap')" class="text-left py-2 text-gray-600">Sitemap Visuel</button>
+                <button onclick="switchTab('wiki')" class="text-left py-2 text-gray-600">Wiki</button>
+                <button onclick="switchTab('analytics')" class="text-left py-2 text-gray-600">Analyses</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- VIEW: DASHBOARD -->
+        <div id="view-dashboard" class="space-y-8 animate-fade-in">
+            <!-- Header Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">Vue d'ensemble du Domaine</h1>
+                <p class="text-gray-600 text-lg max-w-3xl">
+                    Bienvenue sur le hub de documentation du projet <strong>ouaisfieu.github.io/1160</strong>. 
+                    Cette application centrale permet d'explorer la structure du site (Sitemap), de consulter la documentation technique et thématique (Wiki), 
+                    et d'analyser la répartition du contenu lié à la commune d'Auderghem (1160).
+                </p>
+                <div class="mt-6 flex flex-wrap gap-4">
+                    <button onclick="switchTab('sitemap')" class="bg-green-700 hover:bg-green-800 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition shadow-sm">
+                        Voir l'Arborescence
+                    </button>
+                    <button onclick="switchTab('wiki')" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-5 py-2.5 rounded-lg text-sm font-medium transition">
+                        Consulter le Wiki
+                    </button>
+                </div>
+            </div>
+
+            <!-- Key Metrics Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Pages Indexées</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2" id="metric-pages">0</p>
+                    </div>
+                    <div class="mt-4 text-sm text-green-600 bg-green-50 w-fit px-2 py-1 rounded">
+                        Structuré & Accessible
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Articles Wiki</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2" id="metric-wiki">0</p>
+                    </div>
+                    <div class="mt-4 text-sm text-blue-600 bg-blue-50 w-fit px-2 py-1 rounded">
+                        Documentation Active
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Dernière MàJ</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">14 Jan</p>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500">
+                        Version 2.4.0
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Access -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Pages Récentes</h3>
+                    <ul class="space-y-3" id="recent-pages-list">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Statut du Système</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">GitHub Pages</span>
+                            <span class="flex items-center text-sm font-medium text-green-600"><span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>En ligne</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Assets (CSS/JS)</span>
+                            <span class="flex items-center text-sm font-medium text-green-600"><span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>Optimisés</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Indexation SEO</span>
+                            <span class="flex items-center text-sm font-medium text-yellow-600"><span class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>En cours</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: SITEMAP -->
+        <div id="view-sitemap" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="mb-6 border-b border-gray-100 pb-4">
+                    <h2 class="text-2xl font-bold text-gray-900">Sitemap Visuel Interactif</h2>
+                    <p class="text-gray-500 mt-1">Explorez la hiérarchie complète du site. Cliquez sur les dossiers (&#9654;) pour développer les sections.</p>
+                </div>
+                
+                <!-- Controls -->
+                <div class="flex gap-3 mb-6">
+                    <button onclick="expandAll()" class="text-xs font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 px-3 py-1.5 rounded transition">Tout Développer</button>
+                    <button onclick="collapseAll()" class="text-xs font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 px-3 py-1.5 rounded transition">Tout Réduire</button>
+                </div>
+
+                <!-- Tree Container -->
+                <div class="font-mono text-sm overflow-x-auto bg-gray-50 p-6 rounded-lg border border-gray-200 min-h-[400px]" id="sitemap-tree">
+                    <!-- JS renders tree here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: WIKI -->
+        <div id="view-wiki" class="hidden space-y-6">
+            <!-- Wiki Header & Search -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Wiki & Documentation</h2>
+                    <p class="text-gray-500 text-sm mt-1">Articles sur l'histoire, l'urbanisme et le code.</p>
+                </div>
+                <div class="w-full md:w-1/3">
+                    <input type="text" id="wiki-search" placeholder="Rechercher un article..." 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition">
+                </div>
+            </div>
+
+            <!-- Categories Filter -->
+            <div class="flex flex-wrap gap-2" id="wiki-tags">
+                <button class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200" onclick="filterWiki('all')">Tout</button>
+                <button class="px-3 py-1 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50" onclick="filterWiki('Histoire')">Histoire</button>
+                <button class="px-3 py-1 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50" onclick="filterWiki('Urbanisme')">Urbanisme</button>
+                <button class="px-3 py-1 rounded-full text-sm font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50" onclick="filterWiki('Technique')">Technique</button>
+            </div>
+
+            <!-- Wiki Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="wiki-grid">
+                <!-- JS renders cards here -->
+            </div>
+        </div>
+
+        <!-- VIEW: ANALYTICS -->
+        <div id="view-analytics" class="hidden space-y-8">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Analyses de Structure</h2>
+                <p class="text-gray-500 mt-1">Visualisation de la répartition du contenu et de la densité des informations.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Chart 1: Content Distribution -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Répartition par Catégorie</h3>
+                    <div class="chart-container">
+                        <canvas id="contentChart"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-4 text-center">Basé sur les métadonnées du sitemap actuel.</p>
+                </div>
+
+                <!-- Chart 2: Page Depth -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Volume de Mots (Est.)</h3>
+                    <div class="chart-container">
+                        <canvas id="depthChart"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-4 text-center">Estimation basée sur les sections Wiki.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>&copy; 2026 Projet 1160. Généré pour ouaisfieu.github.io.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA: SITEMAP STRUCTURE ---
+        // Simulated structure for 1160 Auderghem website
+        const sitemapData = [
+            {
+                title: "Accueil",
+                path: "/",
+                type: "root",
+                children: [
+                    {
+                        title: "À Propos du 1160",
+                        path: "/a-propos",
+                        type: "page",
+                        children: [
+                            { title: "Histoire d'Auderghem", path: "/a-propos/histoire", type: "page" },
+                            { title: "Chiffres Clés", path: "/a-propos/chiffres", type: "page" }
+                        ]
+                    },
+                    {
+                        title: "Quartiers & Lieux",
+                        path: "/quartiers",
+                        type: "folder",
+                        children: [
+                            { title: "Rouge-Cloître", path: "/quartiers/rouge-cloitre", type: "page" },
+                            { title: "Val Duchesse", path: "/quartiers/val-duchesse", type: "page" },
+                            { title: "Herrmann-Debroux", path: "/quartiers/herrmann-debroux", type: "page" },
+                            { title: "Chant d'Oiseau", path: "/quartiers/chant-oiseau", type: "page" }
+                        ]
+                    },
+                    {
+                        title: "Vie Pratique",
+                        path: "/pratique",
+                        type: "folder",
+                        children: [
+                            { title: "Mobilité", path: "/pratique/mobilite", type: "page" },
+                            { title: "Agenda", path: "/pratique/agenda", type: "page" },
+                            { title: "Commerces", path: "/pratique/commerces", type: "page" }
+                        ]
+                    },
+                    {
+                        title: "Blog & Actu",
+                        path: "/blog",
+                        type: "folder",
+                        children: [
+                            { title: "Projet Viaduc", path: "/blog/viaduc-demolition", type: "post" },
+                            { title: "Fête de la Musique", path: "/blog/fete-musique-2025", type: "post" },
+                            { title: "Rénovation Delta", path: "/blog/renovation-delta", type: "post" }
+                        ]
+                    },
+                    { title: "Contact", path: "/contact", type: "page" }
+                ]
+            }
+        ];
+
+        // --- DATA: WIKI ARTICLES ---
+        const wikiData = [
+            {
+                id: 1,
+                title: "Le Rouge-Cloître",
+                category: "Histoire",
+                excerpt: "Ancienne abbaye augustinienne en lisière de la forêt de Soignes. Un lieu central pour la culture et la nature à Auderghem.",
+                tags: ["Patrimoine", "Nature", "1368"],
+                content: "Le Rouge-Cloître (Rood-Klooster) est un site emblématique..."
+            },
+            {
+                id: 2,
+                title: "Viaduc Herrmann-Debroux",
+                category: "Urbanisme",
+                excerpt: "Analyse des plans de démolition du viaduc et de la transformation de l'entrée de ville en boulevard urbain.",
+                tags: ["Mobilité", "Futur", "Travaux"],
+                content: "Le viaduc Herrmann-Debroux, construit dans les années 70..."
+            },
+            {
+                id: 3,
+                title: "Château de Val Duchesse",
+                category: "Histoire",
+                excerpt: "Lieu historique ayant accueilli les négociations du Traité de Rome. Propriété de la Donation Royale.",
+                tags: ["Diplomatie", "Privé", "Histoire"],
+                content: "Val Duchesse est un domaine prestigieux..."
+            },
+            {
+                id: 4,
+                title: "Structure du Repo GitHub",
+                category: "Technique",
+                excerpt: "Guide pour contribuer au dépôt ouaisfieu.github.io. Utilisation de Jekyll et Tailwind.",
+                tags: ["Code", "Git", "Guide"],
+                content: "Le site est hébergé sur GitHub Pages..."
+            },
+            {
+                id: 5,
+                title: "Station Delta",
+                category: "Urbanisme",
+                excerpt: "Le pôle multimodal Delta : métro, bus, train et le nouvel hôpital Chirec.",
+                tags: ["Transport", "STIB", "Santé"],
+                content: "Delta est une des stations les plus importantes..."
+            },
+            {
+                id: 6,
+                title: "Forêt de Soignes",
+                category: "Histoire",
+                excerpt: "Le poumon vert de Bruxelles. Gestion, sentiers et règlementation UNESCO.",
+                tags: ["Nature", "UNESCO", "Balade"],
+                content: "La forêt de Soignes couvre une grande partie du sud..."
+            }
+        ];
+
+        // --- STATE & INITIALIZATION ---
+        let currentTab = 'dashboard';
+
+        function init() {
+            renderSitemap();
+            renderWiki(wikiData);
+            renderDashboardStats();
+            initCharts();
+            
+            // Search Listener
+            document.getElementById('wiki-search').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = wikiData.filter(item => 
+                    item.title.toLowerCase().includes(term) || 
+                    item.excerpt.toLowerCase().includes(term) ||
+                    item.tags.some(tag => tag.toLowerCase().includes(term))
+                );
+                renderWiki(filtered);
+            });
+        }
+
+        // --- NAVIGATION LOGIC ---
+        function switchTab(tabId) {
+            // Hide all views
+            ['dashboard', 'sitemap', 'wiki', 'analytics'].forEach(id => {
+                document.getElementById(`view-${id}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${id}`);
+                if(btn) {
+                    btn.classList.remove('active-tab');
+                    btn.classList.add('inactive-tab');
+                }
+            });
+
+            // Show selected view
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if(activeBtn) {
+                activeBtn.classList.remove('inactive-tab');
+                activeBtn.classList.add('active-tab');
+            }
+            
+            currentTab = tabId;
+        }
+
+        // --- SITEMAP RENDERER ---
+        function renderSitemap() {
+            const container = document.getElementById('sitemap-tree');
+            container.innerHTML = generateTreeHTML(sitemapData, 0);
+        }
+
+        function generateTreeHTML(nodes, level) {
+            let html = '<ul class="' + (level > 0 ? 'ml-6 border-l border-gray-300 pl-4 mt-2' : '') + '">';
+            
+            nodes.forEach(node => {
+                const isFolder = node.children && node.children.length > 0;
+                const icon = isFolder ? '&#128193;' : '&#128196;'; // Folder vs Page icon
+                const toggle = isFolder ? `<button onclick="toggleNode(this)" class="mr-2 text-gray-400 hover:text-gray-700 focus:outline-none text-xs transform transition-transform duration-200">&#9654;</button>` : '<span class="mr-2 w-4 inline-block"></span>';
+                
+                html += `
+                    <li class="mb-2">
+                        <div class="flex items-center group">
+                            ${toggle}
+                            <span class="mr-2 select-none">${icon}</span>
+                            <a href="#" class="text-gray-700 hover:text-green-700 hover:underline transition font-medium">
+                                ${node.title}
+                            </a>
+                            <span class="ml-3 text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">${node.path}</span>
+                        </div>
+                        ${isFolder ? `<div class="hidden node-children">${generateTreeHTML(node.children, level + 1)}</div>` : ''}
+                    </li>
+                `;
+            });
+            
+            html += '</ul>';
+            return html;
+        }
+
+        function toggleNode(btn) {
+            const container = btn.parentElement.nextElementSibling;
+            if (container) {
+                container.classList.toggle('hidden');
+                // Rotate arrow
+                if (container.classList.contains('hidden')) {
+                    btn.style.transform = 'rotate(0deg)';
+                } else {
+                    btn.style.transform = 'rotate(90deg)';
+                }
+            }
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.node-children').forEach(el => el.classList.remove('hidden'));
+            document.querySelectorAll('button[onclick="toggleNode(this)"]').forEach(btn => btn.style.transform = 'rotate(90deg)');
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.node-children').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('button[onclick="toggleNode(this)"]').forEach(btn => btn.style.transform = 'rotate(0deg)');
+        }
+
+        // --- WIKI RENDERER ---
+        function renderWiki(data) {
+            const grid = document.getElementById('wiki-grid');
+            if (data.length === 0) {
+                grid.innerHTML = `<div class="col-span-3 text-center py-10 text-gray-500">Aucun article trouvé pour cette recherche.</div>`;
+                return;
+            }
+
+            grid.innerHTML = data.map(item => `
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col">
+                    <div class="h-2 bg-green-600"></div>
+                    <div class="p-6 flex-grow">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs font-bold text-green-700 bg-green-50 px-2 py-1 rounded uppercase tracking-wide">${item.category}</span>
+                            <span class="text-xs text-gray-400">#${item.id}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">${item.title}</h3>
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed">${item.excerpt}</p>
+                        <div class="flex flex-wrap gap-2 mt-auto">
+                            ${item.tags.map(tag => `<span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full border border-gray-100">#${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-6 py-3 border-t border-gray-100 flex justify-between items-center">
+                        <span class="text-xs text-gray-500">Mis à jour récemment</span>
+                        <button class="text-sm font-semibold text-green-700 hover:text-green-800">Lire &#8594;</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterWiki(category) {
+            // Update active button visual state
+            const buttons = document.querySelectorAll('#wiki-tags button');
+            buttons.forEach(btn => {
+                if (btn.innerText === category || (category === 'all' && btn.innerText === 'Tout')) {
+                    btn.classList.remove('bg-white', 'text-gray-600');
+                    btn.classList.add('bg-green-100', 'text-green-800', 'border-green-200');
+                } else {
+                    btn.classList.add('bg-white', 'text-gray-600');
+                    btn.classList.remove('bg-green-100', 'text-green-800', 'border-green-200');
+                }
+            });
+
+            if (category === 'all') {
+                renderWiki(wikiData);
+            } else {
+                renderWiki(wikiData.filter(item => item.category === category));
+            }
+        }
+
+        // --- DASHBOARD STATS ---
+        function renderDashboardStats() {
+            // Count total pages (recursive)
+            let pageCount = 0;
+            const countNodes = (nodes) => {
+                nodes.forEach(node => {
+                    pageCount++;
+                    if (node.children) countNodes(node.children);
+                });
+            };
+            countNodes(sitemapData);
+            
+            document.getElementById('metric-pages').innerText = pageCount;
+            document.getElementById('metric-wiki').innerText = wikiData.length;
+
+            // Populate Recent Pages List (Mockup using real data titles)
+            const recentList = document.getElementById('recent-pages-list');
+            recentList.innerHTML = `
+                <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+                    <span class="text-sm font-medium text-gray-700">📄 ${sitemapData[0].children[3].children[0].title}</span>
+                    <span class="text-xs text-gray-400">Il y a 2h</span>
+                </li>
+                <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+                    <span class="text-sm font-medium text-gray-700">📄 ${sitemapData[0].children[1].children[0].title}</span>
+                    <span class="text-xs text-gray-400">Hier</span>
+                </li>
+                 <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+                    <span class="text-sm font-medium text-gray-700">📄 ${sitemapData[0].children[2].children[1].title}</span>
+                    <span class="text-xs text-gray-400">3 jours</span>
+                </li>
+            `;
+        }
+
+        // --- ANALYTICS CHARTS ---
+        function initCharts() {
+            // Chart 1: Content Type Distribution
+            const ctx1 = document.getElementById('contentChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pages Statiques', 'Articles Blog', 'Dossiers', 'Technique'],
+                    datasets: [{
+                        data: [8, 3, 3, 1], // Simulated counts based on sitemap
+                        backgroundColor: ['#047857', '#10b981', '#fbbf24', '#6b7280'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+
+            // Chart 2: Category Volume
+            const ctx2 = document.getElementById('depthChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Histoire', 'Urbanisme', 'Technique'],
+                    datasets: [{
+                        label: 'Nombre de Mots (Est.)',
+                        data: [2500, 1800, 600],
+                        backgroundColor: '#047857',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // --- INIT APP ---
+        window.addEventListener('DOMContentLoaded', init);
+
+    </script>
+</body>
+</html>
