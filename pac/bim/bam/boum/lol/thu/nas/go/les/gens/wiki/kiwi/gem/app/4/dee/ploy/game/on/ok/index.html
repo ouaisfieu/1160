@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport d'Audit & Cartographie : ccplc.eu (Simulation)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Professional Neutral (Stone/Warm Grey base with Muted Accents) -->
+    <!-- Application Structure Plan: 
+         1. Header: Global Context & Status.
+         2. Executive Summary (Dashboard): High-level metrics for quick assessment.
+         3. Architecture & Map: Visual context of the target structure.
+         4. Discovery & Inventory (The Core): Interactive directory listing with search/filter.
+         5. Risk Analysis: Dedicated view for sensitive findings.
+         Why: Users need to go from "Big Picture" (Summary) to "Structural Understanding" (Map) to "Deep Dive" (Inventory).
+    -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F4; /* Stone 100 */
+            color: #44403C; /* Stone 700 */
+        }
+        
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            border: 1px solid #E7E5E4; /* Stone 200 */
+            transition: all 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-item {
+            cursor: pointer;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active {
+            background-color: #57534E; /* Stone 600 */
+            color: #FFFFFF;
+        }
+
+        .nav-item:not(.active):hover {
+            background-color: #E7E5E4; /* Stone 200 */
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        /* Custom scrollbar for tables */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #d6d3d1;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e;
+        }
+
+        .risk-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.125rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .risk-high { background-color: #FEE2E2; color: #991B1B; } /* Red */
+        .risk-med { background-color: #FFEDD5; color: #9A3412; } /* Orange */
+        .risk-low { background-color: #DCFCE7; color: #166534; } /* Green */
+        .risk-info { background-color: #E0F2FE; color: #075985; } /* Blue */
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="h-8 w-8 bg-stone-700 rounded-lg flex items-center justify-center text-white font-bold text-lg">A</div>
+                    <div>
+                        <h1 class="text-lg font-bold text-stone-800">Audit_Viewer</h1>
+                        <p class="text-xs text-stone-500">Cible: ccplc.eu (Simulation)</p>
+                    </div>
+                </div>
+                <nav class="hidden md:flex space-x-2">
+                    <button class="nav-item active" onclick="switchTab('dashboard')">Synthèse</button>
+                    <button class="nav-item" onclick="switchTab('inventory')">Inventaire Fichiers</button>
+                    <button class="nav-item" onclick="switchTab('architecture')">Architecture</button>
+                    <button class="nav-item" onclick="switchTab('risks')">Analyse Risques</button>
+                </nav>
+                <!-- Mobile menu button placeholder -->
+                <button class="md:hidden p-2 text-stone-500">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-8">
+
+        <!-- INTRO SECTION -->
+        <div id="global-intro" class="bg-stone-100 p-6 rounded-lg border border-stone-200">
+            <h2 class="text-xl font-bold text-stone-800 mb-2">Rapport d'Exploration et d'Audit</h2>
+            <p class="text-stone-600 leading-relaxed">
+                Cette interface présente les résultats de l'exploration simulée du domaine cible. Elle consolide l'analyse du listage de répertoires (Directory Listing), l'identification des données sensibles et la cartographie de l'infrastructure exposée. Utilisez les onglets pour naviguer entre la vue managériale (Synthèse) et les vues techniques détaillées.
+            </p>
+        </div>
+
+        <!-- DASHBOARD VIEW -->
+        <div id="view-dashboard" class="space-y-6">
+            <!-- KPIS -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="card p-5">
+                    <p class="text-sm font-medium text-stone-500">Fichiers Indexés</p>
+                    <p class="text-3xl font-bold text-stone-800 mt-1" id="kpi-total-files">0</p>
+                    <div class="mt-2 text-xs text-stone-400">Sur l'ensemble du périmètre</div>
+                </div>
+                <div class="card p-5">
+                    <p class="text-sm font-medium text-stone-500">Alertes Critiques</p>
+                    <p class="text-3xl font-bold text-red-700 mt-1" id="kpi-critical-risks">0</p>
+                    <div class="mt-2 text-xs text-stone-400">Fichiers config ou backups exposés</div>
+                </div>
+                <div class="card p-5">
+                    <p class="text-sm font-medium text-stone-500">Types de Fichiers</p>
+                    <p class="text-3xl font-bold text-stone-800 mt-1" id="kpi-file-types">0</p>
+                    <div class="mt-2 text-xs text-stone-400">Extensions distinctes (.pdf, .sql, etc.)</div>
+                </div>
+                <div class="card p-5">
+                    <p class="text-sm font-medium text-stone-500">Taille Estimée</p>
+                    <p class="text-3xl font-bold text-stone-800 mt-1">1.2 GB</p>
+                    <div class="mt-2 text-xs text-stone-400">Données publiques accessibles</div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- File Type Distribution -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-semibold text-stone-800 mb-4">Distribution par Type de Contenu</h3>
+                    <p class="text-sm text-stone-500 mb-6">Répartition des ressources découvertes lors du crawl. Permet d'identifier la nature dominante du site (Documentaire vs Applicatif).</p>
+                    <div class="chart-container">
+                        <canvas id="fileTypeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Exposure Timeline/Risk -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-semibold text-stone-800 mb-4">Niveaux d'Exposition par Zone</h3>
+                    <p class="text-sm text-stone-500 mb-6">Volume de fichiers accessibles publiquement classés par sous-répertoire critique. Indique où se concentrent les fuites potentielles.</p>
+                    <div class="chart-container">
+                        <canvas id="exposureChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INVENTORY VIEW -->
+        <div id="view-inventory" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-stone-800">Inventaire Exhaustif</h2>
+                    <p class="text-stone-500">Liste complète des fichiers et dossiers découverts via Directory Listing.</p>
+                </div>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <input type="text" id="inventory-search" placeholder="Rechercher (ex: .sql, conf, password)..." 
+                           class="px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-400 w-full md:w-64">
+                    <select id="inventory-filter" class="px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-400">
+                        <option value="all">Tous les niveaux</option>
+                        <option value="high">Critique</option>
+                        <option value="medium">Moyen</option>
+                        <option value="low">Faible</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card overflow-hidden">
+                <div class="overflow-x-auto custom-scroll">
+                    <table class="min-w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-stone-50 border-b border-stone-200">
+                            <tr>
+                                <th class="px-6 py-3 font-semibold text-stone-700">Chemin / Nom de Fichier</th>
+                                <th class="px-6 py-3 font-semibold text-stone-700">Type</th>
+                                <th class="px-6 py-3 font-semibold text-stone-700">Taille</th>
+                                <th class="px-6 py-3 font-semibold text-stone-700">Dernière Modif.</th>
+                                <th class="px-6 py-3 font-semibold text-stone-700">Niveau de Risque</th>
+                                <th class="px-6 py-3 font-semibold text-stone-700">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table-body" class="divide-y divide-stone-100">
+                            <!-- JS Generated Rows -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-4 border-t border-stone-200 bg-stone-50 flex justify-between items-center text-xs text-stone-500">
+                    <span id="inventory-count">Affichage de 0 sur 0 fichiers</span>
+                    <div class="flex gap-1">
+                        <button class="px-3 py-1 border rounded hover:bg-white" disabled>&lt;</button>
+                        <button class="px-3 py-1 border rounded hover:bg-white bg-white font-bold">1</button>
+                        <button class="px-3 py-1 border rounded hover:bg-white" disabled>&gt;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURE VIEW -->
+        <div id="view-architecture" class="hidden space-y-6">
+            <div>
+                <h2 class="text-2xl font-bold text-stone-800">Cartographie d'Architecture</h2>
+                <p class="text-stone-500 mb-4">Représentation des relations entre le point d'entrée, les répertoires ouverts et les sous-domaines identifiés.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="col-span-1 lg:col-span-2 card p-6">
+                    <h3 class="font-semibold mb-4">Topologie du Réseau (Visualisation Logique)</h3>
+                    <!-- Chart container for Network Graph simulation using Scatter chart -->
+                    <div class="chart-container h-[400px]">
+                        <canvas id="architectureChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="col-span-1 space-y-4">
+                    <div class="card p-5 border-l-4 border-stone-600">
+                        <h4 class="font-bold text-stone-800">Point d'Entrée</h4>
+                        <p class="text-sm text-stone-600 mt-1">https://ccplc.eu/</p>
+                        <div class="mt-3 flex items-center gap-2">
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Online</span>
+                            <span class="text-xs bg-stone-100 text-stone-600 px-2 py-1 rounded">CMS Détecté</span>
+                        </div>
+                    </div>
+
+                    <div class="card p-5 border-l-4 border-orange-400">
+                        <h4 class="font-bold text-stone-800">Zone Exposée (Directory Listing)</h4>
+                        <p class="text-sm text-stone-600 mt-1">/uploads/documents/2023/</p>
+                        <p class="text-xs text-stone-500 mt-2">Le serveur web renvoie une liste de fichiers bruts au lieu d'une page 403 Forbidden.</p>
+                    </div>
+
+                    <div class="card p-5 border-l-4 border-blue-400">
+                        <h4 class="font-bold text-stone-800">Sous-Domaine Technique</h4>
+                        <p class="text-sm text-stone-600 mt-1">assets.ccplc.eu</p>
+                        <p class="text-xs text-stone-500 mt-2">Hébergement de ressources statiques. Potentiels fichiers JS non minifiés.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RISK ANALYSIS VIEW -->
+        <div id="view-risks" class="hidden space-y-6">
+             <div>
+                <h2 class="text-2xl font-bold text-stone-800">Analyse de Sensibilité</h2>
+                <p class="text-stone-500">Focus sur les fichiers présentant un risque de sécurité (Configuration, Sauvegardes, Données Personnelles).</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card p-6">
+                    <h3 class="font-bold text-lg mb-2 text-red-700">Priorité 1 : Fichiers Système & Config</h3>
+                    <p class="text-sm text-stone-500 mb-4">Ces fichiers peuvent permettre la compromission totale du site.</p>
+                    <ul id="risk-list-high" class="space-y-3">
+                        <!-- JS populated -->
+                    </ul>
+                </div>
+
+                <div class="card p-6">
+                    <h3 class="font-bold text-lg mb-2 text-orange-600">Priorité 2 : Documents Internes</h3>
+                    <p class="text-sm text-stone-500 mb-4">Fuite d'informations organisationnelles ou stratégiques.</p>
+                    <ul id="risk-list-med" class="space-y-3">
+                         <!-- JS populated -->
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card p-6 bg-stone-50">
+                <h3 class="font-bold text-stone-800">Recommandations de Remédiation</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 text-sm">
+                    <div class="p-4 bg-white rounded border border-stone-200">
+                        <strong class="block mb-2 text-stone-700">1. Désactiver le Directory Listing</strong>
+                        <p class="text-stone-500">Ajouter `Options -Indexes` dans le fichier .htaccess ou configurer Nginx `autoindex off`.</p>
+                    </div>
+                    <div class="p-4 bg-white rounded border border-stone-200">
+                        <strong class="block mb-2 text-stone-700">2. Nettoyage des Sauvegardes</strong>
+                        <p class="text-stone-500">Supprimer les fichiers .bak, .sql et .old de la racine web accessible au public.</p>
+                    </div>
+                    <div class="p-4 bg-white rounded border border-stone-200">
+                        <strong class="block mb-2 text-stone-700">3. Révision des Droits d'Accès</strong>
+                        <p class="text-stone-500">Restreindre l'accès au dossier /uploads/ uniquement via l'application, pas en direct.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-stone-200 py-6 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-stone-400 text-sm">
+            <p>&copy; 2024 Module d'Audit Automatisé. Données générées à titre de simulation.</p>
+            <p class="mt-1 text-xs">Ce rapport ne constitue pas une preuve légale d'intrusion.</p>
+        </div>
+    </footer>
+
+    <!-- Visualization & Content Choices: 
+         - Report Info: Simulated directory scan of a target domain.
+         - Goal: Provide actionable insights on security posture.
+         - Viz 1 (Donut Chart): Breakdown of file types to show if the exposure is technical (code) or documentary (PDFs).
+         - Viz 2 (Bar Chart): Risk volume by directory depth/zone.
+         - Viz 3 (Scatter/Network): Logical map of the architecture.
+         - Interaction: Filtering the inventory table is the primary interaction (Deep Dive). Tab navigation switches contexts.
+         - Justification: Security audits generate lists. Lists need filtering. Charts provide "at a glance" urgency.
+         - Library: Chart.js for all graphs due to canvas performance and ease of updating.
+    -->
+    
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        // --- DATA MOCKUP (SIMULATION) ---
+        // Simulating the result of a recursive crawl and analysis
+        const scanData = [
+            { path: "/wp-config.php.bak", type: "CONFIG", size: "3.2 KB", date: "2023-11-12", risk: "high", desc: "Backup de configuration WordPress exposé" },
+            { path: "/uploads/db_dump_2023.sql", type: "DB", size: "45.2 MB", date: "2023-12-01", risk: "high", desc: "Dump SQL complet de la base de données" },
+            { path: "/.env", type: "CONFIG", size: "1.1 KB", date: "2024-01-15", risk: "high", desc: "Fichier d'environnement (clés API potentielles)" },
+            { path: "/images/logo.png", type: "IMG", size: "124 KB", date: "2022-05-20", risk: "low", desc: "Ressource publique standard" },
+            { path: "/uploads/2024/minutes_board_jan.pdf", type: "DOC", size: "2.4 MB", date: "2024-01-30", risk: "medium", desc: "Document interne potentiellement confidentiel" },
+            { path: "/uploads/2024/budget_previsionnel.xlsx", type: "DOC", size: "1.8 MB", date: "2024-02-02", risk: "medium", desc: "Données financières internes" },
+            { path: "/css/main.css", type: "CODE", size: "45 KB", date: "2023-08-10", risk: "info", desc: "Feuille de style publique" },
+            { path: "/js/app.js", type: "CODE", size: "120 KB", date: "2023-08-10", risk: "low", desc: "Code Javascript Front-end" },
+            { path: "/tmp/test.php", type: "CODE", size: "0.5 KB", date: "2023-09-01", risk: "medium", desc: "Script de test oublié (Vecteur d'attaque potentiel)" },
+            { path: "/users/admin/", type: "DIR", size: "-", date: "2023-10-05", risk: "medium", desc: "Répertoire utilisateur exposé" },
+            { path: "/assets/fonts/inter.woff2", type: "FONT", size: "45 KB", date: "2022-01-01", risk: "info", desc: "Police de caractères" },
+            { path: "/readme.html", type: "DOC", size: "2 KB", date: "2021-12-12", risk: "low", desc: "Divulgation de version CMS" },
+            { path: "/logs/error_log", type: "LOG", size: "12 MB", date: "2024-02-14", risk: "medium", desc: "Log serveur (Paths disclosure)" },
+            { path: "/backup/site_v1.zip", type: "ARCHIVE", size: "250 MB", date: "2022-06-01", risk: "high", desc: "Code source complet (ancienne version)" }
+        ];
+
+        // Generate more filler data
+        for(let i=0; i<25; i++) {
+            scanData.push({
+                path: `/uploads/2023/img_${1000+i}.jpg`,
+                type: "IMG",
+                size: `${Math.floor(Math.random()*500 + 50)} KB`,
+                date: "2023-06-15",
+                risk: "info",
+                desc: "Image galerie publique"
+            });
+        }
+
+        // --- STATE MANAGEMENT ---
+        let currentTab = 'dashboard';
+        let filters = {
+            search: '',
+            level: 'all'
+        };
+
+        // --- DOM ELEMENTS ---
+        const views = {
+            dashboard: document.getElementById('view-dashboard'),
+            inventory: document.getElementById('view-inventory'),
+            architecture: document.getElementById('view-architecture'),
+            risks: document.getElementById('view-risks')
+        };
+        const navButtons = document.querySelectorAll('.nav-item');
+        const kpis = {
+            total: document.getElementById('kpi-total-files'),
+            critical: document.getElementById('kpi-critical-risks'),
+            types: document.getElementById('kpi-file-types')
+        };
+        const inventoryTable = document.getElementById('inventory-table-body');
+        const searchInput = document.getElementById('inventory-search');
+        const filterSelect = document.getElementById('inventory-filter');
+        const inventoryCount = document.getElementById('inventory-count');
+
+        // --- INITIALIZATION ---
+        function init() {
+            updateKPIs();
+            renderCharts();
+            renderInventory();
+            renderRiskLists();
+            
+            // Event Listeners
+            searchInput.addEventListener('input', (e) => {
+                filters.search = e.target.value.toLowerCase();
+                renderInventory();
+            });
+            filterSelect.addEventListener('change', (e) => {
+                filters.level = e.target.value;
+                renderInventory();
+            });
+        }
+
+        // --- NAVIGATION ---
+        window.switchTab = (tabName) => {
+            // Hide all views
+            Object.values(views).forEach(el => el.classList.add('hidden'));
+            // Show target view
+            views[tabName].classList.remove('hidden');
+            
+            // Update nav active state
+            navButtons.forEach(btn => {
+                if(btn.getAttribute('onclick').includes(tabName)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Scroll to top
+            window.scrollTo(0,0);
+        };
+
+        // --- LOGIC: KPIS & CHARTS ---
+        function updateKPIs() {
+            kpis.total.innerText = scanData.length;
+            kpis.critical.innerText = scanData.filter(i => i.risk === 'high').length;
+            const uniqueTypes = new Set(scanData.map(i => i.type));
+            kpis.types.innerText = uniqueTypes.size;
+        }
+
+        function getRiskBadge(level) {
+            switch(level) {
+                case 'high': return `<span class="risk-badge risk-high">CRITIQUE</span>`;
+                case 'medium': return `<span class="risk-badge risk-med">ÉLEVÉ</span>`;
+                case 'low': return `<span class="risk-badge risk-low">FAIBLE</span>`;
+                default: return `<span class="risk-badge risk-info">INFO</span>`;
+            }
+        }
+
+        function renderInventory() {
+            inventoryTable.innerHTML = '';
+            
+            const filtered = scanData.filter(item => {
+                const matchesSearch = item.path.toLowerCase().includes(filters.search) || item.desc.toLowerCase().includes(filters.search);
+                const matchesFilter = filters.level === 'all' || item.risk === filters.level;
+                return matchesSearch && matchesFilter;
+            });
+
+            filtered.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = "hover:bg-stone-50 transition-colors";
+                row.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-stone-800 font-mono text-xs">${item.path}</td>
+                    <td class="px-6 py-4 text-stone-600 text-xs">${item.type}</td>
+                    <td class="px-6 py-4 text-stone-600 text-xs">${item.size}</td>
+                    <td class="px-6 py-4 text-stone-600 text-xs">${item.date}</td>
+                    <td class="px-6 py-4">${getRiskBadge(item.risk)}</td>
+                    <td class="px-6 py-4">
+                        <button class="text-stone-400 hover:text-stone-800" title="Détails" onclick="alert('${item.desc}')">ℹ️</button>
+                    </td>
+                `;
+                inventoryTable.appendChild(row);
+            });
+
+            inventoryCount.innerText = `Affichage de ${filtered.length} sur ${scanData.length} fichiers`;
+        }
+
+        function renderRiskLists() {
+            const highList = document.getElementById('risk-list-high');
+            const medList = document.getElementById('risk-list-med');
+            
+            highList.innerHTML = '';
+            medList.innerHTML = '';
+
+            scanData.filter(i => i.risk === 'high').forEach(item => {
+                highList.innerHTML += `
+                    <li class="flex items-start gap-3 p-3 bg-red-50 rounded border border-red-100">
+                        <span class="text-lg">⚠️</span>
+                        <div>
+                            <div class="font-mono text-sm font-bold text-red-900">${item.path}</div>
+                            <div class="text-xs text-red-700">${item.desc}</div>
+                        </div>
+                    </li>`;
+            });
+
+            scanData.filter(i => i.risk === 'medium').slice(0, 5).forEach(item => { // Limit to 5 for UI
+                medList.innerHTML += `
+                    <li class="flex items-start gap-3 p-3 bg-orange-50 rounded border border-orange-100">
+                        <span class="text-lg">👁️</span>
+                        <div>
+                            <div class="font-mono text-sm font-bold text-orange-900">${item.path}</div>
+                            <div class="text-xs text-orange-700">${item.desc}</div>
+                        </div>
+                    </li>`;
+            });
+        }
+
+        function renderCharts() {
+            // Chart 1: File Types (Donut)
+            const typeCounts = {};
+            scanData.forEach(i => typeCounts[i.type] = (typeCounts[i.type] || 0) + 1);
+            
+            new Chart(document.getElementById('fileTypeChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(typeCounts),
+                    datasets: [{
+                        data: Object.values(typeCounts),
+                        backgroundColor: ['#57534E', '#78716C', '#A8A29E', '#D6D3D1', '#E7E5E4', '#F5F5F4', '#292524'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 10, usePointStyle: true } }
+                    }
+                }
+            });
+
+            // Chart 2: Exposure by Zone (Bar)
+            // Simulating directories
+            const zones = { '/uploads': 0, '/backup': 0, '/config': 0, '/logs': 0, '/public': 0 };
+            scanData.forEach(i => {
+                if(i.path.startsWith('/uploads')) zones['/uploads']++;
+                else if(i.path.startsWith('/backup') || i.path.includes('.bak')) zones['/backup']++;
+                else if(i.path.includes('.env') || i.path.includes('config')) zones['/config']++;
+                else if(i.path.startsWith('/logs')) zones['/logs']++;
+                else zones['/public']++;
+            });
+
+            new Chart(document.getElementById('exposureChart'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(zones),
+                    datasets: [{
+                        label: 'Fichiers Exposés',
+                        data: Object.values(zones),
+                        backgroundColor: '#D6D3D1',
+                        hoverBackgroundColor: '#78716C',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Chart 3: Architecture Map (Scatter Simulation)
+            // Using Scatter to place nodes visually
+            const nodes = [
+                {x: 0, y: 0, label: 'Internet', color: '#A8A29E', r: 10},
+                {x: 0, y: -2, label: 'Firewall', color: '#78716C', r: 8},
+                {x: 0, y: -4, label: 'ccplc.eu (Web)', color: '#44403C', r: 15},
+                {x: -2, y: -6, label: '/uploads (Dir List)', color: '#DC2626', r: 12}, // Red for risk
+                {x: 2, y: -6, label: 'assets.ccplc.eu', color: '#57534E', r: 10},
+                {x: -2, y: -8, label: 'Sensitive Docs', color: '#F97316', r: 8},
+                {x: 2, y: -8, label: 'JS/CSS/Fonts', color: '#D6D3D1', r: 6}
+            ];
+
+            new Chart(document.getElementById('architectureChart'), {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        data: nodes,
+                        backgroundColor: (ctx) => ctx.raw?.color || '#000',
+                        pointRadius: (ctx) => ctx.raw?.r || 5,
+                        pointHoverRadius: (ctx) => (ctx.raw?.r || 5) + 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { display: false, min: -5, max: 5 },
+                        y: { display: false, min: -10, max: 1 }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => ctx.raw.label
+                            }
+                        },
+                        legend: { display: false }
+                    },
+                    layout: { padding: 20 }
+                },
+                plugins: [{
+                    id: 'lines',
+                    beforeDraw: (chart) => {
+                        const ctx = chart.ctx;
+                        ctx.save();
+                        ctx.strokeStyle = '#E7E5E4';
+                        ctx.lineWidth = 2;
+                        
+                        // Helper to get pixel for coords
+                        const getPos = (x, y) => {
+                            return {
+                                x: chart.scales.x.getPixelForValue(x),
+                                y: chart.scales.y.getPixelForValue(y)
+                            };
+                        };
+
+                        // Draw lines manually based on logic
+                        const drawLine = (n1, n2) => {
+                            const p1 = getPos(n1.x, n1.y);
+                            const p2 = getPos(n2.x, n2.y);
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        };
+
+                        // Connections
+                        drawLine(nodes[0], nodes[1]); // Net -> FW
+                        drawLine(nodes[1], nodes[2]); // FW -> Web
+                        drawLine(nodes[2], nodes[3]); // Web -> Uploads
+                        drawLine(nodes[2], nodes[4]); // Web -> Assets
+                        drawLine(nodes[3], nodes[5]); // Uploads -> Docs
+                        drawLine(nodes[4], nodes[6]); // Assets -> Static
+
+                        ctx.restore();
+                    }
+                }]
+            });
+        }
+
+        // Run
+        init();
+
+    </script>
+</body>
+</html>
