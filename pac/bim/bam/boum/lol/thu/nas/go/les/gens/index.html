@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📡 SIGNAL — Babel'Zin | Transmission cryptée depuis la Zone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #0a0a0f;
+      --paper-light: #12121a;
+      --ink: #e8e6f0;
+      --ink-muted: #8b8a9e;
+      --accent: #c4b5fd;
+      --accent-bright: #a78bfa;
+      --mint: #4ade80;
+      --mint-dark: #22c55e;
+      --gold: #fbbf24;
+      --coral: #f87171;
+      --cyan: #22d3ee;
+      --border: rgba(196, 181, 253, 0.2);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100vh); }
+    }
+    @keyframes glitch-text {
+      0%, 100% { text-shadow: 2px 0 var(--mint), -2px 0 var(--coral); }
+      25% { text-shadow: -2px 0 var(--mint), 2px 0 var(--accent); }
+      50% { text-shadow: 2px 0 var(--coral), -2px 0 var(--mint); }
+      75% { text-shadow: -2px 0 var(--accent), 2px 0 var(--coral); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes blink {
+      0%, 50% { border-color: var(--mint); }
+      51%, 100% { border-color: transparent; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-25deg); }
+      50% { transform: translateY(-20px) rotate(-25deg); }
+    }
+    @keyframes data-stream {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 200%; }
+    }
+    
+    body {
+      min-height: 100vh;
+      font-family: 'Libre Baskerville', Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.9;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.1) 2px,
+        rgba(0, 0, 0, 0.1) 4px
+      );
+      pointer-events: none;
+      z-index: 10000;
+    }
+    
+    body::after {
+      content: "";
+      position: fixed;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background: linear-gradient(to bottom, transparent, rgba(74, 222, 128, 0.1), transparent);
+      animation: scanline 8s linear infinite;
+      pointer-events: none;
+      z-index: 10001;
+    }
+    
+    .letter-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, var(--paper-light) 0%, var(--paper) 100%);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4rem;
+      position: relative;
+      box-shadow: 
+        0 0 60px rgba(196, 181, 253, 0.1),
+        0 0 120px rgba(74, 222, 128, 0.05),
+        inset 0 0 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    .letter-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--mint), var(--accent), var(--gold), var(--coral), var(--mint));
+      background-size: 200% 100%;
+      animation: data-stream 4s linear infinite;
+      border-radius: 8px 8px 0 0;
+    }
+    
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-25deg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 5rem;
+      font-weight: 700;
+      color: rgba(196, 181, 253, 0.03);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 0;
+      animation: float 6s ease-in-out infinite;
+      text-shadow: 0 0 60px rgba(196, 181, 253, 0.1);
+    }
+    
+    .content { position: relative; z-index: 1; }
+    
+    .transmission-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .transmission-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--mint);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .transmission-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--mint) 0%, var(--accent) 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      animation: glitch-text 5s ease-in-out infinite;
+    }
+    
+    .transmission-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+    }
+    
+    .header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    
+    .sender, .meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      line-height: 1.8;
+    }
+    
+    .sender strong, .meta strong {
+      color: var(--accent);
+      font-size: 0.8rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    
+    .meta { text-align: right; }
+    
+    .status-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.6rem;
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid var(--mint);
+      border-radius: 4px;
+      margin-top: 0.5rem;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--mint);
+      border-radius: 50%;
+      animation: pulse 1s ease-in-out infinite;
+      box-shadow: 0 0 10px var(--mint);
+    }
+    
+    .recipient {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(196, 181, 253, 0.1) 0%, rgba(74, 222, 128, 0.05) 100%);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+    }
+    
+    .recipient strong {
+      font-family: 'JetBrains Mono', monospace;
+      display: block;
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    
+    .recipient a {
+      color: var(--mint);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--mint);
+    }
+    
+    .recipient a:hover {
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+    
+    .object {
+      margin-bottom: 2.5rem;
+      padding: 1.25rem 1.5rem;
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+      border: 1px solid var(--coral);
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .object::before {
+      content: "⚠ SIGNAL PRIORITAIRE";
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0.3rem 0.8rem;
+      background: var(--coral);
+      color: var(--paper);
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      border-radius: 0 6px 0 6px;
+    }
+    
+    .object .label {
+      color: var(--gold);
+      font-weight: 600;
+    }
+    
+    .salutation {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--accent);
+      margin-bottom: 2rem;
+    }
+    
+    .body p {
+      margin-bottom: 1.5rem;
+      text-align: justify;
+      hyphens: auto;
+    }
+    
+    .body strong {
+      color: var(--mint);
+      font-weight: 700;
+    }
+    
+    .body em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    
+    .intro-block {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(248, 113, 113, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .intro-block .big-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--coral);
+      margin-bottom: 1rem;
+      animation: glitch-text 3s ease-in-out infinite;
+    }
+    
+    .intro-block p {
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 0;
+    }
+    
+    .diagnostic-box {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background: var(--paper);
+      border: 2px solid var(--mint);
+      border-radius: 8px;
+      position: relative;
+    }
+    
+    .diagnostic-box::before {
+      content: "DIAGNOSTIC SYSTÈME";
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      padding: 0.25rem 0.75rem;
+      background: var(--mint);
+      color: var(--paper);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      border-radius: 4px;
+    }
+    
+    .diagnostic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .diagnostic-item {
+      padding: 1rem;
+      background: rgba(74, 222, 128, 0.05);
+      border: 1px solid rgba(74, 222, 128, 0.2);
+      border-radius: 6px;
+    }
+    
+    .diagnostic-item .value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--coral);
+    }
+    
+    .diagnostic-item .label {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      margin-top: 0.25rem;
+    }
+    
+    .manifesto-quote {
+      margin: 3rem 0;
+      padding: 2.5rem;
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .manifesto-quote::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--mint), var(--accent), var(--gold));
+    }
+    
+    .manifesto-quote::after {
+      content: "❝";
+      position: absolute;
+      top: 10px;
+      right: 30px;
+      font-size: 6rem;
+      color: rgba(196, 181, 253, 0.1);
+      font-family: serif;
+    }
+    
+    .manifesto-quote blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      line-height: 1.8;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+    
+    .manifesto-quote .source {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--mint);
+      text-align: right;
+    }
+    
+    .rage-section {
+      margin: 3rem 0;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(248, 113, 113, 0.15) 0%, rgba(251, 191, 36, 0.1) 100%);
+      border: 2px dashed var(--coral);
+      border-radius: 8px;
+    }
+    
+    .rage-section h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      color: var(--coral);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .rage-section h3::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--coral), transparent);
+    }
+    
+    .rage-section ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .rage-section li {
+      padding: 0.75rem 0 0.75rem 2rem;
+      position: relative;
+      border-bottom: 1px solid rgba(248, 113, 113, 0.1);
+    }
+    
+    .rage-section li:last-child {
+      border-bottom: none;
+    }
+    
+    .rage-section li::before {
+      content: "💀";
+      position: absolute;
+      left: 0;
+      top: 0.75rem;
+    }
+    
+    .arsenal-box {
+      margin: 3rem 0;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(196, 181, 253, 0.05) 100%);
+      border: 1px solid var(--mint);
+      border-radius: 8px;
+    }
+    
+    .arsenal-box h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      color: var(--mint);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+    }
+    
+    .arsenal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    .arsenal-item {
+      padding: 1.25rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(74, 222, 128, 0.2);
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+    
+    .arsenal-item:hover {
+      border-color: var(--mint);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(74, 222, 128, 0.2);
+    }
+    
+    .arsenal-item .icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .arsenal-item .name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--mint);
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .arsenal-item .desc {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+    }
+    
+    .proposal-box {
+      margin: 3rem 0;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(196, 181, 253, 0.05) 100%);
+      border: 2px solid var(--gold);
+      border-radius: 8px;
+      position: relative;
+    }
+    
+    .proposal-box::before {
+      content: "⚡ PROPOSITION DE DEAL";
+      position: absolute;
+      top: -14px;
+      left: 20px;
+      padding: 0.3rem 1rem;
+      background: var(--gold);
+      color: var(--paper);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      border-radius: 4px;
+    }
+    
+    .proposal-box h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    
+    .proposal-list {
+      list-style: none;
+      margin: 1.5rem 0;
+      padding: 0;
+    }
+    
+    .proposal-list li {
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+    }
+    
+    .proposal-list li strong {
+      color: var(--gold);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    
+    .terms-box {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+    }
+    
+    .terms-box h5 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    .terms-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    
+    .term-item {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(196, 181, 253, 0.05);
+      border: 1px solid rgba(196, 181, 253, 0.2);
+      border-radius: 6px;
+    }
+    
+    .term-item .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .term-item .text { font-size: 0.8rem; color: var(--ink-muted); }
+    
+    .final-call {
+      margin: 3rem 0;
+      padding: 2.5rem;
+      background: linear-gradient(135deg, var(--paper-light) 0%, rgba(74, 222, 128, 0.05) 100%);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .final-call .big {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+    
+    .final-call .sub {
+      font-size: 1.1rem;
+      color: var(--ink-muted);
+    }
+    
+    .signature {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    
+    .signature .closing {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      line-height: 1.8;
+    }
+    
+    .signature .name {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--mint);
+    }
+    
+    .signature .title {
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      font-style: italic;
+    }
+    
+    .ps-section {
+      margin-top: 2.5rem;
+      display: grid;
+      gap: 1rem;
+    }
+    
+    .ps-item {
+      padding: 1.25rem 1.5rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    
+    .ps-item.mint {
+      background: rgba(74, 222, 128, 0.1);
+      border-left: 4px solid var(--mint);
+    }
+    
+    .ps-item.gold {
+      background: rgba(251, 191, 36, 0.1);
+      border-left: 4px solid var(--gold);
+    }
+    
+    .ps-item.coral {
+      background: rgba(248, 113, 113, 0.1);
+      border-left: 4px solid var(--coral);
+    }
+    
+    .ps-item strong {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .footer {
+      margin-top: 3rem;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+      text-align: center;
+    }
+    
+    .footer .highlight {
+      color: var(--mint);
+      display: block;
+      margin-top: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .letter-container { padding: 2rem; }
+      .header { grid-template-columns: 1fr; }
+      .meta { text-align: left; }
+      .diagnostic-grid { grid-template-columns: 1fr; }
+      .arsenal-grid { grid-template-columns: 1fr; }
+      .terms-grid { grid-template-columns: 1fr; }
+      .transmission-title { font-size: 1.8rem; }
+    }
+    
+    @media print {
+      body { background: white; color: black; }
+      body::before, body::after { display: none; }
+      .letter-container { 
+        box-shadow: none; 
+        border: 1px solid #ccc;
+        background: white;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="letter-container">
+    <div class="watermark">CONVERGENCE DES ANOMALIES</div>
+    <div class="content">
+      
+      <div class="transmission-header">
+        <div class="transmission-code">// TRANSMISSION CRYPTÉE — CANAL SÉCURISÉ //</div>
+        <h1 class="transmission-title">SIGNAL D'URGENCE</h1>
+        <div class="transmission-subtitle">De : Zone Autonome Temporaire → Babel'Zin</div>
+      </div>
+      
+      <div class="header">
+        <div class="sender">
+          <strong>📡 ÉMETTEUR</strong>
+          Noyau Fondateur « Résistance Cognitive »<br>
+          Future locale PAC Auderghem 1160<br>
+          Cellule : bruxelles@pac-g.be<br>
+          <div class="status-line">
+            <span class="status-dot"></span>
+            <span>OPÉRATIONNEL</span>
+          </div>
+        </div>
+        <div class="meta">
+          <strong>📍 MÉTADONNÉES</strong>
+          Auderghem, 14.01.2026<br>
+          Latitude : 50.8167° N<br>
+          Longitude : 4.4333° E<br>
+          Altitude morale : CRITIQUE
+        </div>
+      </div>
+
+      <div class="recipient">
+        <strong>🎯 DESTINATAIRE : BABEL'ZIN</strong>
+        Café culturel citoyen — Anomalie systémique confirmée<br>
+        Chaussée de Wavre 1762, 1160 Auderghem<br>
+        <a href="https://babelzin.be/" target="_blank">https://babelzin.be/</a>
+      </div>
+
+      <div class="object">
+        <span class="label">OBJET :</span> Détection d'un bug majeur dans la matrice étatique — Proposition d'alliance tactique entre anomalies systémiques — Demande d'extraction mutuelle de la médiocrité ambiante
+      </div>
+
+      <p class="salutation">Cher collectif de résistants qui s'ignorent,</p>
+
+      <div class="body">
+        
+        <div class="intro-block">
+          <div class="big-text">C'EST LA MERDE.</div>
+          <p>Et maintenant qu'on a dit ce que tout le monde pense tout bas, on peut commencer à travailler.</p>
+        </div>
+
+        <p>
+          On ne va pas vous infliger les euphémismes institutionnels habituels. Pas de « défis sociétaux », pas de « publics fragilisés », pas de « cohésion territoriale à renforcer ». <strong>On va appeler un chat un chat</strong> : le système est en train de s'effondrer en silence, et tout le monde fait semblant de ne pas voir les fissures.
+        </p>
+
+        <p>
+          Vous, au Babel'Zin, vous avez compris quelque chose que 90% des acteurs culturels bruxellois n'ont toujours pas capté : <em>on ne répare pas une société fracturée avec des vernissages et des tables rondes</em>. On la répare en créant des espaces où les gens se parlent vraiment. Où le mec du Transvaal peut commander le même café que la consultante du Boulevard du Souverain sans que personne ne calcule qui a le droit d'être là.
+        </p>
+
+        <p>
+          <strong>Vous êtes des anomalies. Nous aussi. Et franchement, c'est notre seule chance.</strong>
+        </p>
+
+        <div class="diagnostic-box">
+          <p style="margin-bottom: 1rem; color: var(--ink-muted);">Voici ce qu'on a trouvé en soulevant le tapis :</p>
+          <div class="diagnostic-grid">
+            <div class="diagnostic-item">
+              <div class="value">22%</div>
+              <div class="label">Chômage au Transvaal — deux fois la moyenne régionale</div>
+            </div>
+            <div class="diagnostic-item">
+              <div class="value">16,6%</div>
+              <div class="label">Seniors isolés — en train de crever de solitude dans des appartements propres</div>
+            </div>
+            <div class="diagnostic-item">
+              <div class="value">19%</div>
+              <div class="label">Chômage des 15-24 ans — une génération qu'on a décidé de sacrifier</div>
+            </div>
+            <div class="diagnostic-item">
+              <div class="value">50%</div>
+              <div class="label">Logements sociaux Transvaal — le ghetto qu'on ne nomme pas</div>
+            </div>
+          </div>
+        </div>
+
+        <p>
+          Pendant ce temps, le Centre Culturel d'Auderghem programme des ateliers aquarelle. La commune communique sur ses pistes cyclables. Et les politiques locaux inaugurent des ronds-points en se félicitant de leur « vision ». <strong>Le bug n'est pas technique. Il est cognitif.</strong> Personne ne veut voir ce qui se passe parce que voir obligerait à agir.
+        </p>
+
+        <div class="manifesto-quote">
+          <blockquote>
+            « Le problème n'est pas que les gens ne s'intéressent pas à la politique. Le problème, c'est que la politique ne s'intéresse pas aux gens — et qu'on a rendu l'engagement civique aussi sexy qu'un formulaire CPAS rempli à 7h du matin dans une salle d'attente qui sent le désinfectant et le désespoir. »
+          </blockquote>
+          <div class="source">— Manifeste Résistance Cognitive, Article 3 (non encore publié, mais on vous fait confiance)</div>
+        </div>
+
+        <div class="rage-section">
+          <h3>💀 Ce qui nous fout en rogne</h3>
+          <ul>
+            <li><strong>L'invisibilisation des précaires</strong> — Auderghem, commune « aisée » selon les stats. Aisée mon cul. On a juste appris à cacher nos pauvres derrière les haies de thuyas du Souverain.</li>
+            <li><strong>L'infantilisation citoyenne</strong> — On demande aux gens de « participer » à des consultations où tout est déjà décidé. Démocratie Potemkine. Circulez, y'a rien à voir.</li>
+            <li><strong>Le piège de l'inactivité</strong> — Des gens qui veulent s'engager mais qui perdent leurs droits sociaux s'ils bougent le petit doigt. Le système a été designé pour décourager l'initiative. C'est pas un bug, c'est une feature.</li>
+            <li><strong>La fracture numérique qu'on fait semblant de combler</strong> — On file des tablettes aux vieux sans leur expliquer comment ne pas se faire arnaquer sur Facebook. Bravo, on a créé des victimes connectées.</li>
+            <li><strong>L'entre-soi culturel</strong> — L'éducation permanente parle à ceux qui n'en ont pas besoin. Les autres, on les a perdus quelque part entre la crèche et le CPAS.</li>
+          </ul>
+        </div>
+
+        <p>
+          Alors voilà : on a décidé de se sortir les doigts. Pas avec des bonnes intentions — on en a soupé des bonnes intentions. Avec un <strong>plan de bataille digne de stratèges sud-coréens crypto-capitalistes reconvertis dans l'anarcho-geekerie sociale</strong>. Un truc tellement pas piqué des morpions que les fonctionnaires vont devoir inventer de nouvelles cases pour nous classer.
+        </p>
+
+        <div class="arsenal-box">
+          <h3>🔧 Notre arsenal — parce qu'on vient pas les mains vides</h3>
+          <div class="arsenal-grid">
+            <div class="arsenal-item">
+              <div class="icon">🎮</div>
+              <div class="name">ARG « Souveraineté Fantôme »</div>
+              <div class="desc">Un jeu en réalité alternée qui transforme les démarches administratives en quêtes épiques. Le dossier Herrmann-Debroux devient une aventure collective.</div>
+            </div>
+            <div class="arsenal-item">
+              <div class="icon">📚</div>
+              <div class="name">Arpentage Citoyen</div>
+              <div class="desc">Lecture collective décentralisée. 6 jours en asynchrone, 7ème jour en présentiel. On lit ensemble, on comprend ensemble, on s'engueule intelligemment.</div>
+            </div>
+            <div class="arsenal-item">
+              <div class="icon">🔐</div>
+              <div class="name">Solid Pods</div>
+              <div class="desc">Souveraineté des données personnelles. Première implémentation en Belgique francophone. Vos données vous appartiennent, point.</div>
+            </div>
+            <div class="arsenal-item">
+              <div class="icon">💰</div>
+              <div class="name">Économie Contributive (NYXO)</div>
+              <div class="desc">Un système qui permet aux précaires de s'engager sans perdre leurs droits. On a trouvé la faille, on l'exploite.</div>
+            </div>
+            <div class="arsenal-item">
+              <div class="icon">🗳️</div>
+              <div class="name">Vote Quadratique</div>
+              <div class="desc">Fini la dictature de la majorité simple. On mesure l'intensité des préférences. Démocratie 2.0.</div>
+            </div>
+            <div class="arsenal-item">
+              <div class="icon">🏥</div>
+              <div class="name">Standard FHIR</div>
+              <div class="desc">Pont entre le social et la santé. On casse les silos CPAS-hôpitaux. Interopérabilité radicale.</div>
+            </div>
+            <div class="arsenal-item">
+              <div class="icon">📜</div>
+              <div class="name">Git Scraping</div>
+              <div class="desc">Archives inaltérables des décisions publiques. Quand ils suppriment des pages, on a les backups. La vérité ne s'efface pas.</div>
+            </div>
+            <div class="arsenal-item">
+              <div class="icon">💸</div>
+              <div class="name">Pipeline de financement</div>
+              <div class="desc">500K€ à 2M€ identifiés sur 3 ans. 40+ sources. On ne mendie pas, on chasse.</div>
+            </div>
+          </div>
+        </div>
+
+        <p>
+          <strong>Pourquoi on vous écrit ?</strong> Parce qu'on a fait nos devoirs. On a cartographié le territoire, interrogé les fantômes, compté les absents. Et à chaque fois qu'on cherchait un lieu où le Transvaal pourrait croiser Pinoy sans que personne ne se sente illégitime, <em>votre nom revenait</em>.
+        </p>
+
+        <p>
+          Le Babel'Zin n'est pas un café. C'est un <strong>nœud de réseau</strong>. Un <em>glitch</em> dans la matrice de la ségrégation sociale bruxelloise. Un endroit où on peut encore croire que la mixité n'est pas un mot creux sur une plaquette communale.
+        </p>
+
+        <div class="proposal-box">
+          <h4>Voici ce qu'on propose — sans bullshit</h4>
+          <ul class="proposal-list">
+            <li>
+              <strong>📖 Ateliers d'Arpentage Citoyen</strong>
+              Un dimanche par mois, chez vous. Lectures collectives sur des sujets qui comptent. Pas de sachants, pas de cours magistraux. Juste des citoyens qui apprennent ensemble.
+            </li>
+            <li>
+              <strong>🎮 Sessions « Souveraineté Fantôme »</strong>
+              Notre ARG en mode beta-test. Vos clients deviennent des « agents de résistance ». On transforme le quartier en terrain de jeu civique.
+            </li>
+            <li>
+              <strong>✍️ Permanences Écrivain Public 2.0</strong>
+              Aide aux démarches administratives + formation à la souveraineté numérique. On apprend aux gens à ne plus se faire baiser par les algorithmes.
+            </li>
+            <li>
+              <strong>🎨 Lancement 1er Mai 2026</strong>
+              Un vernissage glitch-art ? Une performance ? Un bordel organisé ? On co-décide. C'est votre terrain, on respecte les règles de la maison.
+            </li>
+            <li>
+              <strong>🤝 Co-construction permanente</strong>
+              Vos idées nous intéressent. On n'a pas le monopole de l'intelligence collective. Si vous voyez des trucs qu'on n'a pas vus, dites-le.
+            </li>
+          </ul>
+
+          <div class="terms-box">
+            <h5>📋 Conditions du partenariat</h5>
+            <div class="terms-grid">
+              <div class="term-item">
+                <div class="icon">⚖️</div>
+                <div class="text"><strong>Pas de hiérarchie</strong><br>On co-construit, on co-décide, on co-échoue s'il le faut</div>
+              </div>
+              <div class="term-item">
+                <div class="icon">🔓</div>
+                <div class="text"><strong>Pas d'exclusivité</strong><br>Vous gardez votre autonomie, on garde la nôtre</div>
+              </div>
+              <div class="term-item">
+                <div class="icon">🚫</div>
+                <div class="text"><strong>Pas de bullshit</strong><br>Si ça merde, on se le dit. Si ça marche, on trinque</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p>
+          On sait que vous êtes sollicités de partout. On sait que les « partenariats » ressemblent souvent à des demandes déguisées de salles gratuites avec un verni de bonne conscience. <strong>Ce n'est pas ce qu'on propose.</strong>
+        </p>
+
+        <p>
+          On propose une <em>alliance</em>. Une convergence de bugs qui, ensemble, pourraient devenir une feature. Vous avez le lieu, l'ancrage, la légitimité locale, et surtout — une communauté qui vous fait confiance. Nous avons la méthodologie, le réseau PAC, la rage froide, et un plan de financement qui ferait pleurer de jalousie n'importe quelle ASBL du secteur.
+        </p>
+
+        <div class="final-call">
+          <p class="big"><strong>On aimerait vous rencontrer.</strong></p>
+          <p class="sub">Autour d'un verre, d'un repas, d'un atelier de déminage émotionnel — vous choisissez le format. On vient vous écouter autant que vous parler. Et si à la fin vous nous dites que c'est pas pour vous, on respectera. Mais on aura essayé.</p>
+        </div>
+
+      </div>
+
+      <div class="signature">
+        <p class="closing">
+          Dans l'espoir de glitcher ensemble le système,<br>
+          de boire des coups en planifiant la révolution douce,<br>
+          et de prouver que la merde peut devenir terreau,
+        </p>
+        <p class="name">Pour le Noyau Fondateur — PAC Auderghem</p>
+        <p class="title">« Résistance Cognitive » — Votre proxy commis d'office pour botter les culs enragés</p>
+      </div>
+
+      <div class="ps-section">
+        <div class="ps-item mint">
+          <strong>P.S. n°1 :</strong> On a développé une War Room numérique avec toute notre stratégie en open source. Ça clignote en vert et violet, c'est moche-beau comme un cyberpunk des années 90, et ça contient 40+ sources de financement. On peut vous la montrer — c'est notre façon de prouver qu'on est sérieux derrière le délire.
+        </div>
+        <div class="ps-item gold">
+          <strong>P.S. n°2 :</strong> On est officiellement parrainés par PAC (Présence et Action Culturelles) — mouvement d'éducation permanente reconnu. On n'est pas juste des illuminés avec un laptop. On est des illuminés avec un laptop ET un cadre institutionnel.
+        </div>
+        <div class="ps-item coral">
+          <strong>P.S. n°3 :</strong> Si ce courrier vous a fait lever un sourcil, c'est qu'on a réussi. Si les deux sourcils ont bougé, on devrait vraiment se parler. Si vous avez ri, on est faits pour s'entendre.
+        </div>
+      </div>
+
+      <div class="footer">
+        Document généré par la War Room v2.0 — Résistance Cognitive<br>
+        Projet porté par Présence et Action Culturelles (PAC) — Mouvement d'éducation permanente reconnu<br>
+        <span class="highlight">[ CLASSIFICATION : OPEN SOURCE — OPEN RAGE — OPEN BAR (le 1er mai, promis) ]</span>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
