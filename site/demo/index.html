@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUDERGHEM OS | Civic Command Center</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        auderghem: {
+                            red: '#E30613',
+                            dark: '#0F172A',
+                            card: 'rgba(30, 41, 59, 0.7)'
+                        },
+                        neon: {
+                            green: '#10B981',
+                            blue: '#3B82F6'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Glassmorphism & Animations */
+        body { background-color: #050505; color: white; overflow-x: hidden; }
+        .glass-panel {
+            background: rgba(20, 20, 25, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(16, 185, 129, 0.1) 51%, transparent 52%);
+            animation: scanline 4s linear infinite;
+            pointer-events: none;
+        }
+        .fhir-code { color: #a5b4fc; }
+        .fhir-key { color: #6ee7b7; }
+        .fhir-string { color: #fca5a5; }
+    </style>
+</head>
+
+<body x-data="auderghemOS()" x-init="initCharts()" class="antialiased min-h-screen relative font-sans selection:bg-auderghem-red selection:text-white">
+
+    <div id="map-bg" class="fixed inset-0 z-0 opacity-30 grayscale contrast-125"></div>
+    <div class="fixed inset-0 z-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent pointer-events-none"></div>
+
+    <div x-show="!loggedIn" 
+         x-transition:leave="transition ease-in duration-700"
+         x-transition:leave-start="opacity-100 blur-none"
+         x-transition:leave-end="opacity-0 blur-lg"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xl">
+        
+        <div class="text-center space-y-8 max-w-md w-full p-8 relative">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-auderghem-red to-transparent opacity-50"></div>
+            
+            <div class="mb-6 inline-block p-4 rounded-full bg-white/5 border border-white/10 ring-1 ring-white/20 shadow-[0_0_50px_rgba(227,6,19,0.3)]">
+                <i class="ph ph-fingerprint text-6xl text-white"></i>
+            </div>
+
+            <h1 class="text-4xl font-bold tracking-tight">AUDERGHEM <span class="text-auderghem-red">OS</span></h1>
+            <p class="text-slate-400">Système d'Exploitation Citoyen Décentralisé</p>
+
+            <div class="space-y-4 pt-4">
+                <button @click="loginWithSolid()" 
+                        class="group relative w-full py-4 px-6 bg-white text-black font-bold rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-200">
+                    <span x-show="!loggingIn" class="flex items-center justify-center gap-3">
+                        <img src="https://solidproject.org/assets/img/solid-emblem.svg" class="w-6 h-6" alt="Solid">
+                        Connexion via Solid Pod
+                    </span>
+                    <span x-show="loggingIn" class="flex items-center justify-center gap-3">
+                        <i class="ph ph-spinner animate-spin text-xl"></i>
+                        Vérification WebID...
+                    </span>
+                    <div class="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 group-hover:animate-shine" />
+                </button>
+                <p class="text-xs text-slate-500 uppercase tracking-widest">Protocol Secured • No Central Database</p>
+            </div>
+        </div>
+    </div>
+
+    <main x-show="loggedIn" x-cloak class="relative z-10 container mx-auto p-6 space-y-6">
+        
+        <header class="flex justify-between items-center glass-panel p-4 rounded-2xl animate-fade-in-down">
+            <div class="flex items-center gap-4">
+                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <div>
+                    <h2 class="font-bold text-xl tracking-tight">Auderghem <span class="text-slate-400">Live</span></h2>
+                    <p class="text-xs text-slate-400 font-mono">NODES: 14,203 • SENSORS: 48 • DATA: FLAT</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-bold text-white" x-text="user.name"></p>
+                    <p class="text-xs text-green-400 font-mono" x-text="user.webId"></p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-auderghem-red to-purple-600 border-2 border-white/20"></div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+            <div class="col-span-12 md:col-span-8 glass-panel rounded-2xl p-6 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition">
+                    <span class="px-2 py-1 bg-red-500/20 text-red-400 text-xs font-mono rounded border border-red-500/30">LIVE ALERT</span>
+                </div>
+                <div class="flex justify-between items-end mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold flex items-center gap-2">
+                            <i class="ph ph-train-simple text-blue-400"></i> Observatoire Mobilité
+                        </h3>
+                        <p class="text-sm text-slate-400 mt-1">Comparatif Temps Réel : Donnée Officielle (STIB) vs Donnée Citoyenne (Telraam)</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-bold text-white font-mono">Herrmann-D.</div>
+                        <div class="text-xs text-slate-400">Viaduc Zone Monitor</div>
+                    </div>
+                </div>
+                
+                <div class="h-64 w-full">
+                    <canvas id="mobilityChart"></canvas>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-4 mt-4 text-center">
+                    <div class="p-3 rounded-lg bg-white/5 border border-white/5">
+                        <div class="text-xs text-slate-400">Retard Officiel</div>
+                        <div class="text-xl font-bold text-blue-400">+2 min</div>
+                    </div>
+                    <div class="p-3 rounded-lg bg-white/5 border border-white/5">
+                        <div class="text-xs text-slate-400">Retard Réel (Citoyen)</div>
+                        <div class="text-xl font-bold text-red-400">+14 min</div>
+                    </div>
+                    <div class="p-3 rounded-lg bg-white/5 border border-white/5">
+                        <div class="text-xs text-slate-400">Confiance Donnée</div>
+                        <div class="text-xl font-bold text-orange-400">Discrepancy Detected</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-12 md:col-span-4 glass-panel rounded-2xl p-0 flex flex-col relative overflow-hidden">
+                <div class="p-6 border-b border-white/10 bg-slate-900/50">
+                    <h3 class="text-lg font-semibold flex items-center gap-2">
+                        <i class="ph ph-first-aid text-green-400"></i> Social-Santé Bridge
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">Interconnexion CPAS & Hôpitaux (FHIR Standard)</p>
+                </div>
+                
+                <div class="flex-1 bg-[#0d1117] p-4 font-mono text-xs overflow-y-auto scanline relative">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-slate-500">GET /HealthcareService/cpas-meal-delivery</span>
+                        <span class="text-green-500">200 OK</span>
+                    </div>
+<pre class="leading-relaxed">
+<span class="text-purple-400">{</span>
+  <span class="fhir-key">"resourceType"</span>: <span class="fhir-string">"HealthcareService"</span>,
+  <span class="fhir-key">"id"</span>: <span class="fhir-string">"svc-repas-auderghem"</span>,
+  <span class="fhir-key">"category"</span>: <span class="text-yellow-300">[</span><span class="fhir-string">"social-welfare"</span><span class="text-yellow-300">]</span>,
+  <span class="fhir-key">"eligibility"</span>: <span class="text-yellow-300">[</span>
+    <span class="text-blue-400">{</span>
+      <span class="fhir-key">"code"</span>: <span class="fhir-string">"resident-1160"</span>,
+      <span class="fhir-key">"status"</span>: <span class="text-green-400">true</span> <span class="text-slate-500">// Check via Solid</span>
+    <span class="text-blue-400">}</span>
+  <span class="text-yellow-300">]</span>,
+  <span class="fhir-key">"status"</span>: <span class="fhir-string">"active"</span>
+<span class="text-purple-400">}</span>
+</pre>
+                </div>
+                
+                <div class="p-4 bg-green-900/20 border-t border-green-500/20">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-green-500 rounded-full text-black">
+                            <i class="ph ph-check-bold"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-white">Éligibilité Validée Auto</div>
+                            <div class="text-xs text-green-400">Prescription activée par Dr. Janssens</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-12 md:col-span-4 glass-panel rounded-2xl p-6">
+                <h3 class="text-lg font-semibold flex items-center gap-2 mb-4">
+                    <i class="ph ph-wind text-teal-400"></i> Qualité de l'Air
+                </h3>
+                
+                <div class="relative flex items-center justify-center py-6">
+                    <svg class="w-40 h-40 transform -rotate-90">
+                        <circle cx="80" cy="80" r="70" stroke="currentColor" stroke-width="10" fill="transparent" class="text-slate-700" />
+                        <circle cx="80" cy="80" r="70" stroke="currentColor" stroke-width="10" fill="transparent" :stroke-dasharray="circumference" :stroke-dashoffset="circumference - percent / 100 * circumference" class="text-yellow-500 transition-all duration-1000 ease-out" />
+                    </svg>
+                    <div class="absolute text-center">
+                        <div class="text-4xl font-bold" x-text="airQuality">42</div>
+                        <div class="text-xs text-slate-400">µg/m³ PM2.5</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded text-center">
+                    <p class="text-sm text-yellow-200">⚠️ Seuil OMS dépassé au Transvaal</p>
+                    <p class="text-xs text-slate-400 mt-1">Source: 24 capteurs citoyens</p>
+                </div>
+            </div>
+
+            <div class="col-span-12 md:col-span-8 glass-panel rounded-2xl p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h3 class="text-lg font-semibold flex items-center gap-2">
+                            <i class="ph ph-scales text-purple-400"></i> Budget Partagé : Vote Quadratique
+                        </h3>
+                        <p class="text-sm text-slate-400">Dépensez vos crédits de voix pour exprimer l'intensité de vos choix.</p>
+                    </div>
+                    <div class="px-4 py-2 bg-purple-500/20 border border-purple-500/50 rounded-lg">
+                        <span class="text-xs uppercase text-slate-300">Crédits restants</span>
+                        <div class="text-2xl font-bold text-white font-mono" x-text="credits">100</div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>Rénovation Espace Insectes (Athénée)</span>
+                            <span class="font-mono text-purple-300">Coût: <span x-text="votes.p1 * votes.p1">0</span> crédits</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button @click="adjustVote('p1', -1)" class="w-8 h-8 rounded bg-slate-700 hover:bg-slate-600">-</button>
+                            <div class="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-purple-500 transition-all duration-300" :style="`width: ${(votes.p1 * votes.p1)}%`"></div>
+                            </div>
+                            <button @click="adjustVote('p1', 1)" class="w-8 h-8 rounded bg-slate-700 hover:bg-slate-600">+</button>
+                            <span class="w-8 text-center font-bold" x-text="votes.p1">0</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>Pistes Cyclables Séparées (Viaduc)</span>
+                            <span class="font-mono text-purple-300">Coût: <span x-text="votes.p2 * votes.p2">0</span> crédits</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button @click="adjustVote('p2', -1)" class="w-8 h-8 rounded bg-slate-700 hover:bg-slate-600">-</button>
+                            <div class="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-purple-500 transition-all duration-300" :style="`width: ${(votes.p2 * votes.p2)}%`"></div>
+                            </div>
+                            <button @click="adjustVote('p2', 1)" class="w-8 h-8 rounded bg-slate-700 hover:bg-slate-600">+</button>
+                            <span class="w-8 text-center font-bold" x-text="votes.p2">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex justify-end">
+                    <button class="px-6 py-2 bg-white text-black font-bold rounded hover:bg-slate-200 transition">
+                        Soumettre à la Blockchain
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        function auderghemOS() {
+            return {
+                loggedIn: false,
+                loggingIn: false,
+                user: { name: 'Citoyen Anonyme', webId: 'https://solid.pod/id/83742' },
+                airQuality: 35,
+                circumference: 70 * 2 * Math.PI,
+                percent: 60,
+                credits: 100,
+                votes: { p1: 0, p2: 0 },
+
+                loginWithSolid() {
+                    this.loggingIn = true;
+                    // Simulate Authentication Delay
+                    setTimeout(() => {
+                        this.loggingIn = false;
+                        this.loggedIn = true;
+                        this.startLiveSimulation();
+                    }, 2000);
+                },
+
+                adjustVote(project, delta) {
+                    const currentVote = this.votes[project];
+                    const nextVote = currentVote + delta;
+                    if (nextVote < 0) return;
+
+                    const costDifference = (nextVote * nextVote) - (currentVote * currentVote);
+                    
+                    if (this.credits - costDifference >= 0) {
+                        this.votes[project] = nextVote;
+                        this.credits -= costDifference;
+                    }
+                },
+
+                startLiveSimulation() {
+                    // Simulate Air Quality fluctuation
+                    setInterval(() => {
+                        this.airQuality = 35 + Math.floor(Math.random() * 15);
+                        this.percent = (this.airQuality / 100) * 100;
+                    }, 3000);
+                }
+            }
+        }
+
+        function initCharts() {
+            // MAP INIT
+            const map = L.map('map-bg', {
+                zoomControl: false,
+                dragging: false,
+                scrollWheelZoom: false
+            }).setView([50.816, 4.433], 14); // Auderghem Center
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            // CHART INIT (Delayed until login is effectively simulated or just rendered in DOM)
+            // Note: In a real Alpine app we'd watch for the DOM element. 
+            // For this PoC, we assume the canvas exists in the DOM but is hidden.
+            const ctx = document.getElementById('mobilityChart').getContext('2d');
+            
+            // Gradient for the red line (Citizen)
+            const gradientRed = ctx.createLinearGradient(0, 0, 0, 400);
+            gradientRed.addColorStop(0, 'rgba(239, 68, 68, 0.5)');
+            gradientRed.addColorStop(1, 'rgba(239, 68, 68, 0)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['08:00', '08:10', '08:20', '08:30', '08:40', '08:50', '09:00'],
+                    datasets: [
+                        {
+                            label: 'STIB (API Officielle)',
+                            data: [2, 3, 2, 4, 3, 2, 2],
+                            borderColor: '#3B82F6',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Telraam (Citoyen)',
+                            data: [5, 8, 12, 15, 14, 9, 6],
+                            borderColor: '#EF4444',
+                            backgroundColor: gradientRed,
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#EF4444'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { color: '#94a3b8', font: {family: 'monospace'} } }
+                    },
+                    scales: {
+                        y: { 
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#64748b' },
+                            title: { display: true, text: 'Minutes de Retard', color: '#64748b' }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { color: '#64748b' }
+                        }
+                    },
+                    animation: {
+                        y: {
+                            duration: 2000,
+                            from: 500
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
