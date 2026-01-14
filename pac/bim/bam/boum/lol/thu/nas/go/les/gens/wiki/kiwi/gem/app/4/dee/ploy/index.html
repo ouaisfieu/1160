@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport d'Analyse : OuaisFi.eu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles for the Wiki look */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background-color: #f6f6f6;
+            color: #202122;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Noto Serif', serif;
+            border-bottom: 1px solid #a2a9b1;
+            margin-bottom: 0.5em;
+        }
+
+        h1 { font-size: 1.8rem; font-weight: 400; padding-bottom: 0.2em; }
+        h2 { font-size: 1.5rem; font-weight: 400; margin-top: 1em; padding-bottom: 0.2em; }
+        h3 { font-size: 1.2rem; font-weight: 700; margin-top: 0.8em; border-bottom: none; }
+
+        .wiki-link { color: #0645ad; text-decoration: none; }
+        .wiki-link:hover { text-decoration: underline; }
+        .wiki-link:visited { color: #0b0080; }
+
+        .infobox {
+            background-color: #f8f9fa;
+            border: 1px solid #a2a9b1;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            float: right;
+            clear: right;
+            margin: 0 0 1em 1em;
+            width: 300px;
+        }
+
+        .toc {
+            background-color: #f8f9fa;
+            border: 1px solid #a2a9b1;
+            display: inline-block;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+    <!-- Chosen Palette: Wikipedia Classic (White #FFFFFF, Light Gray #F6F6F6, Border Gray #A2A9B1, Link Blue #0645AD) -->
+    <!-- Application Structure Plan: 
+         1. Header: Classic Wiki header with search (functional filter).
+         2. Layout: Sidebar (Nav) + Main Content (Article style).
+         3. Sections: 
+            - Introduction/Infobox: Summary of the domain.
+            - Security Dashboard (dl.ouaisfi.eu): Charts and simulated vulnerability metrics.
+            - Interactive Sitemap: Tree view of the scanned structure with search/filter.
+            - Network Analysis: Traffic/Tech stack visualization.
+         4. Interaction: JS-based filtering for the sitemap, interactive Chart.js visualizations for data, Tabbed interface for switching views.
+         5. Rationale: The "Wiki" format is familiar for information density, while the "Dashboard" elements provide the requested analysis depth.
+    -->
+    <!-- Visualization & Content Choices:
+         - Domain Info -> Inform -> Infobox -> Static HTML -> Standard Wiki trope.
+         - File Types (dl.ouaisfi.eu) -> Goal: Organize/Compare -> Doughnut Chart -> Chart.js -> To show what content is hosted.
+         - Security Score -> Goal: Inform -> Progress Bar/Gauge -> HTML/CSS -> Immediate visual impact of safety.
+         - Sitemap -> Goal: Organize/Explore -> Indented Tree List with Filter -> JS DOM Manipulation -> Allows "scrutinizing" the structure.
+         - Server Response -> Goal: Trends -> Line Chart -> Chart.js -> Simulates server load/health analysis.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Top Bar -->
+    <header class="bg-white border-b border-gray-300 p-4 flex items-center justify-between shadow-sm sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-serif font-bold text-gray-700">W</div>
+            <span class="font-serif text-xl">OuaisFiPédia <span class="text-xs font-sans text-gray-500 uppercase tracking-wide ml-2">Rapport de Sécurité</span></span>
+        </div>
+        <div class="relative w-full max-w-md hidden md:block">
+            <input type="text" id="globalSearch" placeholder="Rechercher dans le sitemap..." class="w-full border border-gray-300 px-4 py-2 rounded shadow-inner focus:outline-none focus:border-blue-500 transition-colors">
+            <button class="absolute right-0 top-0 h-full px-4 text-gray-500 hover:text-blue-600 font-bold">→</button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 max-w-7xl mx-auto w-full">
+        <!-- Sidebar Navigation -->
+        <nav class="hidden md:block w-48 p-4 text-sm border-r border-gray-200 shrink-0">
+            <ul class="space-y-2">
+                <li><a href="#" class="wiki-link font-bold block" onclick="scrollToSection('home')">Accueil</a></li>
+                <li><a href="#" class="wiki-link block pl-2" onclick="scrollToSection('overview')">Vue d'ensemble</a></li>
+                <li><a href="#" class="wiki-link block pl-2" onclick="scrollToSection('security')">Audit Sécurité (dl)</a></li>
+                <li><a href="#" class="wiki-link block pl-2" onclick="scrollToSection('sitemap')">Arborescence (Sitemap)</a></li>
+                <li><a href="#" class="wiki-link block pl-2" onclick="scrollToSection('stats')">Statistiques Serveur</a></li>
+                <li class="mt-4 text-gray-500 uppercase text-xs font-bold border-b border-gray-200 pb-1">Outils</li>
+                <li><a href="#" class="wiki-link block pl-2" onclick="alert('Export PDF non disponible dans cette démo.')">Exporter en PDF</a></li>
+                <li><a href="#" class="wiki-link block pl-2" onclick="alert('Lien permanent copié.')">Lien permanent</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-8 bg-white min-w-0" id="main-content">
+            
+            <!-- Contextual Introduction -->
+            <div id="home" class="mb-8">
+                <h1 class="text-3xl border-b border-gray-400 pb-2 mb-4">Analyse Complète : Infrastructure OuaisFi.eu</h1>
+                <p class="mb-4 text-gray-800 leading-relaxed">
+                    Ce rapport interactif présente une analyse structurelle et sécuritaire des domaines <b>ouaisfi.eu</b> et de sa cible critique <b>dl.ouaisfi.eu</b>. 
+                    L'objectif est de fournir une cartographie exhaustive (sitemap) et d'identifier les vecteurs potentiels de vulnérabilité.
+                    Cette page combine des données quantitatives (statistiques de fichiers, temps de réponse) et qualitatives (audit d'architecture) pour une compréhension approfondie.
+                </p>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 text-sm text-gray-700 italic">
+                    Note : Les données présentées ci-dessous sont générées à titre de simulation pour démontrer l'architecture du rapport.
+                </div>
+            </div>
+
+            <!-- Infobox -->
+            <div class="infobox shadow-sm rounded">
+                <div class="bg-gray-200 p-2 font-bold text-center border-b border-gray-300">OuaisFi.eu</div>
+                <table class="w-full text-sm">
+                    <tbody>
+                        <tr>
+                            <td class="font-bold py-1">Type</td>
+                            <td class="py-1">Réseau Communautaire / Stockage</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold py-1">Cible Principale</td>
+                            <td class="py-1"><a href="#" class="wiki-link">dl.ouaisfi.eu</a></td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold py-1">État</td>
+                            <td class="py-1 text-green-600 font-bold">En ligne</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold py-1">Serveur</td>
+                            <td class="py-1">Nginx/1.18.0 (Ubuntu)</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold py-1">Score Sécurité</td>
+                            <td class="py-1 text-yellow-600 font-bold">B- (Audit Requis)</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold py-1">Pages Indexées</td>
+                            <td class="py-1">142</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- TOC -->
+            <div id="overview" class="toc rounded shadow-sm">
+                <div class="font-bold text-center mb-2">Sommaire</div>
+                <ol class="list-decimal list-inside text-sm text-blue-700">
+                    <li><span class="wiki-link cursor-pointer hover:underline" onclick="scrollToSection('security')">Analyse de Sécurité (dl.ouaisfi.eu)</span></li>
+                    <li><span class="wiki-link cursor-pointer hover:underline" onclick="scrollToSection('sitemap')">Cartographie du Site (Sitemap)</span></li>
+                    <li><span class="wiki-link cursor-pointer hover:underline" onclick="scrollToSection('stats')">Données & Métriques</span></li>
+                    <li><span class="wiki-link cursor-pointer hover:underline" onclick="scrollToSection('recommendations')">Recommandations</span></li>
+                </ol>
+            </div>
+
+            <!-- Security Section -->
+            <section id="security" class="mt-8 clear-both">
+                <h2>1. Analyse de Sécurité (dl.ouaisfi.eu)</h2>
+                <p class="mb-4">
+                    Cette section détaille les observations de sécurité concernant le sous-domaine critique <code>dl.ouaisfi.eu</code>. 
+                    L'analyse se concentre sur l'exposition des fichiers, la configuration HTTPS et les headers de sécurité.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- Security Score Card -->
+                    <div class="border border-gray-300 p-4 rounded bg-white shadow-sm">
+                        <h3 class="mt-0 text-lg font-bold text-gray-700 mb-2">Score de Confiance</h3>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-bold text-gray-600">Configuration SSL/TLS</span>
+                            <span class="text-sm font-bold text-green-600">A</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                            <div class="bg-green-600 h-2.5 rounded-full" style="width: 95%"></div>
+                        </div>
+
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-bold text-gray-600">Headers HTTP (HSTS, CSP)</span>
+                            <span class="text-sm font-bold text-red-600">F</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                            <div class="bg-red-600 h-2.5 rounded-full" style="width: 20%"></div>
+                        </div>
+
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-bold text-gray-600">Protection Répertoires (Index Of)</span>
+                            <span class="text-sm font-bold text-yellow-500">C</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                            <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Vulnerabilities List -->
+                    <div class="border border-gray-300 p-4 rounded bg-white shadow-sm">
+                        <h3 class="mt-0 text-lg font-bold text-gray-700 mb-2">Alertes Détectées</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-start">
+                                <span class="bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded border border-red-200 mt-0.5">CRITIQUE</span>
+                                <span>Directory Listing activé sur <code>/public/backup</code>.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded border border-yellow-200 mt-0.5">MOYEN</span>
+                                <span>Header <code>X-Frame-Options</code> manquant (Risque Clickjacking).</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded border border-blue-200 mt-0.5">INFO</span>
+                                <span>Version Nginx exposée dans les headers (1.18.0).</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p class="text-sm text-gray-600">
+                    L'analyse révèle que bien que le chiffrement de transport soit robuste, la configuration du serveur web permet une énumération facile du contenu, ce qui contrevient aux principes de sécurité par l'obscurité pour un dépôt privé.
+                </p>
+            </section>
+
+            <!-- Interactive Sitemap Section -->
+            <section id="sitemap" class="mt-8 pt-4 border-t border-gray-200">
+                <h2>2. Cartographie du Site (Sitemap)</h2>
+                <p class="mb-4">
+                    Exploration complète de l'arborescence découverte lors du scan. Utilisez le champ de recherche pour filtrer des chemins spécifiques ou des extensions de fichiers.
+                </p>
+
+                <!-- Sitemap Controls -->
+                <div class="bg-gray-100 p-3 rounded-t border border-gray-300 border-b-0 flex flex-wrap gap-2 items-center justify-between">
+                    <div class="flex gap-2">
+                        <button onclick="filterSitemap('all')" class="px-3 py-1 text-xs font-bold bg-white border border-gray-400 rounded hover:bg-gray-50 active:bg-blue-50">Tout voir</button>
+                        <button onclick="filterSitemap('public')" class="px-3 py-1 text-xs font-bold bg-white border border-gray-400 rounded hover:bg-gray-50 active:bg-blue-50">Public</button>
+                        <button onclick="filterSitemap('restricted')" class="px-3 py-1 text-xs font-bold bg-white border border-gray-400 rounded hover:bg-gray-50 active:bg-blue-50 text-red-600">Restreint</button>
+                    </div>
+                    <div class="text-xs text-gray-500 font-mono" id="nodeCount">Noeuds affichés : 12</div>
+                </div>
+
+                <!-- Sitemap Tree Container -->
+                <div class="border border-gray-300 bg-white p-4 h-96 overflow-y-auto font-mono text-sm rounded-b shadow-inner" id="sitemapContainer">
+                    <!-- JS will populate this -->
+                    <div class="flex items-center justify-center h-full text-gray-500">Chargement de l'arborescence...</div>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section id="stats" class="mt-8 pt-4 border-t border-gray-200">
+                <h2>3. Données & Métriques</h2>
+                <p class="mb-4">
+                    Visualisation de la typologie des données hébergées sur <code>dl.ouaisfi.eu</code> et analyse de la charge serveur simulée.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Chart 1: File Types -->
+                    <div class="bg-white p-4 rounded border border-gray-200 shadow-sm flex flex-col items-center">
+                        <h3 class="text-center w-full mt-0 mb-4 text-gray-700 text-sm font-bold">Distribution des Types de Fichiers (dl.ouaisfi.eu)</h3>
+                        <div class="chart-container">
+                            <canvas id="fileTypeChart"></canvas>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 text-center">Prédominance des fichiers multimédias.</p>
+                    </div>
+
+                    <!-- Chart 2: Crawl Depth/Latency -->
+                    <div class="bg-white p-4 rounded border border-gray-200 shadow-sm flex flex-col items-center">
+                        <h3 class="text-center w-full mt-0 mb-4 text-gray-700 text-sm font-bold">Profondeur de Crawl & Latence (ms)</h3>
+                        <div class="chart-container">
+                            <canvas id="crawlChart"></canvas>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 text-center">Temps de réponse stable jusqu'au niveau 4.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recommendations -->
+            <section id="recommendations" class="mt-8 pt-4 border-t border-gray-200 pb-12">
+                <h2>4. Recommandations</h2>
+                <div class="bg-blue-50 border border-blue-200 p-4 rounded">
+                    <ul class="list-disc list-inside space-y-2 text-gray-800">
+                        <li><strong>Désactiver le listing des répertoires :</strong> Modifier la configuration Nginx (<code>autoindex off</code>) pour empêcher l'exploration libre.</li>
+                        <li><strong>Renforcer les Headers :</strong> Implémenter HSTS et Content-Security-Policy pour mitiger les attaques XSS et MITM.</li>
+                        <li><strong>Authentification :</strong> Protéger les zones <code>/backup</code> et <code>/private</code> via Basic Auth ou OAuth.</li>
+                    </ul>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 border-t border-gray-300 p-6 text-center text-xs text-gray-600 mt-auto">
+        <p>Généré par Canvas Create Webapp • Données simulées pour démonstration • <a href="#" class="wiki-link">Politique de confidentialité</a> • <a href="#" class="wiki-link">À propos de Wikipédia</a></p>
+        <p class="mt-2 text-gray-400">Dernière modification : 14 Janvier 2026 à 14:02</p>
+    </footer>
+
+    <script>
+        // --- DATA STORAGE (Simulated Scan Results) ---
+        const sitemapData = [
+            { path: "ouaisfi.eu/", type: "root", access: "public", level: 0 },
+            { path: "ouaisfi.eu/index.html", type: "page", access: "public", level: 1 },
+            { path: "ouaisfi.eu/about", type: "page", access: "public", level: 1 },
+            { path: "ouaisfi.eu/contact", type: "page", access: "public", level: 1 },
+            { path: "ouaisfi.eu/assets/", type: "dir", access: "public", level: 1 },
+            { path: "ouaisfi.eu/assets/css/style.css", type: "file", access: "public", level: 2 },
+            { path: "ouaisfi.eu/assets/js/main.js", type: "file", access: "public", level: 2 },
+            { path: "dl.ouaisfi.eu/", type: "subdomain", access: "public", level: 0 },
+            { path: "dl.ouaisfi.eu/movies/", type: "dir", access: "public", level: 1 },
+            { path: "dl.ouaisfi.eu/movies/summer_party.mkv", type: "file", access: "public", level: 2 },
+            { path: "dl.ouaisfi.eu/music/", type: "dir", access: "public", level: 1 },
+            { path: "dl.ouaisfi.eu/music/mix_2024.mp3", type: "file", access: "public", level: 2 },
+            { path: "dl.ouaisfi.eu/docs/", type: "dir", access: "public", level: 1 },
+            { path: "dl.ouaisfi.eu/docs/rules.pdf", type: "file", access: "public", level: 2 },
+            { path: "dl.ouaisfi.eu/private/", type: "dir", access: "restricted", level: 1 },
+            { path: "dl.ouaisfi.eu/private/passwords.txt", type: "file", access: "restricted", level: 2, note: "CRITICAL" },
+            { path: "dl.ouaisfi.eu/backup/", type: "dir", access: "restricted", level: 1 },
+            { path: "dl.ouaisfi.eu/backup/db_dump.sql", type: "file", access: "restricted", level: 2, note: "CRITICAL" }
+        ];
+
+        const statsData = {
+            fileTypes: {
+                labels: ['Vidéo (.mkv, .mp4)', 'Audio (.mp3, .flac)', 'Documents (.pdf, .docx)', 'Système (.iso, .img)', 'Web (.html, .css)'],
+                data: [45, 25, 15, 10, 5]
+            },
+            crawlPerformance: {
+                labels: ['Niveau 0 (Root)', 'Niveau 1', 'Niveau 2', 'Niveau 3', 'Niveau 4'],
+                data: [120, 145, 200, 450, 800] // ms
+            }
+        };
+
+        // --- CORE FUNCTIONS ---
+
+        function initCharts() {
+            // Chart 1: File Types (Doughnut)
+            const ctx1 = document.getElementById('fileTypeChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: statsData.fileTypes.labels,
+                    datasets: [{
+                        data: statsData.fileTypes.data,
+                        backgroundColor: [
+                            '#3b82f6', // Blue
+                            '#10b981', // Green
+                            '#f59e0b', // Yellow
+                            '#6366f1', // Indigo
+                            '#9ca3af'  // Gray
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // Chart 2: Crawl Depth (Bar)
+            const ctx2 = document.getElementById('crawlChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: statsData.crawlPerformance.labels,
+                    datasets: [{
+                        label: 'Temps de réponse moyen (ms)',
+                        data: statsData.crawlPerformance.data,
+                        backgroundColor: '#0645ad',
+                        borderRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function renderSitemap(filter = 'all', searchTerm = '') {
+            const container = document.getElementById('sitemapContainer');
+            container.innerHTML = '';
+            
+            let count = 0;
+            const ul = document.createElement('ul');
+            ul.className = 'list-none pl-0';
+
+            sitemapData.forEach(node => {
+                // Filters
+                if (filter === 'public' && node.access !== 'public') return;
+                if (filter === 'restricted' && node.access !== 'restricted') return;
+                if (searchTerm && !node.path.toLowerCase().includes(searchTerm.toLowerCase())) return;
+
+                count++;
+                
+                const li = document.createElement('li');
+                // Indentation based on level
+                li.style.paddingLeft = `${node.level * 1.5}rem`;
+                li.className = 'py-1 hover:bg-gray-50 border-b border-gray-100 border-dashed flex items-center group';
+
+                // Icons
+                let icon = '📄';
+                if (node.type === 'dir') icon = '📁';
+                if (node.type === 'root' || node.type === 'subdomain') icon = '🌐';
+                if (node.access === 'restricted') icon = '🔒';
+
+                // Content
+                let html = `<span class="mr-2 opacity-70">${icon}</span>`;
+                html += `<span class="${node.access === 'restricted' ? 'text-red-700 font-bold' : 'text-blue-700'} break-all">${node.path}</span>`;
+                
+                // Badges
+                if (node.note === 'CRITICAL') {
+                    html += `<span class="ml-2 px-1.5 py-0.5 bg-red-600 text-white text-[10px] rounded uppercase font-bold">Critique</span>`;
+                }
+
+                // Action (simulated link)
+                html += `<a href="#" class="ml-auto text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 hover:text-blue-600 underline">Voir source</a>`;
+
+                li.innerHTML = html;
+                ul.appendChild(li);
+            });
+
+            if (count === 0) {
+                container.innerHTML = '<div class="text-gray-500 italic p-4 text-center">Aucun résultat trouvé.</div>';
+            } else {
+                container.appendChild(ul);
+            }
+            
+            document.getElementById('nodeCount').innerText = `Noeuds affichés : ${count}`;
+        }
+
+        // Navigation Helper
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function filterSitemap(type) {
+            const searchVal = document.getElementById('globalSearch').value;
+            renderSitemap(type, searchVal);
+        }
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            renderSitemap();
+
+            // Search listener
+            document.getElementById('globalSearch').addEventListener('input', (e) => {
+                renderSitemap('all', e.target.value);
+            });
+        });
+
+    </script>
+</body>
+</html>
