@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiCitoyen 1160 - L'Encyclopédie Libre d'Auderghem</title>
+    <style>
+        /* --- STYLE WIKIPEDIA (VECTOR SKIN SIMPLIFIÉ) --- */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #202122;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar Gauche */
+        #mw-panel {
+            width: 11em;
+            background-color: #f6f6f6;
+            padding: 1em;
+            border-right: 1px solid #a7d7f9;
+            flex-shrink: 0;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        #p-logo {
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-align: center;
+            color: #555;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .portal h3 {
+            font-size: 0.85em;
+            color: #444;
+            margin: 0.5em 0;
+            border-bottom: 1px solid #c8ccd1;
+            padding-bottom: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .portal ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.85em;
+        }
+
+        .portal li {
+            margin: 0.3em 0;
+        }
+
+        .portal a {
+            color: #0645ad;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .portal a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contenu Principal */
+        #content {
+            flex-grow: 1;
+            padding: 1.5em 2em;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Header (Recherche) */
+        #p-personal {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 0.85em;
+        }
+
+        #searchInput {
+            padding: 5px;
+            border: 1px solid #a2a9b1;
+        }
+
+        /* Typographie Article */
+        h1 {
+            font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+            border-bottom: 1px solid #a2a9b1;
+            font-weight: normal;
+            margin-bottom: 0.5em;
+            padding-bottom: 0.2em;
+        }
+
+        h2 {
+            font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+            border-bottom: 1px solid #a2a9b1;
+            font-weight: normal;
+            margin-top: 1.5em;
+            font-size: 1.5em;
+        }
+
+        h3 {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 1em;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 1em;
+        }
+
+        /* Boîtes d'info et TOC */
+        .infobox {
+            float: right;
+            border: 1px solid #a2a9b1;
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-left: 20px;
+            width: 250px;
+            font-size: 0.9em;
+        }
+
+        .toc {
+            display: inline-block;
+            border: 1px solid #a2a9b1;
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 0.95em;
+        }
+
+        .toc h4 {
+            margin: 0;
+            text-align: center;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        /* Gestion de l'affichage des pages */
+        .page-content {
+            display: none; /* Tout caché par défaut */
+        }
+        
+        .page-content.active {
+            display: block; /* Afficher la page active */
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .citation {
+            font-size: 0.7em;
+            vertical-align: super;
+            color: #0645ad;
+        }
+        
+        .warning-box {
+            border-left: 5px solid #ffcc00;
+            background-color: #fffff0;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="mw-panel">
+        <div id="p-logo">
+            <a href="#" onclick="showPage('accueil')" style="color:inherit; text-decoration:none;">
+                WIKI<br>CITOYEN<br>1160
+            </a>
+        </div>
+
+        <div class="portal">
+            <h3>Navigation</h3>
+            <ul>
+                <li><a onclick="showPage('accueil')">Accueil</a></li>
+                <li><a onclick="showPage('kit-secours')">Kit de Secours (Débutant)</a></li>
+                <li><a onclick="showPage('auderghem')">Auderghem (1160)</a></li>
+            </ul>
+        </div>
+
+        <div class="portal">
+            <h3>Comprendre (My Spot)</h3>
+            <ul>
+                <li><a onclick="showPage('systeme-belge')">Le Système Belge</a></li>
+                <li><a onclick="showPage('particratie')">La Particratie</a></li>
+                <li><a onclick="showPage('pilarisation')">Pilarisation</a></li>
+            </ul>
+        </div>
+
+        <div class="portal">
+            <h3>Agir (Up Yours)</h3>
+            <ul>
+                <li><a onclick="showPage('citoyennete')">Citoyenneté & Brol</a></li>
+                <li><a onclick="showPage('surveillance')">Surveillance & IA</a></li>
+                <li><a onclick="showPage('outils')">Boîte à Outils</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="content">
+        <div id="p-personal">
+            <input type="text" id="searchInput" placeholder="Rechercher sur Wiki 1160...">
+            <button type="button">🔍</button>
+        </div>
+
+        <div id="accueil" class="page-content active">
+            <h1>Bienvenue sur le Wiki Citoyen 1160</h1>
+            <div class="warning-box">
+                [cite_start]<b>Note :</b> Ce projet est une initiative de veille citoyenne et de ressources libres, indépendante de la commune d'Auderghem. [cite: 7]
+            </div>
+            <p>Bienvenue sur le manuel d'opération du nœud local <b>1160 (Auderghem)</b>. Ce site est une cartographie pour naviguer, comprendre et agir dans votre environnement local.</p>
+            
+            <p>L'objectif n'est pas de vous noyer sous l'information, mais de vous donner des "clés de compréhension" pour décrypter :</p>
+            <ul>
+                [cite_start]<li>Les complexités administratives (le « brol »)[cite: 8].</li>
+                [cite_start]<li>Les enjeux économiques locaux[cite: 8].</li>
+                [cite_start]<li>Les dérives de surveillance[cite: 8].</li>
+            </ul>
+
+            <h2>Par où commencer ?</h2>
+            <p>Si vous êtes nouveau, suivez notre parcours initiatique :</p>
+            <ol>
+                <li><b><a onclick="showPage('kit-secours')">Le Kit de Secours</a></b> : Pour comprendre les bases sans jargon technique.</li>
+                <li><b><a onclick="showPage('auderghem')">Focus Auderghem</a></b> : Ce qui se passe concrètement dans votre commune (1160).</li>
+                <li><b><a onclick="showPage('outils')">Passer à l'action</a></b> : Comment protéger votre vie privée et interpeller vos élus.</li>
+            </ol>
+        </div>
+
+        <div id="kit-secours" class="page-content">
+            <h1>Kit de Secours Citoyen</h1>
+            [cite_start]<p>Le kit de secours est un parcours progressif visant à transformer un visiteur passif en acteur éclairé[cite: 16].</p>
+
+            <div class="toc">
+                <h4>Sommaire</h4>
+                <ul>
+                    <li><a href="#en-clair">1. En Clair</a></li>
+                    <li><a href="#en-pratique">2. En Pratique</a></li>
+                    <li><a href="#en-vrai">3. En Vrai</a></li>
+                </ul>
+            </div>
+
+            <h2 id="en-clair">1. En Clair (Vulgarisation)</h2>
+            [cite_start]<p>Cette section aborde les concepts complexes (dette publique, sécurité sociale) avec un langage simplifié, débarrassé du jargon technocratique[cite: 20]. L'objectif est de rendre la politique accessible à tous, de l'adulte en formation au militant.</p>
+
+            <h2 id="en-pratique">2. En Pratique (Tutoriels)</h2>
+            <p>Ici, nous passons à l'opérationnel. Vous trouverez :</p>
+            <ul>
+                [cite_start]<li>Des modèles de lettres administratives[cite: 22].</li>
+                [cite_start]<li>Des guides de survie face à la bureaucratie[cite: 22].</li>
+                <li>Des méthodes pour lire un budget communal.</li>
+            </ul>
+
+            <h2 id="en-vrai">3. En Vrai (Témoignages)</h2>
+            [cite_start]<p>Documentation de cas réels et retours d'expérience sur le terrain[cite: 24]. C'est ici que l'on vérifie si la théorie s'applique à la réalité d'Auderghem.</p>
+        </div>
+
+        <div id="auderghem" class="page-content">
+            <h1>Auderghem (1160)</h1>
+            
+            <div class="infobox">
+                <h4 style="margin-top:0; text-align:center; background:#dedede; padding:5px;">Commune d'Auderghem</h4>
+                <b>Code postal :</b> 1160<br>
+                <b>Région :</b> Bruxelles-Capitale<br>
+                [cite_start]<b>Enjeux majeurs :</b> Viaduc Herrmann-Debroux, Densification [cite: 161]<br>
+                <b>Conseillers :</b> 29 (ou 31)<br>
+            </div>
+
+            [cite_start]<p>Cette section est dédiée au déploiement local du projet citoyen pour le code postal 1160. Auderghem est une commune verte mais coupée en deux par une autoroute urbaine[cite: 160].</p>
+
+            <h2>Gouvernance Locale</h2>
+            <p>Pour agir, il faut savoir qui décide. Le wiki recense :</p>
+            <ul>
+                [cite_start]<li><b>Le Conseil Communal :</b> Liste des conseillers, leurs partis et leurs mandats dans les intercommunales[cite: 166].</li>
+                <li><b>Le Collège :</b> Qui est échevin de quoi ? (Travaux, Urbanisme, etc.) [cite_start][cite: 167].</li>
+                [cite_start]<li><b>Agenda :</b> Dates des séances publiques et liens vers le streaming vidéo[cite: 168].</li>
+            </ul>
+
+            <h2>Urbanisme et Environnement</h2>
+            <p>C'est souvent le point d'entrée du citoyen : <i>« On va construire un immeuble devant chez moi, que faire ? [cite_start]»</i>[cite: 177].</p>
+            <ul>
+                [cite_start]<li><b>Enquêtes Publiques :</b> Comment réagir à l'affiche rouge dans les délais (15 ou 30 jours)[cite: 178].</li>
+                [cite_start]<li><b>Commission de Concertation :</b> Guide pour prendre la parole efficacement face aux promoteurs[cite: 179].</li>
+                [cite_start]<li><b>Viaduc Herrmann-Debroux :</b> Suivi des projets de transformation de cette artère majeure[cite: 161].</li>
+            </ul>
+
+            <h2>Social (CPAS)</h2>
+            [cite_start]<p>Le CPAS est un "état dans l'état"[cite: 182]. [cite_start]Cette section simplifie l'accès aux droits (Revenu d'intégration, aide médicale) et liste les sociétés de logement social actives sur 1160[cite: 184].</p>
+        </div>
+
+        <div id="systeme-belge" class="page-content">
+            <h1>Le Système Politique Belge</h1>
+            [cite_start]<p>Comprendre le contexte local nécessite de maîtriser le "système d'exploitation" politique belge[cite: 59].</p>
+
+            <h2>Le Millefeuille Institutionnel</h2>
+            <p>La Belgique superpose plusieurs niveaux de pouvoir. [cite_start]Pour un habitant d'Auderghem, il est crucial de frapper à la bonne porte[cite: 92]:</p>
+            <ul>
+                [cite_start]<li><b>Commune (Auderghem) :</b> Propreté, État civil, Urbanisme local, Sécurité de proximité[cite: 87].</li>
+                [cite_start]<li><b>Région (Bruxelles) :</b> Mobilité (ex: Viaduc Herrmann-Debroux), Logement, Environnement[cite: 85].</li>
+                [cite_start]<li><b>Fédéral (Belgique) :</b> Police, Justice, Sécurité Sociale[cite: 84].</li>
+            </ul>
+            [cite_start]<p><i>Exemple : Une pétition au Bourgmestre sur l'état du Viaduc n'a qu'une valeur symbolique car c'est une compétence régionale[cite: 91].</i></p>
+        </div>
+
+        <div id="particratie" class="page-content">
+            <h1>La Particratie</h1>
+            <div class="warning-box">
+                [cite_start]<b>Définition :</b> Régime où le pouvoir réel ne réside pas au Conseil Communal, mais au siège des partis politiques[cite: 73].
+            </div>
+            
+            <h2>Comment ça marche ?</h2>
+            [cite_start]<p>Les élus locaux votent rarement selon leur conscience, mais selon la "discipline de vote" dictée par le bureau du parti[cite: 74]. [cite_start]C'est l'adversaire principal de la participation citoyenne[cite: 77].</p>
+
+            <h2>Stratégie Citoyenne</h2>
+            <p>Lors d'une interpellation au conseil d'Auderghem, il est souvent inutile de tenter de convaincre un conseiller de la majorité de changer d'avis séance tenante, car son vote est verrouillé. [cite_start]La stratégie doit viser à créer un coût politique médiatique pour le parti lui-même[cite: 78, 79].</p>
+        </div>
+
+        <div id="pilarisation" class="page-content">
+            <h1>La Pilarisation</h1>
+            [cite_start]<p>La pilarisation désigne la division historique de la société belge en "piliers" idéologiques : chrétien, socialiste et libéral[cite: 62].</p>
+
+            <h2>Impact à Auderghem</h2>
+            <p>Bien que ce système s'effrite, il reste puissant localement. [cite_start]Comprendre les alliances au conseil communal nécessite d'identifier les affiliations des échevins aux réseaux syndicaux ou mutualistes[cite: 66].</p>
+            [cite_start]<p>Par exemple, le financement d'une maison de jeunes ou d'un club de sport dépend souvent de son lien historique avec un pilier (laïque ou catholique)[cite: 69].</p>
+        </div>
+
+        <div id="citoyennete" class="page-content">
+            <h1>Citoyenneté et "Brol"</h1>
+            [cite_start]<p>Le dossier « La citoyenneté, c'est le brol » explique que la complexité administrative n'est pas accidentelle, mais systémique[cite: 107].</p>
+
+            <h2>Le filtre administratif</h2>
+            [cite_start]<p>La bureaucratie agit comme un filtre censitaire : seuls ceux qui maîtrisent le langage administratif accèdent réellement à leurs droits[cite: 108].</p>
+
+            <h2>L'exclusion numérique</h2>
+            <p>L'obligation de s'identifier numériquement (via eID ou Itsme) pour des services de base crée une exclusion. [cite_start]Nous recensons les services communaux d'Auderghem qui imposent le "tout au numérique" pour exiger des alternatives physiques (guichets)[cite: 111, 112].</p>
+        </div>
+
+         <div id="surveillance" class="page-content">
+            <h1>Rapport Dystopique & Surveillance</h1>
+            [cite_start]<p>Une veille sur les menaces pesant sur nos libertés locales, souvent cachées sous des termes comme "Smart City"[cite: 137].</p>
+
+            <table border="1" style="border-collapse: collapse; width: 100%; font-size: 0.9em;">
+                <tr style="background-color: #f2f2f2;">
+                    <th>Menace</th>
+                    <th>Indicateur Local (1160)</th>
+                </tr>
+                <tr>
+                    <td>Surveillance de Masse</td>
+                    <td>Nombre de nouvelles caméras installées ; [cite_start]Reconnaissance faciale[cite: 135].</td>
+                </tr>
+                <tr>
+                    <td>Gouvernance Algorithmique</td>
+                    [cite_start]<td>Automatisation des aides au CPAS par des "boîtes noires" (IA)[cite: 135].</td>
+                </tr>
+                <tr>
+                    <td>Restriction des Libertés</td>
+                    [cite_start]<td>Ordonnances de police interdisant les rassemblements ou taxes sur les tracts[cite: 135].</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="outils" class="page-content">
+            <h1>Boîte à Outils & Hygiène Numérique</h1>
+            <p>Pour maintenir ce savoir, le citoyen doit s'équiper d'outils souverains et sécurisés.</p>
+
+            <h2>Pourquoi pas Facebook ou WordPress ?</h2>
+            <p>Ce projet refuse les plateformes commerciales qui revendent vos données. [cite_start]Nous privilégions une infrastructure "statique", transparente et impossible à pirater[cite: 143, 144].</p>
+
+            <h2>Protéger sa vie privée ("Hygiène Numérique")</h2>
+            <ul>
+                [cite_start]<li><b>Email :</b> Utilisez des alias pour éviter le traçage[cite: 154].</li>
+                [cite_start]<li><b>Navigation :</b> Installez des bloqueurs de publicité et de traceurs[cite: 155].</li>
+                [cite_start]<li><b>Gestion de l'info :</b> Apprenez à filtrer le bruit médiatique pour vous concentrer sur les signaux faibles pertinents pour Auderghem[cite: 156].</li>
+            </ul>
+
+            <h2>Contribuer</h2>
+            <p>Ce savoir est "Open Source". [cite_start]Vous pouvez le copier, le modifier et le redistribuer (Licence CC BY-SA 4.0)[cite: 146].</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Fonction pour changer de page (Onglet)
+        function showPage(pageId) {
+            // 1. Cacher toutes les pages
+            var pages = document.getElementsByClassName('page-content');
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].className = 'page-content'; // Retire la classe "active"
+            }
+
+            // 2. Afficher la page demandée
+            var target = document.getElementById(pageId);
+            if (target) {
+                target.className = 'page-content active';
+                // Scroll to top
+                document.getElementById('content').scrollTop = 0;
+            } else {
+                alert("Page en construction ou lien brisé.");
+            }
+        }
+
+        // Simuler la recherche (pour l'exemple)
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                alert("Fonction de recherche simulée : Essayez de cliquer sur 'Auderghem' dans le menu de gauche.");
+            }
+        });
+    </script>
+</body>
+</html>
