@@ -1,0 +1,1546 @@
+
+<!DOCTYPE html>
+<html lang="fr" itemscope itemtype="https://schema.org/WebPage">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Résistance Cognitive - Projet de section locale PAC à Auderghem (1160). Laboratoire de démocratie générative pour la souveraineté cognitive citoyenne. Fan Club Non Officiel, historiquement lié mais structurellement indépendant.">
+    <meta name="keywords" content="Résistance Cognitive, PAC, Auderghem, 1160, éducation permanente, démocratie générative, souveraineté cognitive, guerre cognitive bienveillante">
+    <meta name="author" content="Résistance Cognitive Auderghem">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Résistance Cognitive — Auderghem 1160">
+    <meta property="og:description" content="Laboratoire de démocratie générative. Fan Club Non Officiel du PAC.">
+    <meta property="og:locale" content="fr_BE">
+    
+    <title>Résistance Cognitive | Auderghem 1160 — Laboratoire de Démocratie Générative</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ═══════════════════════════════════════════════════════════════
+           DESIGN TOKENS — Inspiré PAC (rouge militant) mais distinct
+           ═══════════════════════════════════════════════════════════════ */
+        :root {
+            /* Palette : Rouge PAC + Bleu nuit profond + Or accent */
+            --clr-pac-red: #C8102E;
+            --clr-pac-red-dark: #9B0D24;
+            --clr-pac-red-light: #E8304A;
+            --clr-deep-blue: #0A1628;
+            --clr-navy: #1A2744;
+            --clr-gold: #D4AF37;
+            --clr-gold-light: #F4D35E;
+            --clr-white: #FFFFFF;
+            --clr-off-white: #F8F9FA;
+            --clr-text: #1A1A1A;
+            --clr-text-muted: #5A6677;
+            --clr-border: #E2E8F0;
+            --clr-success: #10B981;
+            --clr-warning: #F59E0B;
+            
+            /* Typography */
+            --font-display: 'Space Grotesk', system-ui, sans-serif;
+            --font-body: 'Libre Baskerville', Georgia, serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --fs-giant: clamp(3rem, 10vw, 7rem);
+            --fs-h1: clamp(2.2rem, 5vw, 4rem);
+            --fs-h2: clamp(1.6rem, 3.5vw, 2.5rem);
+            --fs-h3: clamp(1.2rem, 2vw, 1.5rem);
+            --fs-body: 1.05rem;
+            --fs-small: 0.875rem;
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 4rem;
+            --space-xl: 6rem;
+            
+            /* Effects */
+            --radius-sm: 4px;
+            --radius-md: 12px;
+            --radius-lg: 24px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 30px rgba(0,0,0,0.12);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.2);
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           RESET & BASE
+           ═══════════════════════════════════════════════════════════════ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-size: var(--fs-body);
+            line-height: 1.7;
+            color: var(--clr-text);
+            background: var(--clr-off-white);
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: var(--clr-pac-red);
+            color: white;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            line-height: 1.15;
+        }
+
+        a {
+            color: var(--clr-pac-red);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+        a:hover {
+            color: var(--clr-pac-red-dark);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           DISCLAIMER TICKER — Le bandeau défilant OBLIGATOIRE
+           ═══════════════════════════════════════════════════════════════ */
+        .disclaimer-ticker {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background: var(--clr-deep-blue);
+            color: var(--clr-white);
+            font-family: var(--font-display);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            overflow: hidden;
+            border-bottom: 3px solid var(--clr-gold);
+        }
+
+        .ticker-track {
+            display: flex;
+            width: max-content;
+            animation: ticker-scroll 40s linear infinite;
+        }
+
+        .ticker-track:hover {
+            animation-play-state: paused;
+        }
+
+        .ticker-content {
+            display: flex;
+            align-items: center;
+            padding: 0.8em 0;
+            white-space: nowrap;
+        }
+
+        .ticker-segment {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 3em;
+        }
+
+        .ticker-highlight {
+            color: var(--clr-gold);
+            font-size: 1.2em;
+        }
+
+        .ticker-separator {
+            color: var(--clr-pac-red);
+            font-size: 1.5em;
+            margin: 0 0.5em;
+        }
+
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════════ */
+        .site-header {
+            position: sticky;
+            top: 52px;
+            z-index: 100;
+            background: var(--clr-white);
+            border-bottom: 1px solid var(--clr-border);
+            padding: var(--space-sm) 0;
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75em;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--clr-pac-red);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+            animation: logo-shine 3s ease-in-out infinite;
+        }
+
+        @keyframes logo-shine {
+            0%, 100% { transform: translateX(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .logo-text {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--clr-text);
+            line-height: 1.1;
+        }
+
+        .logo-text small {
+            display: block;
+            font-size: 0.65em;
+            font-weight: 500;
+            color: var(--clr-text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: var(--space-xs);
+        }
+
+        .nav-link {
+            font-family: var(--font-display);
+            font-size: var(--fs-small);
+            font-weight: 600;
+            color: var(--clr-text-muted);
+            padding: 0.6em 1em;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--clr-pac-red);
+            background: rgba(200, 16, 46, 0.08);
+        }
+
+        .nav-link.external::after {
+            content: ' ↗';
+            font-size: 0.9em;
+        }
+
+        /* Mobile nav */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--space-xs);
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--clr-text);
+            margin: 5px 0;
+            transition: var(--transition);
+        }
+
+        @media (max-width: 900px) {
+            .menu-toggle { display: block; }
+            .main-nav {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background: var(--clr-white);
+                padding: var(--space-sm);
+                border-bottom: 1px solid var(--clr-border);
+                box-shadow: var(--shadow-md);
+                transform: translateY(-10px);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+            }
+            .main-nav.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           HERO SECTION
+           ═══════════════════════════════════════════════════════════════ */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--clr-deep-blue) 0%, var(--clr-navy) 100%);
+            position: relative;
+            overflow: hidden;
+            padding: var(--space-xl) 0;
+            margin-top: -1px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(200, 16, 46, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        /* Grid pattern overlay */
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75em;
+            background: rgba(200, 16, 46, 0.2);
+            border: 1px solid rgba(200, 16, 46, 0.4);
+            color: var(--clr-pac-red-light);
+            font-family: var(--font-mono);
+            font-size: var(--fs-small);
+            padding: 0.5em 1.2em;
+            border-radius: 50px;
+            margin-bottom: var(--space-md);
+            animation: fadeSlideDown 0.8s ease-out 0.2s both;
+        }
+
+        .hero-badge::before {
+            content: '⬡';
+            animation: rotate 8s linear infinite;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeSlideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-title {
+            font-size: var(--fs-giant);
+            color: var(--clr-white);
+            margin-bottom: var(--space-sm);
+            animation: fadeSlideUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero-title .accent {
+            display: block;
+            background: linear-gradient(135deg, var(--clr-pac-red) 0%, var(--clr-gold) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-body);
+            font-size: var(--fs-h3);
+            color: rgba(255,255,255,0.8);
+            max-width: 700px;
+            margin-bottom: var(--space-md);
+            animation: fadeSlideUp 0.8s ease-out 0.6s both;
+        }
+
+        .hero-location {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5em;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            color: var(--clr-gold);
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 0.6em 1.2em;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-lg);
+            animation: fadeSlideUp 0.8s ease-out 0.8s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            animation: fadeSlideUp 0.8s ease-out 1s both;
+        }
+
+        .btn {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 1em 2em;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5em;
+            transition: all var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--clr-pac-red);
+            color: white;
+            box-shadow: 0 4px 20px rgba(200, 16, 46, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: var(--clr-pac-red-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(200, 16, 46, 0.5);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--clr-white);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--clr-white);
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           INDEPENDENCE BANNER
+           ═══════════════════════════════════════════════════════════════ */
+        .independence-banner {
+            background: var(--clr-gold);
+            color: var(--clr-deep-blue);
+            padding: var(--space-md) var(--space-md);
+            text-align: center;
+        }
+
+        .independence-text {
+            font-family: var(--font-display);
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 700;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5em;
+        }
+
+        .independence-text .big {
+            font-size: 1.3em;
+            text-transform: uppercase;
+        }
+
+        .independence-text .highlight {
+            background: var(--clr-deep-blue);
+            color: var(--clr-gold);
+            padding: 0.2em 0.6em;
+            border-radius: var(--radius-sm);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           MAIN CONTENT SECTIONS
+           ═══════════════════════════════════════════════════════════════ */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+
+        .section {
+            padding: var(--space-xl) 0;
+        }
+
+        .section-header {
+            margin-bottom: var(--space-lg);
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: var(--fs-small);
+            color: var(--clr-pac-red);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: var(--space-xs);
+            display: flex;
+            align-items: center;
+            gap: 1em;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 30px;
+            height: 2px;
+            background: var(--clr-pac-red);
+        }
+
+        .section-title {
+            font-size: var(--fs-h1);
+            color: var(--clr-text);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           DIAGNOSTIC SECTION
+           ═══════════════════════════════════════════════════════════════ */
+        .diagnostic {
+            background: var(--clr-white);
+        }
+
+        .diagnostic-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .diagnostic-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .diagnostic-text p {
+            margin-bottom: var(--space-sm);
+            color: var(--clr-text-muted);
+        }
+
+        .diagnostic-text strong {
+            color: var(--clr-text);
+        }
+
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-sm);
+        }
+
+        .stat-card {
+            background: var(--clr-off-white);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            text-align: center;
+            transition: all var(--transition);
+        }
+
+        .stat-card:hover {
+            border-color: var(--clr-pac-red);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: var(--fs-h2);
+            font-weight: 700;
+            color: var(--clr-pac-red);
+            display: block;
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--clr-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .quartiers-list {
+            margin-top: var(--space-md);
+            background: linear-gradient(135deg, var(--clr-pac-red) 0%, var(--clr-pac-red-dark) 100%);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            color: white;
+        }
+
+        .quartiers-list h4 {
+            font-family: var(--font-display);
+            margin-bottom: var(--space-xs);
+        }
+
+        .quartiers-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5em;
+        }
+
+        .quartier-tag {
+            background: rgba(255,255,255,0.2);
+            padding: 0.3em 0.8em;
+            border-radius: 50px;
+            font-family: var(--font-mono);
+            font-size: var(--fs-small);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           METHODOLOGY SECTION
+           ═══════════════════════════════════════════════════════════════ */
+        .methodology {
+            background: var(--clr-deep-blue);
+            color: var(--clr-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .methodology::before {
+            content: 'MÉTHODOLOGIE';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: 15vw;
+            font-weight: 700;
+            color: rgba(255,255,255,0.02);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .methodology .section-label {
+            color: var(--clr-gold);
+        }
+
+        .methodology .section-label::before {
+            background: var(--clr-gold);
+        }
+
+        .methodology .section-title {
+            color: var(--clr-white);
+        }
+
+        .method-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--space-md);
+            position: relative;
+            z-index: 1;
+        }
+
+        .method-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            transition: all var(--transition);
+        }
+
+        .method-card:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: var(--clr-pac-red);
+            transform: translateY(-5px);
+        }
+
+        .method-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--clr-pac-red), var(--clr-gold));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .method-title {
+            font-size: var(--fs-h3);
+            margin-bottom: var(--space-xs);
+        }
+
+        .method-desc {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .method-steps {
+            list-style: none;
+        }
+
+        .method-steps li {
+            font-family: var(--font-mono);
+            font-size: var(--fs-small);
+            color: var(--clr-gold);
+            padding: 0.5em 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.75em;
+        }
+
+        .method-steps li:last-child {
+            border-bottom: none;
+        }
+
+        .method-steps li::before {
+            content: '→';
+            color: var(--clr-pac-red);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           TECH STACK SECTION
+           ═══════════════════════════════════════════════════════════════ */
+        .tech-stack {
+            background: var(--clr-white);
+        }
+
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--clr-off-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tech-table thead {
+            background: var(--clr-pac-red);
+            color: white;
+        }
+
+        .tech-table th {
+            font-family: var(--font-display);
+            font-weight: 600;
+            text-align: left;
+            padding: var(--space-sm) var(--space-md);
+        }
+
+        .tech-table td {
+            padding: var(--space-sm) var(--space-md);
+            border-bottom: 1px solid var(--clr-border);
+            vertical-align: top;
+        }
+
+        .tech-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tech-table tr:hover td {
+            background: rgba(200, 16, 46, 0.03);
+        }
+
+        .tech-name {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            color: var(--clr-pac-red);
+            white-space: nowrap;
+        }
+
+        .tech-benefit {
+            color: var(--clr-text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           TIMELINE SECTION
+           ═══════════════════════════════════════════════════════════════ */
+        .timeline {
+            background: var(--clr-off-white);
+        }
+
+        .timeline-track {
+            position: relative;
+            padding-left: var(--space-lg);
+        }
+
+        .timeline-track::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--clr-pac-red), var(--clr-gold));
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: var(--space-lg);
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: calc(-1 * var(--space-lg) + 4px);
+            width: 20px;
+            height: 20px;
+            background: var(--clr-pac-red);
+            border: 4px solid var(--clr-off-white);
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px var(--clr-pac-red);
+        }
+
+        .timeline-item.highlight .timeline-dot {
+            background: var(--clr-gold);
+            box-shadow: 0 0 0 3px var(--clr-gold);
+        }
+
+        .timeline-date {
+            font-family: var(--font-mono);
+            font-size: var(--fs-small);
+            color: var(--clr-pac-red);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-xs);
+        }
+
+        .timeline-item.highlight .timeline-date {
+            color: var(--clr-gold);
+        }
+
+        .timeline-title {
+            font-size: var(--fs-h3);
+            margin-bottom: var(--space-xs);
+        }
+
+        .timeline-desc {
+            color: var(--clr-text-muted);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           CTA SECTION
+           ═══════════════════════════════════════════════════════════════ */
+        .cta-section {
+            background: linear-gradient(135deg, var(--clr-pac-red) 0%, var(--clr-pac-red-dark) 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: var(--fs-h1);
+            margin-bottom: var(--space-sm);
+        }
+
+        .cta-text {
+            font-size: var(--fs-h3);
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto var(--space-md);
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            justify-content: center;
+        }
+
+        .btn-white {
+            background: var(--clr-white);
+            color: var(--clr-pac-red);
+        }
+
+        .btn-white:hover {
+            background: var(--clr-off-white);
+            color: var(--clr-pac-red-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        .btn-ghost:hover {
+            border-color: white;
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════════════════ */
+        .site-footer {
+            background: var(--clr-deep-blue);
+            color: rgba(255,255,255,0.7);
+            padding: var(--space-xl) 0 var(--space-md);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .footer-brand .logo-text {
+            color: var(--clr-white);
+            font-size: 1.5rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .footer-disclaimer {
+            font-size: var(--fs-small);
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm);
+            color: var(--clr-gold);
+        }
+
+        .footer-section h4 {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--clr-white);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: var(--space-sm);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: var(--space-xs);
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5em;
+            transition: color var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--clr-gold);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: var(--space-md);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .copyright {
+            font-family: var(--font-mono);
+            font-size: var(--fs-small);
+        }
+
+        .legal-note {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            max-width: 500px;
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .legal-note {
+                text-align: left;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           ANIMATIONS
+           ═══════════════════════════════════════════════════════════════ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           ACCESSIBILITY
+           ═══════════════════════════════════════════════════════════════ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .ticker-track {
+                animation: none;
+            }
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--clr-pac-red);
+            color: white;
+            padding: 1em 2em;
+            border-radius: var(--radius-md);
+            z-index: 99999;
+            transition: top var(--transition);
+        }
+        .skip-link:focus {
+            top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main" class="skip-link">Aller au contenu principal</a>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         DISCLAIMER TICKER — ALWAYS VISIBLE
+         ═══════════════════════════════════════════════════════════════ -->
+    <div class="disclaimer-ticker" role="banner" aria-label="Avertissement important">
+        <div class="ticker-track">
+            <div class="ticker-content">
+                <span class="ticker-segment">
+                    <span class="ticker-highlight">Fan Club Non Officiel</span>
+                    <span class="ticker-separator">★</span>
+                    HISTORIQUEMENT LIÉ mais structurellement INDÉPENDANT
+                </span>
+                <span class="ticker-segment">
+                    <span class="ticker-highlight">Fan Club Non Officiel</span>
+                    <span class="ticker-separator">★</span>
+                    HISTORIQUEMENT LIÉ mais structurellement INDÉPENDANT
+                </span>
+                <span class="ticker-segment">
+                    <span class="ticker-highlight">Fan Club Non Officiel</span>
+                    <span class="ticker-separator">★</span>
+                    HISTORIQUEMENT LIÉ mais structurellement INDÉPENDANT
+                </span>
+                <span class="ticker-segment">
+                    <span class="ticker-highlight">Fan Club Non Officiel</span>
+                    <span class="ticker-separator">★</span>
+                    HISTORIQUEMENT LIÉ mais structurellement INDÉPENDANT
+                </span>
+            </div>
+            <div class="ticker-content" aria-hidden="true">
+                <span class="ticker-segment">
+                    <span class="ticker-highlight">Fan Club Non Officiel</span>
+                    <span class="ticker-separator">★</span>
+                    HISTORIQUEMENT LIÉ mais structurellement INDÉPENDANT
+                </span>
+                <span class="ticker-segment">
+                    <span class="ticker-highlight">Fan Club Non Officiel</span>
+                    <span class="ticker-separator">★</span>
+                    HISTORIQUEMENT LIÉ mais structurellement INDÉPENDANT
+                </span>
+                <span class="ticker-segment">
+                    <span class="ticker-highlight">Fan Club Non Officiel</span>
+                    <span class="ticker-separator">★</span>
+                    HISTORIQUEMENT LIÉ mais structurellement INDÉPENDANT
+                </span>
+                <span class="ticker-segment">
+                    <span class="ticker-highlight">Fan Club Non Officiel</span>
+                    <span class="ticker-separator">★</span>
+                    HISTORIQUEMENT LIÉ mais structurellement INDÉPENDANT
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         HEADER
+         ═══════════════════════════════════════════════════════════════ -->
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="#" class="logo" aria-label="Résistance Cognitive - Accueil">
+                <div class="logo-icon">RC</div>
+                <div class="logo-text">
+                    Résistance Cognitive
+                    <small>Auderghem 1160</small>
+                </div>
+            </a>
+
+            <button class="menu-toggle" aria-label="Menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="main-nav" aria-label="Navigation principale">
+                <a href="#diagnostic" class="nav-link">Diagnostic</a>
+                <a href="#methodologie" class="nav-link">Méthodologie</a>
+                <a href="#technologie" class="nav-link">Architecture</a>
+                <a href="#calendrier" class="nav-link">Calendrier</a>
+                <a href="https://www.pac-g.be" class="nav-link external" target="_blank" rel="noopener">PAC Officiel</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <!-- ═══════════════════════════════════════════════════════════════
+             HERO
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-container">
+                <span class="hero-badge">Proposition de Projet — Section Locale PAC</span>
+                
+                <h1 id="hero-title" class="hero-title">
+                    <span class="accent">Résistance</span>
+                    Cognitive
+                </h1>
+                
+                <p class="hero-subtitle">
+                    Un laboratoire de <strong>démocratie générative</strong> pour restaurer la 
+                    <em>souveraineté cognitive</em> des citoyens d'Auderghem. 
+                    La <strong>Guerre Cognitive Bienveillante</strong> commence ici.
+                </p>
+                
+                <div class="hero-location">
+                    📍 Auderghem — Code postal 1160 — Bruxelles
+                </div>
+                
+                <div class="hero-cta">
+                    <a href="#diagnostic" class="btn btn-primary">
+                        Découvrir le projet
+                    </a>
+                    <a href="https://www.pac-g.be/regionales/" class="btn btn-outline" target="_blank" rel="noopener">
+                        Voir PAC Régionales ↗
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             INDEPENDENCE BANNER
+             ═══════════════════════════════════════════════════════════════ -->
+        <div class="independence-banner">
+            <p class="independence-text">
+                <span class="big">⚠️</span>
+                <span class="highlight">Projet citoyen indépendant</span>
+                inspiré des valeurs PAC —
+                <span class="big">Écosocialisme</span> •
+                <span class="big">Laïcité</span> •
+                <span class="big">Progressisme</span>
+            </p>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             DIAGNOSTIC SECTION
+             ═══════════════════════════════════════════════════════════════ -->
+        <section id="diagnostic" class="section diagnostic" aria-labelledby="diagnostic-title">
+            <div class="container">
+                <header class="section-header reveal">
+                    <span class="section-label">Analyse territoriale</span>
+                    <h2 id="diagnostic-title" class="section-title">Les fractures invisibles d'Auderghem</h2>
+                </header>
+
+                <div class="diagnostic-grid">
+                    <div class="diagnostic-text reveal">
+                        <p>
+                            Auderghem, souvent perçue comme une commune aisée, présente en réalité 
+                            le profil d'une <strong>« commune à deux vitesses »</strong>, où des zones 
+                            de prospérité masquent des poches de précarité significatives.
+                        </p>
+                        <p>
+                            Une analyse fine des données socio-économiques révèle des fractures sociales 
+                            qui constituent notre terrain d'action prioritaire. Le projet ciblera en priorité 
+                            les <strong>seniors isolés</strong> (16,6% de la population), les <strong>demandeurs d'emploi</strong> 
+                            et les <strong>jeunes adultes</strong> en quête de liens locaux.
+                        </p>
+
+                        <div class="quartiers-list">
+                            <h4>🎯 Quartiers prioritaires</h4>
+                            <div class="quartiers-tags">
+                                <span class="quartier-tag">Transvaal</span>
+                                <span class="quartier-tag">Ten-Reuken</span>
+                                <span class="quartier-tag">Pinoy</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-cards reveal">
+                        <div class="stat-card">
+                            <span class="stat-number">12%</span>
+                            <span class="stat-label">Statut BIM</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">19%</span>
+                            <span class="stat-label">Chômage jeunes</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">22%</span>
+                            <span class="stat-label">Chômage Transvaal</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">16,6%</span>
+                            <span class="stat-label">Seniors isolés</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             METHODOLOGY SECTION
+             ═══════════════════════════════════════════════════════════════ -->
+        <section id="methodologie" class="section methodology" aria-labelledby="methodology-title">
+            <div class="container">
+                <header class="section-header reveal">
+                    <span class="section-label">Innovation pédagogique</span>
+                    <h2 id="methodology-title" class="section-title">Pédagogie par le jeu et l'action</h2>
+                </header>
+
+                <div class="method-cards">
+                    <article class="method-card reveal">
+                        <div class="method-icon">📚</div>
+                        <h3 class="method-title">Arpentage Citoyen (ACI)</h3>
+                        <p class="method-desc">
+                            Technique de lecture collective pour déconstruire des ouvrages complexes 
+                            et générer une compréhension partagée. Le « sas d'initiation » à l'intelligence collective.
+                        </p>
+                        <ul class="method-steps">
+                            <li>Phase asynchrone : lecture individuelle + partage numérique</li>
+                            <li>Phase présentiel : mise en commun collective</li>
+                            <li>Seuil critique : 9 inscrits déclenchent la phase suivante</li>
+                        </ul>
+                    </article>
+
+                    <article class="method-card reveal">
+                        <div class="method-icon">🎮</div>
+                        <h3 class="method-title">ARG « Souveraineté Fantôme »</h3>
+                        <p class="method-desc">
+                            Jeu en Réalité Alternée transformant démarches administratives et enjeux civiques 
+                            (ex: dossier viaduc Herrmann-Debroux) en « missions » citoyennes immersives.
+                        </p>
+                        <ul class="method-steps">
+                            <li>Co-construction sur plateforme Decidim</li>
+                            <li>Participants = « architectes du jeu »</li>
+                            <li>Débattre, légiférer, voter sur les règles</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             TECH STACK SECTION
+             ═══════════════════════════════════════════════════════════════ -->
+        <section id="technologie" class="section tech-stack" aria-labelledby="tech-title">
+            <div class="container">
+                <header class="section-header reveal">
+                    <span class="section-label">Architecture technique</span>
+                    <h2 id="tech-title" class="section-title">Une « Stack » de contre-pouvoir</h2>
+                </header>
+
+                <div class="reveal">
+                    <table class="tech-table">
+                        <thead>
+                            <tr>
+                                <th>Composant</th>
+                                <th>Bénéfice stratégique</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tech-name">Protocole Solid</span><br>(Pods personnels)</td>
+                                <td class="tech-benefit">Garantir la <strong>souveraineté des données</strong> du citoyen. Première expérimentation en Belgique francophone.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-name">Static-First</span><br>(Eleventy + USWDS)</td>
+                                <td class="tech-benefit"><strong>Accessibilité radicale</strong> — Score Lighthouse 100/100. Inclusion seniors et personnes en fracture numérique.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-name">Standard FHIR</span></td>
+                                <td class="tech-benefit"><strong>Pont sémantique</strong> entre services sociaux (CPAS) et sanitaires. Accès fluide aux droits.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-name">Git Scraping</span></td>
+                                <td class="tech-benefit"><strong>Patrimoine de données inaltérable</strong> (pollution, budgets). Vérité administrative citoyenne.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-name">Vote Quadratique</span></td>
+                                <td class="tech-benefit">Exprimer <strong>l'intensité des préférences</strong>. Éviter la « tyrannie de la majorité ».</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             TIMELINE SECTION
+             ═══════════════════════════════════════════════════════════════ -->
+        <section id="calendrier" class="section timeline" aria-labelledby="timeline-title">
+            <div class="container">
+                <header class="section-header reveal">
+                    <span class="section-label">Déploiement</span>
+                    <h2 id="timeline-title" class="section-title">Feuille de route 2026</h2>
+                </header>
+
+                <div class="timeline-track reveal">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">Janvier — Mars 2026</div>
+                        <h3 class="timeline-title">Phase 1 : Préparation</h3>
+                        <p class="timeline-desc">
+                            Constitution du noyau fondateur (5-8 personnes), rédaction note d'intention, 
+                            identification local partenaire (bibliothèque, Maison des Associations).
+                        </p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">Avril 2026</div>
+                        <h3 class="timeline-title">Adoubement Régionale</h3>
+                        <p class="timeline-desc">
+                            Présentation formelle au Bureau de la Régionale PAC Bruxelles 
+                            pour validation et soutien officiel.
+                        </p>
+                    </div>
+
+                    <div class="timeline-item highlight">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">1er Mai 2026</div>
+                        <h3 class="timeline-title">🚀 Lancement Public</h3>
+                        <p class="timeline-desc">
+                            Date symbolique — premières activités publiques. 
+                            Inauguration du laboratoire de démocratie générative.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             CTA SECTION
+             ═══════════════════════════════════════════════════════════════ -->
+        <section class="section cta-section" aria-labelledby="cta-title">
+            <div class="container">
+                <h2 id="cta-title" class="cta-title reveal">Vers une démocratie générative</h2>
+                <p class="cta-text reveal">
+                    Ce projet est un <strong>laboratoire d'innovation sociale</strong> 
+                    dont les outils pourront être mutualisés avec l'ensemble du réseau PAC.
+                </p>
+                <div class="cta-buttons reveal">
+                    <a href="https://www.pac-g.be/contact/" class="btn btn-white" target="_blank" rel="noopener">
+                        Contacter PAC Officiel ↗
+                    </a>
+                    <a href="https://www.pac-g.be/regionales/" class="btn btn-ghost" target="_blank" rel="noopener">
+                        Voir les Régionales ↗
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         FOOTER
+         ═══════════════════════════════════════════════════════════════ -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo-text">Résistance Cognitive</div>
+                    <div class="footer-disclaimer">
+                        <strong>⚠️ AVERTISSEMENT :</strong> Ce site est un <em>Fan Club Non Officiel</em>, 
+                        historiquement lié aux valeurs de Présence et Action Culturelles mais 
+                        <strong>structurellement INDÉPENDANT</strong>. Il n'engage en aucun cas le mouvement PAC officiel.
+                    </div>
+                </div>
+
+                <nav class="footer-section">
+                    <h4>PAC Officiel</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://www.pac-g.be" target="_blank" rel="noopener">→ Site officiel</a></li>
+                        <li><a href="https://www.pac-g.be/qui-sommes-nous/" target="_blank" rel="noopener">→ Qui sont-ils ?</a></li>
+                        <li><a href="https://www.pac-g.be/regionales/" target="_blank" rel="noopener">→ Régionales</a></li>
+                        <li><a href="https://www.pac-g.be/contact/" target="_blank" rel="noopener">→ Contact PAC</a></li>
+                    </ul>
+                </nav>
+
+                <div class="footer-section">
+                    <h4>Contact PAC</h4>
+                    <address style="font-style: normal;">
+                        Présence et Action Culturelles<br>
+                        Rue Lambert Crickx 5<br>
+                        1070 Bruxelles<br>
+                        <a href="tel:+3225457911">02/545 79 11</a>
+                    </address>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="copyright">
+                    © 2025 Résistance Cognitive — Projet citoyen Auderghem 1160
+                </p>
+                <p class="legal-note">
+                    Tous les liens externes renvoient vers pac-g.be. 
+                    Ce site ne collecte aucune donnée personnelle.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         JAVASCRIPT
+         ═══════════════════════════════════════════════════════════════ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // Scroll reveal
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+            reveals.forEach(el => observer.observe(el));
+
+            // Mobile menu
+            const toggle = document.querySelector('.menu-toggle');
+            const nav = document.querySelector('.main-nav');
+
+            toggle.addEventListener('click', () => {
+                const expanded = toggle.getAttribute('aria-expanded') === 'true';
+                toggle.setAttribute('aria-expanded', !expanded);
+                nav.classList.toggle('active');
+            });
+
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+                    
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        const offset = document.querySelector('.site-header').offsetHeight + 60;
+                        window.scrollTo({
+                            top: target.offsetTop - offset,
+                            behavior: 'smooth'
+                        });
+                        
+                        if (nav.classList.contains('active')) {
+                            nav.classList.remove('active');
+                            toggle.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                });
+            });
+
+            // Console easter egg
+            console.log(`
+%c╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║   🧠 RÉSISTANCE COGNITIVE — Auderghem 1160                  ║
+║                                                              ║
+║   Fan Club Non Officiel                                      ║
+║   HISTORIQUEMENT LIÉ mais structurellement INDÉPENDANT      ║
+║                                                              ║
+║   → PAC Officiel : https://www.pac-g.be                      ║
+║                                                              ║
+║   « La souveraineté cognitive est un droit fondamental. »   ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+            `, 'color: #C8102E; font-family: monospace;');
+
+        })();
+    </script>
+</body>
+</html>
