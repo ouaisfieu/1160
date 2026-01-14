@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courrier — Babel'Zin | Auderghem</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #fefdfb;
+      --ink: #1a1a1a;
+      --accent: #7c3aed;
+      --accent-light: #a78bfa;
+      --highlight: #f3f0ff;
+      --border: #d4d4d4;
+      --mint: #4ade80;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: 'Libre Baskerville', Georgia, serif;
+      background: linear-gradient(135deg, #e8e6e3 0%, #d9d7d4 100%);
+      color: var(--ink);
+      line-height: 1.8;
+      padding: 2rem;
+    }
+    .letter-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--paper);
+      border-radius: 4px;
+      box-shadow: 0 10px 60px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.1);
+      padding: 4rem;
+      position: relative;
+    }
+    .letter-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 60px;
+      right: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--mint), var(--accent));
+      border-radius: 0 0 4px 4px;
+    }
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-25deg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 6rem;
+      font-weight: 700;
+      color: rgba(124, 58, 237, 0.04);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .content { position: relative; z-index: 1; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sender {
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    .sender strong {
+      font-size: 1rem;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .date {
+      font-style: italic;
+      color: #666;
+      font-size: 0.9rem;
+      text-align: right;
+    }
+    .recipient {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--highlight);
+      border-left: 4px solid var(--accent);
+      font-size: 0.9rem;
+    }
+    .recipient strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    .recipient a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .recipient a:hover {
+      text-decoration: underline;
+    }
+    .object {
+      margin-bottom: 2rem;
+      padding: 1rem 1.5rem;
+      background: #1a1a1a;
+      color: #fefdfb;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      border-radius: 4px;
+    }
+    .object span {
+      color: var(--mint);
+      font-weight: 500;
+    }
+    .salutation {
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+    .body p {
+      margin-bottom: 1.25rem;
+      text-align: justify;
+      hyphens: auto;
+    }
+    .body strong {
+      color: var(--accent);
+    }
+    .body em {
+      font-style: italic;
+    }
+    .quote-block {
+      margin: 2rem 0;
+      padding: 1.5rem 2rem;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: #fefdfb;
+      border-radius: 8px;
+      font-style: italic;
+      position: relative;
+    }
+    .quote-block::before {
+      content: "❝";
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      font-size: 3rem;
+      color: var(--accent);
+      font-style: normal;
+    }
+    .quote-block .source {
+      display: block;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: var(--mint);
+      font-style: normal;
+      text-align: right;
+    }
+    .highlight-box {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, var(--highlight) 0%, #ede9fe 100%);
+      border: 1px solid var(--accent-light);
+      border-radius: 4px;
+    }
+    .highlight-box h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .highlight-box ul {
+      margin-left: 1.5rem;
+      font-size: 0.95rem;
+    }
+    .highlight-box li {
+      margin-bottom: 0.5rem;
+    }
+    .glitch-text {
+      font-family: 'JetBrains Mono', monospace;
+      background: #1a1a1a;
+      color: var(--mint);
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.85em;
+    }
+    .signature {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .signature .closing {
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+    .signature .name {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .signature .title {
+      font-size: 0.85rem;
+      color: #666;
+      font-style: italic;
+    }
+    .ps {
+      margin-top: 2rem;
+      padding: 1rem 1.5rem;
+      background: #ecfdf5;
+      border-left: 4px solid var(--mint);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    .ps strong {
+      color: #047857;
+    }
+    .collab-box {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: #fefce8;
+      border: 2px dashed #eab308;
+      border-radius: 8px;
+    }
+    .collab-box h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: #a16207;
+      margin-bottom: 1rem;
+    }
+    .collab-box p {
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: #888;
+      text-align: center;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .letter-container { box-shadow: none; padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="letter-container">
+    <div class="watermark">BABEL'ZIN × RC</div>
+    <div class="content">
+      
+      <div class="header">
+        <div class="sender">
+          <strong>Projet « Résistance Cognitive »</strong>
+          Future locale PAC Auderghem<br>
+          c/o Régionale PAC Bruxelles<br>
+          Rue des Foulons 47-49, 1000 Bruxelles<br>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">bruxelles@pac-g.be</span>
+        </div>
+        <div class="date">
+          Auderghem, le 14 janvier 2026<br>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--mint);">// HANDSHAKE PROTOCOL INITIATED</span>
+        </div>
+      </div>
+
+      <div class="recipient">
+        <strong>À l'équipe du Babel'Zin</strong>
+        Café culturel citoyen<br>
+        Chaussée de Wavre 1762, 1160 Auderghem<br>
+        <a href="https://babelzin.be/" target="_blank">https://babelzin.be/</a>
+      </div>
+
+      <div class="object">
+        <span>OBJET :</span> Détection d'un bug majeur dans la matrice — Proposition d'alliance tactique entre anomalies systémiques
+      </div>
+
+      <p class="salutation">Cher collectif du Babel'Zin,</p>
+
+      <div class="body">
+        <p>
+          On ne va pas se mentir : vous êtes des <strong>anomalies</strong>. Dans un écosystème auderghemois dominé par les brunchs bio à 18€ et les « apéros networking », vous avez eu le culot d'ouvrir un café culturel <em>citoyen</em>. Un endroit où on cause vraiment. Où on s'engueule intelligemment. Où on répare le tissu social entre deux expressos équitables.
+        </p>
+
+        <p>
+          <strong>Nous aussi, on est des bugs.</strong>
+        </p>
+
+        <p>
+          Nous sommes le noyau fondateur d'une future section locale de <strong>Présence et Action Culturelles (PAC)</strong> sur Auderghem, baptisée « Résistance Cognitive ». Notre mission : outiller les citoyens pour qu'ils reprennent le contrôle de leur cerveau, de leurs données, et accessoirement de leur quartier. Notre méthode : la <span class="glitch-text">Guerre Cognitive Bienveillante</span> — un mélange d'éducation populaire radicale, de jeu en réalité alternée, et de technologie open source au service de la souveraineté citoyenne.
+        </p>
+
+        <div class="quote-block">
+          « Le problème n'est pas que les gens ne s'intéressent pas à la politique. Le problème, c'est que la politique ne s'intéresse pas aux gens — et qu'on a rendu l'engagement civique aussi sexy qu'un formulaire CPAS. »
+          <span class="source">— Manifeste Résistance Cognitive, article 3</span>
+        </div>
+
+        <p>
+          <strong>Pourquoi on vous écrit ?</strong> Parce qu'on a fait nos devoirs. On a cartographié le territoire. On a identifié les « poches de précarité invisible » — Transvaal, Ten-Reuken, Pinoy. On a compté les seniors isolés (16,6%), les jeunes largués (19% de chômage chez les 15-24 ans), les travailleurs précaires invisibilisés par les statistiques moyennes. Et à chaque fois qu'on cherchait un lieu où ces gens pourraient se croiser, <strong>votre nom revenait</strong>.
+        </p>
+
+        <p>
+          Le Babel'Zin n'est pas un bar. C'est un <em>nœud de réseau</em>. Un point de convergence. Un espace où le Transvaal peut rencontrer le Boulevard du Souverain sans que personne ne se sente déplacé. C'est exactement ce dont nous avons besoin.
+        </p>
+
+        <div class="highlight-box">
+          <h4>🤝 Ce qu'on propose concrètement</h4>
+          <ul>
+            <li><strong>Ateliers d'Arpentage Citoyen</strong> — lectures collectives décentralisées avec restitution chez vous (un dimanche après-midi par mois ?)</li>
+            <li><strong>Sessions de jeu « Souveraineté Fantôme »</strong> — notre ARG civique qui transforme le dossier Herrmann-Debroux en quête épique</li>
+            <li><strong>Permanences « Écrivain Public 2.0 »</strong> — aide aux démarches administratives + formation à la souveraineté numérique</li>
+            <li><strong>Événements de lancement</strong> — pourquoi pas un vernissage glitch-art pour le 1er mai 2026 ?</li>
+            <li><strong>Co-construction</strong> — vos idées nous intéressent, on n'a pas le monopole de l'intelligence collective</li>
+          </ul>
+        </div>
+
+        <p>
+          On ne vient pas vous demander de « louer une salle ». On vient vous proposer une <strong>alliance</strong>. Une convergence de bugs qui, ensemble, pourraient bien devenir une feature. Vous avez le lieu, l'ancrage, la légitimité locale. Nous avons la méthodologie, le réseau PAC, et un plan de financement qui tient la route (entre 500K€ et 2M€ sur trois ans — on ne plaisante pas).
+        </p>
+
+        <div class="collab-box">
+          <h4>⚡ Notre vision du partenariat</h4>
+          <p>
+            <strong>Pas de hiérarchie</strong> — on co-construit, on co-décide, on co-échoue s'il le faut.<br>
+            <strong>Pas d'exclusivité</strong> — vous gardez votre autonomie, on garde la nôtre.<br>
+            <strong>Pas de bullshit</strong> — si ça ne marche pas, on se le dit. Si ça marche, on trinque.
+          </p>
+        </div>
+
+        <p>
+          On sait que vous êtes sollicités de partout. On sait que les « partenariats » ressemblent souvent à des demandes déguisées. Mais on pense sincèrement que <strong>ce qu'on construit vous concerne</strong> — parce que vos habitués sont nos publics cibles, parce que vos valeurs sont nos valeurs, et parce que franchement, on préfère boire nos cafés chez vous que dans une salle communale éclairée au néon.
+        </p>
+
+        <p>
+          <strong>On aimerait vous rencontrer.</strong> Autour d'un verre, d'un repas, d'un atelier — vous choisissez. Pour vous présenter le projet en détail, écouter vos retours, et voir si cette alliance a du sens pour vous.
+        </p>
+      </div>
+
+      <div class="signature">
+        <p class="closing">
+          Dans l'espoir de glitcher ensemble le système,<br>
+          et avec une impatience non dissimulée de goûter votre carte des vins naturels,
+        </p>
+        <p class="name">Pour le Noyau Fondateur</p>
+        <p class="title">Projet « Résistance Cognitive » — Future locale PAC Auderghem</p>
+      </div>
+
+      <div class="ps">
+        <strong>P.S. :</strong> On a développé une War Room numérique avec toute notre stratégie en open source. Si vous êtes curieux (ou méfiants, ce qui est sain), on peut vous la montrer. C'est moche-beau, ça clignote en vert et violet, et ça contient 40+ sources de financement. Parce que oui, on est ce genre de nerds.
+      </div>
+
+      <div class="footer">
+        Document généré par la War Room v2.0 — Résistance Cognitive<br>
+        Projet porté par Présence et Action Culturelles (PAC) — Mouvement d'éducation permanente<br>
+        <span style="color: var(--mint);">[ OPEN SOURCE — OPEN MIND — OPEN BAR (enfin, presque) ]</span>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
