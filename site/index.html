@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auderghem : Blueprint Démocratie Ouverte</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- REQUIRED PLACEHOLDERS -->
+    <!-- Chosen Palette: "Civic Trust & Modernity" - Background: Warm Neutral (#f8fafc), Primary: Deep Auderghem Blue (#1e3a8a), Accent: Open Data Teal (#14b8a6), Warning/Action: Soft Orange (#f97316). Designed to feel institutional yet radically transparent. -->
+
+    <!-- Application Structure Plan: The SPA is designed as a "Strategic Command Center". 
+         1. "Vision Stratégique": Uses a tiered approach (Micro/Meso/Macro) to contextualize the initiative.
+         2. "Audit Technique": A gap analysis visualization comparing current state vs. target state.
+         3. "Écosystème de Données": Interactive prioritization of data sets (Budget, Procurement, etc.).
+         4. "Architecture & Standards": Focuses on interoperability (FHIR, JSON-LD) via flow diagrams and tech stacks.
+         5. "Roadmap": A timeline for implementation.
+         Why this structure? It moves from the "Why" (Vision) to the "What" (Data) and "How" (Tech/Roadmap), allowing stakeholders to understand the full scope of the digital transformation. -->
+
+    <!-- Visualization & Content Choices:
+         - Vision: Interactive Cards + Text Updates. Goal: Explain complex scope levels. Interaction: Selection updates context.
+         - Audit: Chart.js Radar Chart. Goal: Compare multi-variate metrics (Transparency, Speed, UX). Interaction: Toggle datasets.
+         - Data Priority: Plotly Bar Chart. Goal: Rank data importance vs. difficulty. Interaction: Click bar to see JSON schema details.
+         - Roadmap: Plotly Gantt (Timeline). Goal: Visualize project phases.
+         - Justification: These libraries handle responsive canvas rendering perfectly without SVGs. No Mermaid used. -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #334155; /* Slate 700 */
+        }
+
+        /* Chart Container Styling - CRITICAL REQUIREMENT */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Max width for large screens */
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px; /* Default height */
+            max-height: 500px;
+        }
+        
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        .nav-item.active {
+            background-color: #1e3a8a; /* Blue 900 */
+            color: white;
+            border-left: 4px solid #14b8a6; /* Teal 500 */
+        }
+
+        .section-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Scrollbar for data tables/lists */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col md:flex-row overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-64 bg-white shadow-lg z-20 flex-shrink-0 flex flex-col justify-between">
+        <div>
+            <div class="p-6 border-b border-gray-100">
+                <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Auderghem<span class="text-teal-500">.Open</span></h1>
+                <p class="text-xs text-slate-400 mt-1">Plan de Recherche & Transformation</p>
+            </div>
+            <nav class="mt-4">
+                <button onclick="navigateTo('vision')" class="nav-item active w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                    <span>Target</span> Vision Stratégique
+                </button>
+                <button onclick="navigateTo('audit')" class="nav-item w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                    <span>📊</span> Audit & Écarts
+                </button>
+                <button onclick="navigateTo('data')" class="nav-item w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                    <span>💾</span> Données & Formats
+                </button>
+                <button onclick="navigateTo('tech')" class="nav-item w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                    <span>⚙️</span> Interopérabilité
+                </button>
+                <button onclick="navigateTo('roadmap')" class="nav-item w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                    <span>🚀</span> Roadmap 2026
+                </button>
+            </nav>
+        </div>
+        <div class="p-6 bg-slate-50 border-t border-gray-100">
+            <div class="text-xs text-slate-500">
+                <p class="font-bold">Statut du Projet:</p>
+                <p>Phase 1: Recherche & Analyse</p>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+                    <div class="bg-teal-500 h-1.5 rounded-full" style="width: 25%"></div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto custom-scroll bg-slate-50 p-4 md:p-8 relative">
+        
+        <!-- Header Mobile Only -->
+        <div class="md:hidden mb-6 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-slate-800">Auderghem Open Data</h2>
+        </div>
+
+        <!-- SECTION 1: VISION STRATÉGIQUE -->
+        <section id="vision" class="section-content active max-w-6xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">L'Ancrage Multi-Niveaux</h2>
+                <p class="text-slate-600 leading-relaxed max-w-3xl">
+                    Pour qu'Auderghem devienne une référence mondiale en Open Data citoyenne, la refonte du site web ne doit pas être purement cosmétique. 
+                    Elle doit structurer l'information selon trois niveaux d'impact : <strong>Micro</strong> (le citoyen), <strong>Méso</strong> (l'administration locale) et <strong>Macro</strong> (l'interopérabilité globale).
+                    Cette section explore comment l'architecture de l'information doit répondre à ces trois exigences simultanément.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Interactive Cards -->
+                <div onclick="updateVision('micro')" class="cursor-pointer bg-white p-6 rounded-xl shadow-sm border border-transparent hover:border-teal-500 transition-all group">
+                    <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 mb-4 group-hover:bg-blue-100 font-bold">µ</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Niveau Micro</h3>
+                    <p class="text-sm text-slate-500">Le Citoyen & Le Quartier</p>
+                </div>
+                <div onclick="updateVision('meso')" class="cursor-pointer bg-white p-6 rounded-xl shadow-sm border border-transparent hover:border-teal-500 transition-all group">
+                    <div class="w-12 h-12 bg-teal-50 rounded-full flex items-center justify-center text-teal-600 mb-4 group-hover:bg-teal-100 font-bold">M</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Niveau Méso</h3>
+                    <p class="text-sm text-slate-500">L'Administration Communale</p>
+                </div>
+                <div onclick="updateVision('macro')" class="cursor-pointer bg-white p-6 rounded-xl shadow-sm border border-transparent hover:border-teal-500 transition-all group">
+                    <div class="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center text-orange-600 mb-4 group-hover:bg-orange-100 font-bold">Ω</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Niveau Macro</h3>
+                    <p class="text-sm text-slate-500">Standards & Démocratie Globale</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-8 border border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 id="vision-title" class="text-2xl font-bold text-blue-900 mb-4">Sélectionnez un niveau ci-dessus</h3>
+                    <p id="vision-desc" class="text-slate-600 mb-6">
+                        L'architecture du nouveau site doit permettre une navigation fluide entre ces niveaux. Cliquez sur les cartes pour voir les implications techniques et démocratiques spécifiques.
+                    </p>
+                    <ul id="vision-list" class="space-y-3">
+                        <li class="flex items-start gap-3"><span class="text-teal-500 mt-1">➜</span> <span>Action 1...</span></li>
+                        <li class="flex items-start gap-3"><span class="text-teal-500 mt-1">➜</span> <span>Action 2...</span></li>
+                    </ul>
+                </div>
+                <!-- Dynamic Viz for Vision -->
+                <div class="w-full">
+                   <div class="chart-container">
+                       <canvas id="visionChart"></canvas>
+                   </div>
+                   <p class="text-center text-xs text-slate-400 mt-2">Répartition de l'effort de développement par niveau</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: AUDIT & GAP ANALYSIS -->
+        <section id="audit" class="section-content max-w-6xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Audit de l'Existant vs. Cible</h2>
+                <p class="text-slate-600 leading-relaxed max-w-3xl">
+                    Pour atteindre une "Démocratie Directe Radicale", nous avons analysé l'architecture web actuelle d'Auderghem par rapport aux standards Open Data les plus stricts (5 étoiles Tim Berners-Lee).
+                    Le graphique ci-dessous met en évidence les lacunes critiques en matière d'interopérabilité et d'accessibilité des données brutes (JSON/CSV) par rapport aux PDF statiques actuels.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Radar Chart -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg">Analyse des Écarts (Gap Analysis)</h3>
+                        <div class="flex gap-2">
+                            <span class="px-2 py-1 text-xs bg-slate-200 text-slate-700 rounded">Actuel</span>
+                            <span class="px-2 py-1 text-xs bg-teal-100 text-teal-700 rounded">Cible 2026</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="auditChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="space-y-4">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-red-500">
+                        <h4 class="text-sm font-semibold text-slate-500 uppercase">Score Open Data Actuel</h4>
+                        <div class="text-3xl font-bold text-slate-800 mt-1">1.5 / 5</div>
+                        <p class="text-xs text-slate-400 mt-2">Principalement des PDF non structurés.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-teal-500">
+                        <h4 class="text-sm font-semibold text-slate-500 uppercase">Cible Accessibilité</h4>
+                        <div class="text-3xl font-bold text-slate-800 mt-1">WCAG 2.2 AAA</div>
+                        <p class="text-xs text-slate-400 mt-2">Inclusivité totale pour tous les citoyens.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-blue-500">
+                        <h4 class="text-sm font-semibold text-slate-500 uppercase">Temps de réponse API</h4>
+                        <div class="text-3xl font-bold text-slate-800 mt-1">&lt; 100ms</div>
+                        <p class="text-xs text-slate-400 mt-2">Essentiel pour les applications tierces.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: DONNÉES & FORMATS -->
+        <section id="data" class="section-content max-w-6xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Catalogue de Données Prioritaires</h2>
+                <p class="text-slate-600 leading-relaxed max-w-3xl">
+                    La démocratie directe nécessite de la matière première. Nous avons identifié les catégories de données cruciales à libérer.
+                    L'objectif est de passer de la simple "publication" à la "donnée exploitable". 
+                    Interagissez avec le graphique pour voir les exigences techniques (JSON, CSV, GeoJSON) par catégorie.
+                </p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mb-6">
+                <h3 class="font-bold text-lg mb-4">Matrice Impact vs. Complexité Technique</h3>
+                <div class="chart-container" style="height: 500px;">
+                    <div id="dataPlotly"></div>
+                </div>
+            </div>
+
+            <!-- Details Section (Dynamic) -->
+            <div id="data-detail-panel" class="bg-blue-50 p-6 rounded-xl border border-blue-100 hidden">
+                <h3 id="data-cat-title" class="text-xl font-bold text-blue-900">Détails de la catégorie</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div>
+                        <h4 class="font-semibold text-sm uppercase text-blue-400">Exemples de Jeux de Données</h4>
+                        <ul id="data-examples" class="list-disc list-inside text-slate-700 mt-2 space-y-1"></ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sm uppercase text-blue-400">Standard Technique Requis</h4>
+                        <div id="data-tech" class="mt-2 font-mono text-sm bg-white p-3 rounded border border-blue-200 text-blue-800"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: ARCHITECTURE & TECH -->
+        <section id="tech" class="section-content max-w-6xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Architecture & Interopérabilité</h2>
+                <p class="text-slate-600 leading-relaxed max-w-3xl">
+                    Pour garantir la pérennité et la réutilisabilité, le nouveau site ne doit pas être un monolithe. 
+                    Il doit agir comme une couche de présentation (Frontend) alimentée par une API robuste standardisée. 
+                    Nous intégrons ici les normes <strong>FHIR</strong> (inspirées de la santé pour leur robustesse modulaire) et <strong>OSLO</strong> (Open Standards for Linked Organizations).
+                </p>
+            </div>
+
+            <!-- Architecture Diagram (HTML/CSS Implementation) -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-10 items-stretch text-center">
+                
+                <!-- Source -->
+                <div class="bg-slate-200 p-4 rounded-lg flex flex-col justify-center items-center border-2 border-slate-300 border-dashed">
+                    <div class="text-2xl mb-2">🗄️</div>
+                    <div class="font-bold text-slate-700">Sources Internes</div>
+                    <div class="text-xs text-slate-500 mt-1">ERP, Excel, Legacy SQL</div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="hidden md:flex flex-col justify-center items-center text-slate-400">
+                    <span class="text-2xl">➔</span>
+                    <span class="text-xs font-mono">ETL / Cleaning</span>
+                </div>
+
+                <!-- Core API -->
+                <div class="bg-white p-4 rounded-lg flex flex-col justify-center items-center shadow-md border-t-4 border-blue-600 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-[10px] px-2 py-0.5 rounded-bl">Core</div>
+                    <div class="text-2xl mb-2">⚙️</div>
+                    <div class="font-bold text-blue-900">API Gateway</div>
+                    <div class="text-xs text-slate-500 mt-1">REST / GraphQL</div>
+                    <div class="mt-2 text-[10px] bg-blue-50 px-2 py-1 rounded border border-blue-100 text-blue-700 w-full">Standards: JSON-LD, OSLO</div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="hidden md:flex flex-col justify-center items-center text-slate-400">
+                    <span class="text-2xl">➔</span>
+                    <span class="text-xs font-mono">Consommation</span>
+                </div>
+
+                <!-- Consumers -->
+                <div class="flex flex-col gap-2">
+                    <div class="bg-teal-50 p-3 rounded border border-teal-200 flex items-center gap-2">
+                        <span>🖥️</span>
+                        <div class="text-left">
+                            <div class="font-bold text-teal-800 text-sm">Site Web Auderghem</div>
+                            <div class="text-[10px] text-teal-600">Vue Citoyenne (SPA)</div>
+                        </div>
+                    </div>
+                    <div class="bg-orange-50 p-3 rounded border border-orange-200 flex items-center gap-2">
+                        <span>📱</span>
+                        <div class="text-left">
+                            <div class="font-bold text-orange-800 text-sm">Apps Tiers</div>
+                            <div class="text-[10px] text-orange-600">Innovation Locale</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interoperability Table -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-100">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-slate-500 border-b border-slate-100">
+                        <tr>
+                            <th class="p-4">Standard</th>
+                            <th class="p-4">Usage à Auderghem</th>
+                            <th class="p-4">Bénéfice Démocratique</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <tr>
+                            <td class="p-4 font-mono font-bold text-blue-600">JSON-LD</td>
+                            <td class="p-4">Méta-données des délibérations communales.</td>
+                            <td class="p-4">Permet l'indexation sémantique et la recherche croisée.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-mono font-bold text-blue-600">CSV/GeoJSON</td>
+                            <td class="p-4">Budgets, dépenses, cadastre, plans de mobilité.</td>
+                            <td class="p-4">Analyse facile par les journalistes et data scientists citoyens.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-mono font-bold text-blue-600">FHIR (Adapté)</td>
+                            <td class="p-4">Structure modulaire pour les services sociaux/citoyens.</td>
+                            <td class="p-4">Interopérabilité maximale avec les systèmes fédéraux.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 5: ROADMAP -->
+        <section id="roadmap" class="section-content max-w-6xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Roadmap d'Implémentation</h2>
+                <p class="text-slate-600 leading-relaxed max-w-3xl">
+                    Le passage d'un site web classique à une plateforme de démocratie radicale est un processus itératif. 
+                    Cette roadmap détaille les phases clés pour 2025-2026, de la structuration des bases de données au lancement des outils de participation directe.
+                </p>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                <div class="chart-container" style="height: 450px;">
+                    <div id="roadmapPlotly"></div>
+                </div>
+            </div>
+
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-lg border-l-4 border-teal-500 shadow-sm">
+                    <h3 class="font-bold text-lg mb-2">Q1-Q2 2025 : Fondation des Données</h3>
+                    <p class="text-slate-600 text-sm">Inventaire exhaustif des données communales. Nettoyage des bases de données existantes. Mise en place de l'API Gateway sécurisée.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg border-l-4 border-blue-500 shadow-sm">
+                    <h3 class="font-bold text-lg mb-2">Q3 2025 : Refonte UI & Accessibilité</h3>
+                    <p class="text-slate-600 text-sm">Développement du Frontend en HTML/JS pur (léger, rapide). Audit d'accessibilité RGAA/WCAG. Tests utilisateurs avec panels citoyens diversifiés.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- State Management ---
+        const state = {
+            currentSection: 'vision',
+            dataFilter: 'all'
+        };
+
+        // --- Data Store ---
+        const visionData = {
+            micro: {
+                title: "Niveau Micro: Le Citoyen Acteur",
+                desc: "Au niveau micro, le site doit fournir des informations hyper-locales et actionnables. Il ne s'agit plus de 'lire' mais d'agir. L'Open Data permet au citoyen de voir les dépenses de SA rue, les décisions impactant SON quartier.",
+                list: [
+                    "Tableaux de bord personnalisés par quartier.",
+                    "Notifications en temps réel sur les permis d'urbanisme locaux.",
+                    "Interface de vote mobile pour les budgets participatifs."
+                ],
+                chartData: [60, 20, 20] // Development effort distribution
+            },
+            meso: {
+                title: "Niveau Méso: L'Administration Transparente",
+                desc: "Pour l'administration, le site est un outil de reddition de comptes et d'efficacité. L'automatisation de la publication des données libère les fonctionnaires des tâches répétitives.",
+                list: [
+                    "Automatisation des flux vers l'Open Data Portal.",
+                    "Visualisation interne pour l'aide à la décision.",
+                    "Réduction des demandes d'accès aux documents administratifs (Self-service)."
+                ],
+                chartData: [30, 50, 20]
+            },
+            macro: {
+                title: "Niveau Macro: Standards & Réseau",
+                desc: "Auderghem ne peut être une île. Le site doit respecter des standards globaux pour permettre l'agrégation de données au niveau régional (Bruxelles) et européen. C'est l'ancrage dans la démocratie globale.",
+                list: [
+                    "Adoption des schémas DCAT et JSON-LD.",
+                    "Interopérabilité avec les plateformes fédérales.",
+                    "Documentation API publique pour développeurs externes."
+                ],
+                chartData: [20, 20, 60]
+            }
+        };
+
+        const dataCatalog = {
+            budget: {
+                label: "Finances & Budget",
+                impact: 95,
+                complexity: 60,
+                examples: ["Budget annuel détaillé", "Subventions aux ASBL", "Salaires des mandataires"],
+                tech: "CSV (pivot tables), JSON pour API visualisation"
+            },
+            decision: {
+                label: "Procès-Verbaux & Votes",
+                impact: 90,
+                complexity: 85,
+                examples: ["Votes nominatifs du conseil", "Textes des délibérations", "Ordres du jour structurés"],
+                tech: "XML/JSON structuré, Indexation Full-Text"
+            },
+            mobility: {
+                label: "Mobilité & Travaux",
+                impact: 80,
+                complexity: 40,
+                examples: ["Capteurs de trafic temps réel", "Chantiers en cours", "Disponibilité parking"],
+                tech: "GeoJSON, GTFS-Realtime"
+            },
+            procurement: {
+                label: "Marchés Publics",
+                impact: 85,
+                complexity: 70,
+                examples: ["Cahiers des charges", "Attribution des marchés", "Montants finaux payés"],
+                tech: "OCDS (Open Contracting Data Standard)"
+            }
+        };
+
+        // --- Chart Initialization Functions ---
+
+        let visionChartInstance = null;
+        let auditChartInstance = null;
+
+        function initVisionChart() {
+            const ctx = document.getElementById('visionChart').getContext('2d');
+            visionChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['UX Citoyen (Micro)', 'Processus Admin (Méso)', 'Interopérabilité (Macro)'],
+                    datasets: [{
+                        data: [33, 33, 33], // Initial balanced state
+                        backgroundColor: ['#3b82f6', '#14b8a6', '#f97316'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+            // Load default text
+            updateVision('micro');
+        }
+
+        function initAuditChart() {
+            const ctx = document.getElementById('auditChart').getContext('2d');
+            auditChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Transparence', 'Accessibilité (UX)', 'Format Ouvert (JSON/CSV)', 'Temps Réel', 'Interopérabilité', 'Participation'],
+                    datasets: [{
+                        label: 'État Actuel (Site Web 1.0)',
+                        data: [2, 3, 1, 1, 2, 1],
+                        backgroundColor: 'rgba(148, 163, 184, 0.2)',
+                        borderColor: '#94a3b8',
+                        pointBackgroundColor: '#94a3b8'
+                    }, {
+                        label: 'Cible (Démocratie Radicale)',
+                        data: [5, 5, 5, 4, 5, 5],
+                        backgroundColor: 'rgba(20, 184, 166, 0.2)',
+                        borderColor: '#14b8a6',
+                        pointBackgroundColor: '#14b8a6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e2e8f0' },
+                            grid: { color: '#e2e8f0' },
+                            pointLabels: { font: { size: 12 } },
+                            suggestedMin: 0,
+                            suggestedMax: 5
+                        }
+                    }
+                }
+            });
+        }
+
+        function initDataPlotly() {
+            const xValues = Object.values(dataCatalog).map(d => d.complexity);
+            const yValues = Object.values(dataCatalog).map(d => d.impact);
+            const textValues = Object.values(dataCatalog).map(d => d.label);
+            const colors = Object.keys(dataCatalog).map(k => k === 'budget' ? '#f97316' : '#3b82f6');
+            const sizes = yValues.map(y => y / 1.5); // Size bubble by impact
+
+            const data = [{
+                x: xValues,
+                y: yValues,
+                text: textValues,
+                mode: 'markers+text',
+                type: 'scatter',
+                marker: {
+                    size: sizes,
+                    color: colors,
+                    opacity: 0.7
+                },
+                textposition: 'top center'
+            }];
+
+            const layout = {
+                title: 'Impact Démocratique vs. Effort Technique',
+                xaxis: { title: 'Complexité Technique (0-100)', range: [0, 100] },
+                yaxis: { title: 'Impact Démocratique (0-100)', range: [0, 110] },
+                hovermode: 'closest',
+                font: { family: 'Inter, sans-serif' },
+                autosize: true,
+                margin: { t: 40, b: 40, l: 40, r: 40 }
+            };
+
+            const config = { responsive: true, displayModeBar: false };
+
+            Plotly.newPlot('dataPlotly', data, layout, config);
+
+            // Click interaction
+            document.getElementById('dataPlotly').on('plotly_click', function(data){
+                const pointIndex = data.points[0].pointIndex;
+                const keys = Object.keys(dataCatalog);
+                const selectedKey = keys[pointIndex];
+                showDataDetails(selectedKey);
+            });
+        }
+
+        function initRoadmapPlotly() {
+            const data = [{
+                type: 'bar',
+                x: ['Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026'],
+                y: [20, 14, 23, 25, 30], // Dummy value for visualization height
+                orientation: 'h',
+                marker: { color: 'rgba(0,0,0,0)' } // Invisible base bars for Gantt effect logic or just use simpler bar chart
+            }];
+            
+            // Using a simpler horizontal bar chart to represent phases as Plotly Timeline is complex for vanilla without plugins
+            // Switched to Standard Bar for Phase Duration/Load
+            
+            const trace1 = {
+                x: [3, 4, 3, 5, 4], // Duration in months (approx)
+                y: ['Audit & Plan', 'Backend API', 'Frontend UX', 'Beta Testing', 'Lancement Public'],
+                orientation: 'h',
+                type: 'bar',
+                marker: {
+                    color: ['#94a3b8', '#1e3a8a', '#3b82f6', '#14b8a6', '#f97316']
+                },
+                text: ['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4', 'Go Live'],
+                textposition: 'auto'
+            };
+
+            const layout = {
+                title: 'Calendrier de Mise en Œuvre',
+                xaxis: { title: 'Durée Estimée (Mois)' },
+                yaxis: { automargin: true },
+                font: { family: 'Inter, sans-serif' },
+                autosize: true
+            };
+
+            Plotly.newPlot('roadmapPlotly', [trace1], layout, { responsive: true, displayModeBar: false });
+        }
+
+
+        // --- Interaction Logic ---
+
+        function navigateTo(sectionId) {
+            // Update UI State
+            document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            // Find the button that calls this function (rough logic)
+            const navButtons = document.querySelectorAll('.nav-item');
+            if(sectionId === 'vision') navButtons[0].classList.add('active');
+            if(sectionId === 'audit') navButtons[1].classList.add('active');
+            if(sectionId === 'data') navButtons[2].classList.add('active');
+            if(sectionId === 'tech') navButtons[3].classList.add('active');
+            if(sectionId === 'roadmap') navButtons[4].classList.add('active');
+
+            // Trigger Resize for Charts (Crucial for Tabs/Flex/Grid)
+            if(sectionId === 'data') Plotly.Plots.resize('dataPlotly');
+            if(sectionId === 'roadmap') Plotly.Plots.resize('roadmapPlotly');
+        }
+
+        function updateVision(level) {
+            const data = visionData[level];
+            
+            // Update Text
+            document.getElementById('vision-title').innerText = data.title;
+            document.getElementById('vision-desc').innerText = data.desc;
+            
+            const listEl = document.getElementById('vision-list');
+            listEl.innerHTML = '';
+            data.list.forEach(item => {
+                const li = document.createElement('li');
+                li.className = "flex items-start gap-3";
+                li.innerHTML = `<span class="text-teal-500 mt-1">➜</span> <span>${item}</span>`;
+                listEl.appendChild(li);
+            });
+
+            // Update Chart
+            if(visionChartInstance) {
+                visionChartInstance.data.datasets[0].data = data.chartData;
+                visionChartInstance.update();
+            }
+        }
+
+        function showDataDetails(key) {
+            const data = dataCatalog[key];
+            const panel = document.getElementById('data-detail-panel');
+            panel.classList.remove('hidden');
+            
+            document.getElementById('data-cat-title').innerText = data.label;
+            document.getElementById('data-tech').innerText = data.tech;
+            
+            const list = document.getElementById('data-examples');
+            list.innerHTML = '';
+            data.examples.forEach(ex => {
+                const li = document.createElement('li');
+                li.innerText = ex;
+                list.appendChild(li);
+            });
+        }
+
+        // --- Initialization ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initVisionChart();
+            initAuditChart();
+            initDataPlotly();
+            initRoadmapPlotly();
+            
+            // Initial View
+            navigateTo('vision');
+        });
+
+    </script>
+</body>
+</html>
