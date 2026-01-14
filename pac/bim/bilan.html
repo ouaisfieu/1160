@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Affaire Deborsu : Le Dossier Intégral</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Merriweather:ital,wght@0,300;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- 
+    SITE STRUCTURE:
+    1. Header: Global Navigation.
+    2. Section 'Comprendre' (Infographie): The visual storytelling timeline and breakdown.
+    3. Section 'Analyser' (Dashboard): The tabbed interface for deep diving into stats and themes.
+    4. Section 'Réviser' (Studio): The Audio Player visualization and Interactive Flashcards.
+    -->
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Merriweather', serif; }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: 300px;
+        }
+        
+        /* Flashcard Flip Animation */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        
+        .card-inner {
+            transition: transform 0.6s;
+        }
+        .card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Navigation Active State */
+        .nav-link.active {
+            border-bottom: 2px solid #dc2626;
+            color: #1e293b;
+            font-weight: 700;
+        }
+        
+        /* Hide sections logic */
+        .section-view { display: none; animation: fadeIn 0.5s; }
+        .section-view.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- NAVIGATION -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center gap-2">
+                        <span class="w-8 h-8 bg-red-700 text-white flex items-center justify-center font-bold rounded">D</span>
+                        <span class="font-bold text-xl tracking-tight text-slate-900">DOSSIER DEBORSU</span>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                    <button onclick="switchSection('comprendre')" id="nav-comprendre" class="nav-link active border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full">Comprendre</button>
+                    <button onclick="switchSection('analyser')" id="nav-analyser" class="nav-link border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full">Analyser</button>
+                    <button onclick="switchSection('reviser')" id="nav-reviser" class="nav-link border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full">Réviser (Flashcards)</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- SECTION 1: COMPRENDRE (INFOGRAPHIE) -->
+        <div id="view-comprendre" class="section-view active space-y-12">
+            <!-- Header Infographie -->
+            <div class="text-center max-w-3xl mx-auto py-8">
+                <span class="text-red-600 font-bold tracking-wider text-xs uppercase mb-2 block">L'Enquête de Novembre 2025</span>
+                <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">« Sans boulot : tous fraudeurs ? »</h1>
+                <p class="text-lg text-slate-600">Le récit complet de la polémique RTL-TVI, de Verviers au Parlement.</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 text-center">
+                    <div class="text-4xl font-black text-red-600">100+</div>
+                    <div class="text-sm font-bold text-slate-500 uppercase mt-1">Plaintes CSA</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 text-center">
+                    <div class="text-4xl font-black text-blue-600">5</div>
+                    <div class="text-sm font-bold text-slate-500 uppercase mt-1">Ministres Auditionnés</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 text-center">
+                    <div class="text-4xl font-black text-slate-800">1</div>
+                    <div class="text-sm font-bold text-slate-500 uppercase mt-1">Menace Physique</div>
+                </div>
+            </div>
+
+            <!-- Timeline & Context Chart -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <!-- Timeline -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold mb-6">Chronologie des Faits</h3>
+                    <div class="relative border-l-2 border-slate-200 ml-3 space-y-8">
+                        <div class="relative pl-8">
+                            <span class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-slate-400 border-2 border-white"></span>
+                            <div class="text-xs font-bold text-slate-400 mb-1">Avant Diffusion</div>
+                            <h4 class="font-bold text-slate-800">Les Menaces</h4>
+                            <p class="text-sm text-slate-600">Christophe Deborsu est menacé par un bourgmestre. Une "première" dans sa carrière.</p>
+                        </div>
+                        <div class="relative pl-8">
+                            <span class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-red-600 border-2 border-white"></span>
+                            <div class="text-xs font-bold text-red-600 mb-1">Novembre 2025</div>
+                            <h4 class="font-bold text-slate-800">Diffusion "Je vous dérange"</h4>
+                            <p class="text-sm text-slate-600">Focus sur Verviers et témoignages d'allocataires refusant l'emploi. Indignation immédiate.</p>
+                        </div>
+                        <div class="relative pl-8">
+                            <span class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-600 border-2 border-white"></span>
+                            <div class="text-xs font-bold text-blue-600 mb-1">Fin 2025</div>
+                            <h4 class="font-bold text-slate-800">Réponse Politique</h4>
+                            <p class="text-sm text-slate-600">Le Parlement s'empare de l'affaire. Soutien de GL Bouchez (MR), critiques de la gauche. Instruction du CSA.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart: Composition -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold mb-2">Au cœur de la tempête</h3>
+                    <p class="text-sm text-slate-500 mb-6">Ce qui a choqué l'opinion (Analyse de contenu)</p>
+                    <div class="chart-container">
+                        <canvas id="infoChart1"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: ANALYSER (DASHBOARD) -->
+        <div id="view-analyser" class="section-view space-y-8">
+            
+            <!-- Dashboard Controls -->
+            <div class="flex justify-center mb-8">
+                <div class="bg-slate-200 p-1 rounded-lg inline-flex">
+                    <button onclick="updateDash('reaction')" class="px-4 py-2 text-sm font-medium rounded-md bg-white shadow text-slate-900" id="btn-dash-reaction">Réactions</button>
+                    <button onclick="updateDash('arguments')" class="px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900" id="btn-dash-arguments">Arguments</button>
+                </div>
+            </div>
+
+            <!-- Content Area for Dashboard -->
+            <div id="dashboard-content-reaction" class="dash-panel grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-lg mb-4 text-slate-700">Volume des Réactions</h3>
+                    <div class="chart-container">
+                        <canvas id="dashChartReaction"></canvas>
+                    </div>
+                    <div class="mt-4 text-sm text-slate-500 italic text-center">Comparaison entre l'indignation publique et l'action institutionnelle.</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 flex flex-col justify-center">
+                     <h3 class="font-bold text-lg mb-4 text-slate-700">Focus : Le Clivage Politique</h3>
+                     <ul class="space-y-4">
+                         <li class="flex items-start">
+                             <span class="w-2 h-2 mt-2 bg-blue-500 rounded-full mr-3"></span>
+                             <div>
+                                 <strong class="text-slate-900">Le Soutien (MR)</strong>
+                                 <p class="text-sm text-slate-600">Georges-Louis Bouchez salue le courage de poser les "questions qui fâchent".</p>
+                             </div>
+                         </li>
+                         <li class="flex items-start">
+                             <span class="w-2 h-2 mt-2 bg-red-500 rounded-full mr-3"></span>
+                             <div>
+                                 <strong class="text-slate-900">La Critique (Gauche/Centre)</strong>
+                                 <p class="text-sm text-slate-600">Dénonciation d'un manque de nuance et d'une généralisation abusive sur base de cas extrêmes.</p>
+                             </div>
+                         </li>
+                     </ul>
+                </div>
+            </div>
+
+            <div id="dashboard-content-arguments" class="dash-panel hidden grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <!-- Argumentation Comparison -->
+                 <div class="bg-red-50 p-6 rounded-lg border border-red-100">
+                     <h4 class="text-red-800 font-bold mb-2 text-lg">L'Accusation</h4>
+                     <p class="text-red-900 font-medium text-xl mb-4">"Stigmatisation & Incitation à la haine"</p>
+                     <p class="text-slate-700 text-sm">Le reportage est accusé de présenter les chômeurs comme des profiteurs systématiques, biaisant la réalité de la précarité à Verviers.</p>
+                 </div>
+                 <div class="bg-blue-50 p-6 rounded-lg border border-blue-100">
+                     <h4 class="text-blue-800 font-bold mb-2 text-lg">La Défense (Deborsu)</h4>
+                     <p class="text-blue-900 font-medium text-xl mb-4">"Le Système, pas l'Individu"</p>
+                     <p class="text-slate-700 text-sm">L'objectif n'est pas d'attaquer les gens, mais de montrer un système d'allocations qui "piège" les bénéficiaires dans l'inactivité.</p>
+                 </div>
+                 <div class="col-span-1 md:col-span-2 bg-white p-6 rounded-lg border border-slate-200">
+                     <h3 class="font-bold text-center mb-4">Poids des Arguments dans le Débat</h3>
+                     <div class="chart-container" style="height: 350px;">
+                        <canvas id="dashChartPolar"></canvas>
+                     </div>
+                 </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: RÉVISER (STUDIO) -->
+        <div id="view-reviser" class="section-view space-y-12">
+            
+            <!-- Audio Player Mockup -->
+            <div class="bg-slate-900 text-white rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-xl">
+                <div class="bg-red-600 rounded-full w-16 h-16 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
+                </div>
+                <div class="flex-grow w-full">
+                    <div class="flex justify-between items-end mb-2">
+                        <div>
+                            <h3 class="text-lg font-bold">Résumé Audio de la Session</h3>
+                            <p class="text-slate-400 text-sm">Synthèse générée le 14 Jan 2026</p>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">03:45</span>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-2 mb-4">
+                        <div class="bg-red-500 h-2 rounded-full w-1/3"></div>
+                    </div>
+                    <p class="text-xs text-slate-500 italic">Ce module audio a été généré lors de l'étape précédente. Imaginez ici la lecture du résumé.</p>
+                </div>
+            </div>
+
+            <!-- Flashcards App -->
+            <div>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800">Flashcards de Révision</h2>
+                    <span id="card-counter" class="text-sm font-bold bg-slate-200 px-3 py-1 rounded-full text-slate-600">1 / 25</span>
+                </div>
+
+                <div class="max-w-2xl mx-auto">
+                    <!-- The Card -->
+                    <div class="group h-80 w-full perspective-1000 cursor-pointer" onclick="flipCard()">
+                        <div id="flashcard-inner" class="relative h-full w-full transform-style-3d card-inner duration-500 shadow-xl rounded-2xl">
+                            <!-- Front -->
+                            <div class="absolute inset-0 backface-hidden bg-white border-2 border-slate-100 rounded-2xl flex flex-col items-center justify-center p-8 text-center">
+                                <span class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-4">Question / Terme</span>
+                                <p id="card-front" class="text-2xl md:text-3xl font-serif font-bold text-slate-800">Chargement...</p>
+                                <p class="text-xs text-slate-300 mt-8 absolute bottom-6">Cliquez pour retourner</p>
+                            </div>
+                            <!-- Back -->
+                            <div class="absolute inset-0 backface-hidden rotate-y-180 bg-slate-800 rounded-2xl flex flex-col items-center justify-center p-8 text-center">
+                                <span class="text-xs uppercase tracking-widest text-red-400 font-bold mb-4">Réponse</span>
+                                <p id="card-back" class="text-xl md:text-2xl text-white leading-relaxed">Chargement...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="flex justify-center gap-4 mt-8">
+                        <button onclick="prevCard()" class="px-6 py-3 bg-white border border-slate-300 rounded-lg text-slate-700 font-bold hover:bg-slate-50 transition shadow-sm">← Précédent</button>
+                        <button onclick="nextCard()" class="px-6 py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition shadow-md shadow-red-200">Suivant →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-auto py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-500 text-sm mb-2">Archive générée par Assistant IA - Session "Affaire Deborsu"</p>
+            <p class="text-slate-400 text-xs">Données basées sur les événements de novembre/décembre 2025.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- 1. NAVIGATION LOGIC ---
+        function switchSection(sectionId) {
+            // Hide all views
+            document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+            // Show target view
+            document.getElementById(`view-${sectionId}`).classList.add('active');
+            document.getElementById(`nav-${sectionId}`).classList.add('active');
+            
+            // Re-render charts if needed (Chart.js usually handles this, but good for safety)
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        function updateDash(tab) {
+            document.querySelectorAll('.dash-panel').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`dashboard-content-${tab}`).classList.remove('hidden');
+            document.getElementById(`dashboard-content-${tab}`).classList.add('grid'); // Restore grid layout
+            
+            // Button Styles
+            const btnR = document.getElementById('btn-dash-reaction');
+            const btnA = document.getElementById('btn-dash-arguments');
+            
+            if (tab === 'reaction') {
+                btnR.className = "px-4 py-2 text-sm font-medium rounded-md bg-white shadow text-slate-900";
+                btnA.className = "px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900";
+            } else {
+                btnA.className = "px-4 py-2 text-sm font-medium rounded-md bg-white shadow text-slate-900";
+                btnR.className = "px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900";
+            }
+        }
+
+        // --- 2. DATASETS ---
+        
+        // Flashcards Data (From previous turn)
+        const flashcards = [
+            { f: "Titre du reportage", b: "« Sans boulot : tous fraudeurs ? »" },
+            { f: "Journaliste", b: "Christophe Deborsu" },
+            { f: "Chaîne TV", b: "RTL-TVI" },
+            { f: "Émission cadre", b: "Je vous dérange" },
+            { f: "Ville de l'enquête", b: "Verviers" },
+            { f: "Sujet central", b: "Allocataires refusant de retravailler" },
+            { f: "Régulateur", b: "CSA (Conseil supérieur de l'audiovisuel)" },
+            { f: "Motif instruction CSA", b: "Incitation à la haine des pauvres / Stigmatisation" },
+            { f: "Réaction politique", b: "5 ministres entendus à la Chambre" },
+            { f: "Soutien politique", b: "Georges-Louis Bouchez (MR)" },
+            { f: "Critique principale", b: "Manque de nuance / Vision biaisée" },
+            { f: "Incident avant diffusion", b: "Menaces par un bourgmestre" },
+            { f: "Défense de Deborsu", b: "Dénoncer un système défaillant, pas les individus" },
+            { f: "Volume plaintes", b: "Des centaines" },
+            { f: "Pratique illégale évoquée", b: "Cumul allocations + travail au noir" },
+            { f: "Thème sensible", b: "L'assistanat" },
+            { f: "Lieu auditions", b: "La Chambre (Parlement fédéral)" },
+            { f: "Caractère des menaces", b: "Une « première » pour le journaliste" },
+            { f: "Objectif du journaliste", b: "Poser des questions clivantes sur la solidarité" },
+            { f: "Sentiment des plaignants", b: "Stigmatisation" },
+            { f: "Date diffusion", b: "Novembre 2025" },
+            { f: "Argument du « piège »", b: "Système rendant le chômage plus sûr que l'emploi" },
+            { f: "Contexte géographique", b: "Belgique francophone" },
+            { f: "Opposants", b: "Gauche et associations de précarité" },
+            { f: "Statut actuel (Fin 2025)", b: "Instruction CSA en cours" }
+        ];
+
+        // --- 3. FLASHCARD LOGIC ---
+        let cardIndex = 0;
+        const cardInner = document.getElementById('flashcard-inner');
+        const cardFront = document.getElementById('card-front');
+        const cardBack = document.getElementById('card-back');
+        const cardCounter = document.getElementById('card-counter');
+
+        function renderCard() {
+            // Reset flip
+            cardInner.classList.remove('is-flipped');
+            
+            // Wait brief moment for flip back then update text
+            setTimeout(() => {
+                cardFront.innerText = flashcards[cardIndex].f;
+                cardBack.innerText = flashcards[cardIndex].b;
+                cardCounter.innerText = `${cardIndex + 1} / ${flashcards.length}`;
+            }, 150);
+        }
+
+        function flipCard() {
+            cardInner.classList.toggle('is-flipped');
+        }
+
+        function nextCard() {
+            cardIndex = (cardIndex + 1) % flashcards.length;
+            renderCard();
+        }
+
+        function prevCard() {
+            cardIndex = (cardIndex - 1 + flashcards.length) % flashcards.length;
+            renderCard();
+        }
+
+        // --- 4. CHARTS LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCard(); // Init first card
+
+            // Chart 1: Content Breakdown (Infographic View)
+            const ctx1 = document.getElementById('infoChart1').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Témoignages "Choc"', 'Analyse Système', 'Contexte'],
+                    datasets: [{
+                        data: [60, 25, 15],
+                        backgroundColor: ['#dc2626', '#1d4ed8', '#94a3b8'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            // Chart 2: Reactions Bar (Dashboard View)
+            const ctx2 = document.getElementById('dashChartReaction').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Plaintes Public', 'Auditions Ministres', 'Menaces'],
+                    datasets: [{
+                        label: 'Intensité',
+                        data: [300, 50, 10],
+                        backgroundColor: ['#dc2626', '#f59e0b', '#1e293b'],
+                        borderRadius: 5
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    scales: { x: { display: false }, y: { display: false } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Chart 3: Arguments Polar Area (Dashboard View)
+            const ctx3 = document.getElementById('dashChartPolar').getContext('2d');
+            new Chart(ctx3, {
+                type: 'polarArea',
+                data: {
+                    labels: ['Stigmatisation (Accusation)', 'Réalité Terrain (Défense)', 'Liberté Presse (Défense)', 'Manque Nuance (Accusation)'],
+                    datasets: [{
+                        data: [90, 75, 60, 85],
+                        backgroundColor: [
+                            'rgba(220, 38, 38, 0.7)',
+                            'rgba(29, 78, 216, 0.7)',
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ]
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    scales: { r: { ticks: { display: false } } },
+                    plugins: { legend: { position: 'right' } }
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
