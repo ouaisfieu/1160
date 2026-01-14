@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAC 1160 Auderghem | Guerre Cognitive Bienveillante</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d0f0e;
+            --bg-secondary: #141816;
+            --bg-tertiary: #1a1f1c;
+            --bg-card: #1e2420;
+            --green-tender: #7dd3a0;
+            --green-light: #a8e6c3;
+            --green-dark: #4a9d6e;
+            --green-glow: #5eff9e;
+            --lilac: #c4a7e7;
+            --lilac-light: #dbc9f4;
+            --lilac-dark: #9d7dc7;
+            --lilac-glow: #e0c4ff;
+            --text-primary: #e8f0eb;
+            --text-secondary: #a3b5a9;
+            --text-muted: #6b7d70;
+            --accent-warning: #f4c542;
+            --accent-danger: #e85d75;
+            --border-subtle: rgba(125, 211, 160, 0.15);
+            --border-lilac: rgba(196, 167, 231, 0.2);
+            --gradient-hero: linear-gradient(135deg, var(--green-dark) 0%, var(--lilac-dark) 100%);
+            --gradient-card: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-tertiary) 100%);
+            --shadow-glow-green: 0 0 40px rgba(125, 211, 160, 0.15);
+            --shadow-glow-lilac: 0 0 40px rgba(196, 167, 231, 0.15);
+            --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--noise);
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* NAVIGATION */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(13, 15, 14, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        nav .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .logo span {
+            color: var(--lilac);
+            -webkit-text-fill-color: var(--lilac);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-hero);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--green-tender);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .nav-toggle span {
+            width: 25px;
+            height: 2px;
+            background: var(--green-tender);
+            transition: all 0.3s ease;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 6rem 2rem 4rem;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(125, 211, 160, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(196, 167, 231, 0.08) 0%, transparent 50%);
+            animation: heroGlow 15s ease-in-out infinite;
+        }
+
+        @keyframes heroGlow {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, 2%) rotate(1deg); }
+            66% { transform: translate(-1%, -1%) rotate(-1deg); }
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(125, 211, 160, 0.1);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--green-tender);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-badge::before {
+            content: '◈';
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero h1 .highlight-green {
+            background: linear-gradient(135deg, var(--green-tender), var(--green-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero h1 .highlight-lilac {
+            background: linear-gradient(135deg, var(--lilac), var(--lilac-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-hero);
+            color: white;
+            box-shadow: var(--shadow-glow-green);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 60px rgba(125, 211, 160, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--lilac);
+            border: 2px solid var(--lilac-dark);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(196, 167, 231, 0.1);
+            border-color: var(--lilac);
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* SECTIONS */
+        section {
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(196, 167, 231, 0.1);
+            border: 1px solid var(--border-lilac);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--lilac);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* VISION SECTION */
+        #vision {
+            background: var(--bg-secondary);
+        }
+
+        .vision-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .vision-card {
+            background: var(--gradient-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-hero);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .vision-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--green-dark);
+            box-shadow: var(--shadow-glow-green);
+        }
+
+        .vision-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .vision-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(125, 211, 160, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .vision-card h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--green-tender);
+        }
+
+        .vision-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* TERRITOIRE SECTION */
+        #territoire {
+            background: var(--bg-primary);
+        }
+
+        .territory-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .territory-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--lilac-dark);
+            box-shadow: var(--shadow-glow-lilac);
+        }
+
+        .stat-number {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .territory-info {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .territory-info h3 {
+            font-family: 'Syne', sans-serif;
+            color: var(--lilac);
+            margin-bottom: 1.5rem;
+        }
+
+        .quartier-list {
+            list-style: none;
+        }
+
+        .quartier-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quartier-list li:last-child {
+            border-bottom: none;
+        }
+
+        .quartier-name {
+            font-weight: 600;
+            color: var(--green-tender);
+        }
+
+        .quartier-tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(232, 93, 117, 0.15);
+            color: var(--accent-danger);
+            border-radius: 50px;
+        }
+
+        .quartier-tag.priority {
+            background: rgba(244, 197, 66, 0.15);
+            color: var(--accent-warning);
+        }
+
+        /* SWOT SECTION */
+        #swot {
+            background: var(--bg-secondary);
+        }
+
+        .swot-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .swot-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .swot-card.strength {
+            border-color: var(--green-dark);
+        }
+
+        .swot-card.weakness {
+            border-color: var(--accent-danger);
+        }
+
+        .swot-card.opportunity {
+            border-color: var(--lilac-dark);
+        }
+
+        .swot-card.threat {
+            border-color: var(--accent-warning);
+        }
+
+        .swot-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .swot-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .swot-card.strength .swot-icon {
+            background: rgba(125, 211, 160, 0.15);
+        }
+
+        .swot-card.weakness .swot-icon {
+            background: rgba(232, 93, 117, 0.15);
+        }
+
+        .swot-card.opportunity .swot-icon {
+            background: rgba(196, 167, 231, 0.15);
+        }
+
+        .swot-card.threat .swot-icon {
+            background: rgba(244, 197, 66, 0.15);
+        }
+
+        .swot-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+        }
+
+        .swot-card.strength .swot-title { color: var(--green-tender); }
+        .swot-card.weakness .swot-title { color: var(--accent-danger); }
+        .swot-card.opportunity .swot-title { color: var(--lilac); }
+        .swot-card.threat .swot-title { color: var(--accent-warning); }
+
+        .swot-list {
+            list-style: none;
+        }
+
+        .swot-list li {
+            padding: 0.75rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .swot-list li::before {
+            content: '→';
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        /* METHODO SECTION */
+        #methodo {
+            background: var(--bg-primary);
+        }
+
+        .methodo-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+
+        .methodo-quote {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--green-tender);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .methodo-quote::before,
+        .methodo-quote::after {
+            content: '"';
+            color: var(--lilac);
+            font-size: 2rem;
+        }
+
+        .levels-container {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .level-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .level-label {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            position: sticky;
+            top: 100px;
+        }
+
+        .level-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .level-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .level-row:nth-child(1) .level-name { color: var(--green-tender); }
+        .level-row:nth-child(2) .level-name { color: var(--lilac); }
+        .level-row:nth-child(3) .level-name { color: var(--accent-warning); }
+
+        .level-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .level-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .problem-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--green-dark);
+        }
+
+        .problem-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .problem-title::before {
+            content: '◆';
+            color: var(--green-tender);
+            font-size: 0.7rem;
+        }
+
+        .problem-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ARG SECTION */
+        #arg {
+            background: var(--bg-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #arg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(125, 211, 160, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(196, 167, 231, 0.05) 0%, transparent 40%);
+        }
+
+        .arg-hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .arg-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, rgba(125, 211, 160, 0.15), rgba(196, 167, 231, 0.15));
+            border: 1px solid var(--border-subtle);
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--green-tender);
+            margin-bottom: 2rem;
+        }
+
+        .arg-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .arg-concept {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-lilac);
+            border-radius: 16px;
+            position: relative;
+        }
+
+        .arg-concept::before {
+            content: '⚔️ GUERRE COGNITIVE BIENVEILLANTE';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            padding: 0 1rem;
+            font-size: 0.75rem;
+            color: var(--lilac);
+            letter-spacing: 0.1em;
+        }
+
+        .concept-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .concept-pillars {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .pillar {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(125, 211, 160, 0.05);
+            border-radius: 8px;
+        }
+
+        .pillar-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--green-tender);
+        }
+
+        .references-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 4rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .reference-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .reference-card:hover {
+            border-color: var(--lilac-dark);
+            box-shadow: var(--shadow-glow-lilac);
+        }
+
+        .reference-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--lilac);
+            margin-bottom: 0.5rem;
+        }
+
+        .reference-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--green-tender);
+            margin-bottom: 0.75rem;
+        }
+
+        .reference-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .reference-impact {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .reference-impact strong {
+            color: var(--accent-warning);
+        }
+
+        /* STATUT SECTION */
+        #statut {
+            background: var(--bg-primary);
+        }
+
+        .statut-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .statut-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .statut-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(125, 211, 160, 0.1), rgba(196, 167, 231, 0.1));
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .statut-header h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            color: var(--green-tender);
+            margin-bottom: 0.25rem;
+        }
+
+        .statut-header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .statut-body {
+            padding: 1.5rem;
+        }
+
+        .statut-list {
+            list-style: none;
+        }
+
+        .statut-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .statut-list li:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(125, 211, 160, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--green-tender);
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .alert-icon {
+            background: rgba(244, 197, 66, 0.15);
+            color: var(--accent-warning);
+        }
+
+        .statut-text strong {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .statut-text span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* ROADMAP SECTION */
+        #roadmap {
+            background: var(--bg-secondary);
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--green-dark), var(--lilac-dark));
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            text-align: right;
+            padding-right: 3rem;
+            padding-left: 0;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            padding-left: 3rem;
+        }
+
+        .timeline-content {
+            width: 50%;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--bg-primary);
+            border: 3px solid var(--green-tender);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            border-color: var(--lilac);
+        }
+
+        .timeline-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--green-tender);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item:nth-child(even) .timeline-date {
+            color: var(--lilac);
+        }
+
+        .timeline-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* CONTACT SECTION */
+        #contact {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .contact-info h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            color: var(--green-tender);
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(125, 211, 160, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .contact-details strong {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-details span,
+        .contact-details a {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            text-decoration: none;
+        }
+
+        .contact-details a:hover {
+            color: var(--lilac);
+        }
+
+        .resources h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            color: var(--lilac);
+            margin-bottom: 1.5rem;
+        }
+
+        .resource-list {
+            list-style: none;
+        }
+
+        .resource-list li {
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .resource-list li:hover {
+            border-color: var(--lilac-dark);
+            transform: translateX(5px);
+        }
+
+        .resource-list a {
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .resource-list a::after {
+            content: '→';
+            color: var(--lilac);
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .territory-showcase {
+                grid-template-columns: 1fr;
+            }
+
+            .swot-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--bg-primary);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                border-bottom: 1px solid var(--border-subtle);
+            }
+
+            nav .nav-links.active {
+                display: flex;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .level-row {
+                grid-template-columns: 1fr;
+            }
+
+            .level-label {
+                position: static;
+            }
+
+            .concept-pillars {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item,
+            .timeline-item:nth-child(odd) {
+                flex-direction: column;
+            }
+
+            .timeline-content,
+            .timeline-item:nth-child(odd) .timeline-content {
+                width: 100%;
+                padding-left: 50px !important;
+                padding-right: 0 !important;
+                text-align: left !important;
+            }
+
+            .timeline-dot {
+                left: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .territory-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ANIMATIONS ON SCROLL */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* GAME MECHANICS */
+        .game-section {
+            margin-top: 4rem;
+        }
+
+        .mechanics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .mechanic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .mechanic-card:hover {
+            border-color: var(--green-dark);
+            transform: scale(1.02);
+        }
+
+        .mechanic-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .mechanic-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            color: var(--green-tender);
+            margin-bottom: 0.5rem;
+        }
+
+        .mechanic-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* PAC INFO SECTION */
+        #pac-info {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+        }
+
+        .pac-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .pac-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .pac-card-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(125, 211, 160, 0.15), rgba(196, 167, 231, 0.05));
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .pac-card-header h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            color: var(--green-tender);
+            margin-bottom: 0.5rem;
+        }
+
+        .pac-card-header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .pac-card-body {
+            padding: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .info-value a {
+            color: var(--lilac);
+            text-decoration: none;
+        }
+
+        .info-value a:hover {
+            text-decoration: underline;
+        }
+
+        .highlight-box {
+            background: rgba(125, 211, 160, 0.1);
+            border: 1px solid var(--green-dark);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .highlight-box h4 {
+            color: var(--green-tender);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .highlight-box p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">PAC<span>1160</span></div>
+            <ul class="nav-links">
+                <li><a href="#vision">Vision</a></li>
+                <li><a href="#territoire">Territoire</a></li>
+                <li><a href="#pac-info">PAC</a></li>
+                <li><a href="#swot">SWOT</a></li>
+                <li><a href="#methodo">Méthodologie</a></li>
+                <li><a href="#arg">ARG</a></li>
+                <li><a href="#statut">Statuts</a></li>
+                <li><a href="#roadmap">Roadmap</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-toggle" onclick="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">Proposition stratégique • Régionale PAC Bruxelles</div>
+            <h1>
+                <span class="highlight-green">Guerre Cognitive</span><br>
+                <span class="highlight-lilac">Bienveillante</span>
+            </h1>
+            <p class="hero-subtitle">
+                Création d'une section locale PAC à Auderghem. Un ARG civique pour booster la participation citoyenne aux niveaux micro, méso et macro.
+            </p>
+            <div class="hero-cta">
+                <a href="#arg" class="btn btn-primary">
+                    <span>🎮</span> Découvrir le projet ARG
+                </a>
+                <a href="#contact" class="btn btn-secondary">
+                    <span>📧</span> Contacter la Régionale
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- VISION -->
+    <section id="vision">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Mission & Vision</span>
+                <h2 class="section-title">Pourquoi PAC Auderghem ?</h2>
+                <p class="section-desc">Combler un gap territorial stratégique et innover dans l'éducation permanente par le jeu.</p>
+            </div>
+            <div class="vision-grid">
+                <div class="vision-card fade-in">
+                    <div class="vision-icon">🎯</div>
+                    <h3>Maillage Territorial</h3>
+                    <p>Auderghem est l'une des dernières communes bruxelloises sans section locale PAC. Un gap à combler pour un mouvement revendiquant une couverture complète de la région.</p>
+                </div>
+                <div class="vision-card fade-in">
+                    <div class="vision-icon">🧠</div>
+                    <h3>Innovation Pédagogique</h3>
+                    <p>Introduire l'ARG (Alternate Reality Game) comme outil d'éducation permanente — une première en Belgique francophone pour le secteur associatif.</p>
+                </div>
+                <div class="vision-card fade-in">
+                    <div class="vision-icon">🤝</div>
+                    <h3>Cohésion Sociale</h3>
+                    <p>Cibler les quartiers Transvaal et Ten-Reuken où la précarité coexiste avec l'isolement. Créer du lien par l'action culturelle et citoyenne.</p>
+                </div>
+                <div class="vision-card fade-in">
+                    <div class="vision-icon">⚡</div>
+                    <h3>Résilience Démocratique</h3>
+                    <p>Face à la désinformation et la guerre cognitive hostile, développer l'esprit critique et l'engagement citoyen par des méthodes ludiques et bienveillantes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TERRITOIRE -->
+    <section id="territoire">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Analyse Territoriale</span>
+                <h2 class="section-title">Auderghem en Chiffres</h2>
+                <p class="section-desc">Une commune aisée avec des fractures socio-spatiales significatives.</p>
+            </div>
+            <div class="territory-showcase">
+                <div class="territory-stats">
+                    <div class="stat-card fade-in">
+                        <div class="stat-number">34 986</div>
+                        <div class="stat-label">Habitants (2022)</div>
+                    </div>
+                    <div class="stat-card fade-in">
+                        <div class="stat-number">9 km²</div>
+                        <div class="stat-label">Superficie</div>
+                    </div>
+                    <div class="stat-card fade-in">
+                        <div class="stat-number">20 527€</div>
+                        <div class="stat-label">Revenu médian (+30% région)</div>
+                    </div>
+                    <div class="stat-card fade-in">
+                        <div class="stat-number">16,3%</div>
+                        <div class="stat-label">+ 65 ans (vs 13,1% région)</div>
+                    </div>
+                    <div class="stat-card fade-in">
+                        <div class="stat-number">31%</div>
+                        <div class="stat-label">Nationalité étrangère</div>
+                    </div>
+                    <div class="stat-card fade-in">
+                        <div class="stat-number">22%</div>
+                        <div class="stat-label">Chômage Transvaal</div>
+                    </div>
+                </div>
+                <div class="territory-info fade-in">
+                    <h3>🎯 Quartiers Prioritaires</h3>
+                    <ul class="quartier-list">
+                        <li>
+                            <span class="quartier-name">Transvaal</span>
+                            <span class="quartier-tag">50% logements sociaux</span>
+                        </li>
+                        <li>
+                            <span class="quartier-name">Ten-Reuken</span>
+                            <span class="quartier-tag">Revenus en baisse</span>
+                        </li>
+                        <li>
+                            <span class="quartier-name">Bd du Triomphe</span>
+                            <span class="quartier-tag priority">Campus ULB - Précarité étudiante</span>
+                        </li>
+                    </ul>
+                    <div class="highlight-box">
+                        <h4>💡 Culture Participative Existante</h4>
+                        <p>Assemblée des Habitants (tirée au sort), Budget Partagé (367 projets), Plateforme nous.auderghem.be, Auderghem 21.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAC INFO -->
+    <section id="pac-info">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Le Mouvement</span>
+                <h2 class="section-title">PAC — Présence et Action Culturelles</h2>
+                <p class="section-desc">Le plus grand mouvement d'éducation permanente de la FWB.</p>
+            </div>
+            <div class="pac-showcase">
+                <div class="pac-card fade-in">
+                    <div class="pac-card-header">
+                        <h3>🏛️ Structure Nationale</h3>
+                        <p>Fondé en 1969, héritier des Cercles d'Éducation Ouvrière</p>
+                    </div>
+                    <div class="pac-card-body">
+                        <div class="info-row">
+                            <span class="info-label">Positionnement</span>
+                            <span class="info-value">Écosocialiste, laïque, progressiste</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Régionales</span>
+                            <span class="info-value">11-12 régionales</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Sections locales</span>
+                            <span class="info-value">~200 en Wallonie-Bruxelles</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Salariés</span>
+                            <span class="info-value">~50 travailleur·euse·s</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Siège central</span>
+                            <span class="info-value">Rue Lambert Crickx 5, 1070 Bruxelles</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Réseau</span>
+                            <span class="info-value">Action Commune (PS, FGTB, Solidaris)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pac-card fade-in">
+                    <div class="pac-card-header">
+                        <h3>📍 Régionale Bruxelles</h3>
+                        <p>Votre interlocuteur direct pour la création</p>
+                    </div>
+                    <div class="pac-card-body">
+                        <div class="info-row">
+                            <span class="info-label">Coordinatrice</span>
+                            <span class="info-value">Stéphanie Gillet</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Présidente</span>
+                            <span class="info-value">Habibe Duraki</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse</span>
+                            <span class="info-value">Rue des Foulons 47-49, 1000 Bruxelles</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Téléphone</span>
+                            <span class="info-value"><a href="tel:+3223664075">+32 2 366 40 75</a></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email</span>
+                            <span class="info-value"><a href="mailto:bruxelles@pac-g.be">bruxelles@pac-g.be</a></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Locales BXL</span>
+                            <span class="info-value">21 sections actives</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Écrivain·e·s public·que·s</span>
+                            <span class="info-value">~20 bénévoles actif·ve·s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SWOT -->
+    <section id="swot">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Analyse Stratégique</span>
+                <h2 class="section-title">SWOT — PAC Auderghem</h2>
+            </div>
+            <div class="swot-grid">
+                <div class="swot-card strength fade-in">
+                    <div class="swot-header">
+                        <div class="swot-icon">💪</div>
+                        <h3 class="swot-title">Forces</h3>
+                    </div>
+                    <ul class="swot-list">
+                        <li>Soutien structurel de la Régionale PAC</li>
+                        <li>Ressources centralisées disponibles (formations, outils)</li>
+                        <li>Pas besoin de créer une ASBL autonome</li>
+                        <li>Reconnaissance FWB déjà acquise via PAC national</li>
+                        <li>Formation écrivain public gratuite (135h)</li>
+                        <li>Catalogue d'expositions et publications</li>
+                    </ul>
+                </div>
+                <div class="swot-card weakness fade-in">
+                    <div class="swot-header">
+                        <div class="swot-icon">⚠️</div>
+                        <h3 class="swot-title">Faiblesses</h3>
+                    </div>
+                    <ul class="swot-list">
+                        <li>Démarrage from scratch (pas de base militante)</li>
+                        <li>Commune centre-droit (majorité DéFI+MR+Engagés)</li>
+                        <li>Peu de connexions PS locales établies</li>
+                        <li>Contraintes santé du porteur de projet</li>
+                        <li>Risque de dépendance à une seule personne</li>
+                    </ul>
+                </div>
+                <div class="swot-card opportunity fade-in">
+                    <div class="swot-header">
+                        <div class="swot-icon">🚀</div>
+                        <h3 class="swot-title">Opportunités</h3>
+                    </div>
+                    <ul class="swot-list">
+                        <li>Gap territorial = argument fort</li>
+                        <li>Maison des Associations en construction</li>
+                        <li>Culture participative existante (Assemblée citoyenne)</li>
+                        <li>Absence permanence écrivain public</li>
+                        <li>Contexte politique (réformes pensions, austérité)</li>
+                        <li>Innovation ARG = différenciation</li>
+                    </ul>
+                </div>
+                <div class="swot-card threat fade-in">
+                    <div class="swot-header">
+                        <div class="swot-icon">🔥</div>
+                        <h3 class="swot-title">Menaces</h3>
+                    </div>
+                    <ul class="swot-list">
+                        <li>Moratoire FWB nouvelles reconnaissances jusqu'en 2028</li>
+                        <li>Gel indexation subventions 2026</li>
+                        <li>Rigueur budgétaire commune</li>
+                        <li>Concurrence associative limitée mais existante</li>
+                        <li>Risque d'essoufflement si manque de relève</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- METHODOLOGIE -->
+    <section id="methodo">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Cadre d'Intervention</span>
+                <h2 class="section-title">Problématiques Micro-Méso-Macro</h2>
+            </div>
+            <div class="methodo-intro">
+                <p class="methodo-quote">Si tu me le dis, je vais l'oublier. Si tu me le montres, je vais comprendre. Si tu m'impliques, je vais m'en rappeler.</p>
+                <p class="section-desc">Une approche systémique qui cible simultanément l'individu, le tissu social et les structures politiques.</p>
+            </div>
+            <div class="levels-container">
+                <div class="level-row fade-in">
+                    <div class="level-label">
+                        <div class="level-icon">👤</div>
+                        <div class="level-name">MICRO</div>
+                        <div class="level-subtitle">Individu</div>
+                    </div>
+                    <div class="level-content">
+                        <div class="problem-card">
+                            <div class="problem-title">Isolement Social</div>
+                            <div class="problem-desc">Seniors isolés, personnes en incapacité, nouveaux arrivants sans réseau local.</div>
+                        </div>
+                        <div class="problem-card">
+                            <div class="problem-title">Illectronisme</div>
+                            <div class="problem-desc">Fracture numérique excluant les plus vulnérables des services dématérialisés.</div>
+                        </div>
+                        <div class="problem-card">
+                            <div class="problem-title">Perte de Sens</div>
+                            <div class="problem-desc">Désaffiliation sociale, sentiment d'inutilité, décrochage civique.</div>
+                        </div>
+                        <div class="problem-card">
+                            <div class="problem-title">Accès aux Droits</div>
+                            <div class="problem-desc">Méconnaissance des aides, complexité administrative, non-recours.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="level-row fade-in">
+                    <div class="level-label">
+                        <div class="level-icon">🏘️</div>
+                        <div class="level-name">MÉSO</div>
+                        <div class="level-subtitle">Communauté</div>
+                    </div>
+                    <div class="level-content">
+                        <div class="problem-card">
+                            <div class="problem-title">Fragmentation Associative</div>
+                            <div class="problem-desc">Tissu associatif existant mais peu coordonné, silos thématiques.</div>
+                        </div>
+                        <div class="problem-card">
+                            <div class="problem-title">Absence Éducation Permanente</div>
+                            <div class="problem-desc">Seule Vie Féminine présente, pas de permanence écrivain public.</div>
+                        </div>
+                        <div class="problem-card">
+                            <div class="problem-title">Clivages Socio-Spatiaux</div>
+                            <div class="problem-desc">Quartiers aisés vs quartiers sociaux, peu de mixité inter-quartiers.</div>
+                        </div>
+                        <div class="problem-card">
+                            <div class="problem-title">Déficit d'Espaces de Débat</div>
+                            <div class="problem-desc">Peu de lieux de confrontation d'idées et d'éducation politique.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="level-row fade-in">
+                    <div class="level-label">
+                        <div class="level-icon">🏛️</div>
+                        <div class="level-name">MACRO</div>
+                        <div class="level-subtitle">Politique</div>
+                    </div>
+                    <div class="level-content">
+                        <div class="problem-card">
+                            <div class="problem-title">Désinformation</div>
+                            <div class="problem-desc">Vulnérabilité aux fake news, théories du complot, manipulation cognitive.</div>
+                        </div>
+                        <div class="problem-card">
+                            <div class="problem-title">Défiance Institutionnelle</div>
+                            <div class="problem-desc">Érosion de la confiance envers les élus et les institutions.</div>
+                        </div>
+                        <div class="problem-card">
+                            <div class="problem-title">Austérité Sociale</div>
+                            <div class="problem-desc">Réformes pensions, statut cohabitant, pression sur la sécurité sociale.</div>
+                        </div>
+                        <div class="problem-card">
+                            <div class="problem-title">Crise Climatique</div>
+                            <div class="problem-desc">Urgence environnementale vs inaction perçue, éco-anxiété.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ARG SECTION -->
+    <section id="arg">
+        <div class="container">
+            <div class="arg-hero">
+                <div class="arg-badge">
+                    <span>🎮</span>
+                    <span>ALTERNATE REALITY GAME</span>
+                    <span>•</span>
+                    <span>SERIOUS GAME</span>
+                </div>
+                <h2 class="arg-title">
+                    <span class="highlight-green">Guerre Cognitive</span><br>
+                    <span class="highlight-lilac">Bienveillante</span>
+                </h2>
+                <div class="arg-concept">
+                    <p class="concept-text">
+                        Retourner les armes de la manipulation contre l'apathie citoyenne. Là où la guerre cognitive hostile vise à fragmenter et désinformer, nous utilisons les mêmes mécaniques — immersion, narration transmedia, défis collectifs — pour <strong>reconstruire du lien, développer l'esprit critique et réenchanter l'engagement citoyen</strong>.
+                    </p>
+                    <div class="concept-pillars">
+                        <div class="pillar">
+                            <div class="pillar-icon">🧩</div>
+                            <div class="pillar-name">Immersion</div>
+                        </div>
+                        <div class="pillar">
+                            <div class="pillar-icon">🤝</div>
+                            <div class="pillar-name">Collaboration</div>
+                        </div>
+                        <div class="pillar">
+                            <div class="pillar-icon">💡</div>
+                            <div class="pillar-name">Transformation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-section">
+                <h3 class="section-title" style="text-align: center; margin-bottom: 2rem;">Mécaniques de Gamification</h3>
+                <div class="mechanics-grid">
+                    <div class="mechanic-card fade-in">
+                        <div class="mechanic-icon">⭐</div>
+                        <div class="mechanic-name">Points</div>
+                        <div class="mechanic-desc">Valoriser les contributions (heures bénévolat, participation aux événements)</div>
+                    </div>
+                    <div class="mechanic-card fade-in">
+                        <div class="mechanic-icon">🏅</div>
+                        <div class="mechanic-name">Badges</div>
+                        <div class="mechanic-desc">Reconnaître les expertises ("Animateur", "Écrivain public", "Éclaireur")</div>
+                    </div>
+                    <div class="mechanic-card fade-in">
+                        <div class="mechanic-icon">🎯</div>
+                        <div class="mechanic-name">Défis</div>
+                        <div class="mechanic-desc">Missions collectives ("Mobiliser 100 signatures", "Cartographier le quartier")</div>
+                    </div>
+                    <div class="mechanic-card fade-in">
+                        <div class="mechanic-icon">📈</div>
+                        <div class="mechanic-name">Progression</div>
+                        <div class="mechanic-desc">Parcours d'engagement (participant → membre actif → coordinateur)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="references-grid">
+                <div class="reference-card fade-in">
+                    <div class="reference-year">2007</div>
+                    <div class="reference-name">World Without Oil</div>
+                    <div class="reference-desc">Simulation collaborative de pénurie pétrolière. Les comportements appris ont persisté après le jeu.</div>
+                    <div class="reference-impact">
+                        <span>👥</span>
+                        <strong>1 800+</strong> joueurs actifs
+                    </div>
+                </div>
+                <div class="reference-card fade-in">
+                    <div class="reference-year">2010</div>
+                    <div class="reference-name">EVOKE (Banque Mondiale)</div>
+                    <div class="reference-desc">Missions liées à la pauvreté, l'énergie et les conflits dans 130 pays.</div>
+                    <div class="reference-impact">
+                        <span>🚀</span>
+                        <strong>50+</strong> entreprises sociales lancées
+                    </div>
+                </div>
+                <div class="reference-card fade-in">
+                    <div class="reference-year">2014</div>
+                    <div class="reference-name">S.E.E.D. (Chicago)</div>
+                    <div class="reference-desc">ARG pour jeunes afro-américains mêlant STEM et engagement civique. Protestation spontanée organisée.</div>
+                    <div class="reference-impact">
+                        <span>🎓</span>
+                        <strong>144</strong> participants 13-18 ans
+                    </div>
+                </div>
+                <div class="reference-card fade-in">
+                    <div class="reference-year">2017</div>
+                    <div class="reference-name">Tracking Ida (Los Angeles)</div>
+                    <div class="reference-desc">Sur les traces d'Ida B. Wells — connexion histoire et violences policières contemporaines.</div>
+                    <div class="reference-impact">
+                        <span>📚</span>
+                        <strong>Civic Imagination</strong> activée
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATUT SECTION -->
+    <section id="statut">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Cadre Juridique</span>
+                <h2 class="section-title">Statuts & Compatibilité Santé</h2>
+                <p class="section-desc">Formes morales compatibles avec le statut BIM et l'incapacité de travail longue durée.</p>
+            </div>
+            <div class="statut-grid">
+                <div class="statut-card fade-in">
+                    <div class="statut-header">
+                        <h3>✅ Travail Volontaire (Bénévolat)</h3>
+                        <p>Recommandé pour le lancement</p>
+                    </div>
+                    <div class="statut-body">
+                        <ul class="statut-list">
+                            <li>
+                                <div class="check-icon">✓</div>
+                                <div class="statut-text">
+                                    <strong>Pas d'autorisation préalable</strong>
+                                    <span>Contrairement au travail adapté, le bénévolat ne nécessite pas l'autorisation du médecin-conseil</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="check-icon alert-icon">!</div>
+                                <div class="statut-text">
+                                    <strong>Information obligatoire</strong>
+                                    <span>Informer la mutualité via formulaire + constatation de compatibilité par le médecin-conseil</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="check-icon">✓</div>
+                                <div class="statut-text">
+                                    <strong>Indemnités cumulables</strong>
+                                    <span>Remboursement de frais possible (plafonds 2025 : forfait journalier ou frais réels)</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="check-icon">✓</div>
+                                <div class="statut-text">
+                                    <strong>Flexibilité totale</strong>
+                                    <span>Adapter l'engagement au rythme santé sans pression de résultats</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="statut-card fade-in">
+                    <div class="statut-header">
+                        <h3>🔄 Évolutions Possibles</h3>
+                        <p>Si le projet se développe</p>
+                    </div>
+                    <div class="statut-body">
+                        <ul class="statut-list">
+                            <li>
+                                <div class="check-icon">1</div>
+                                <div class="statut-text">
+                                    <strong>Travail Adapté (< 20%)</strong>
+                                    <span>Autorisation médecin-conseil, pas de réduction indemnités si ≤ 1/5 temps</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="check-icon">2</div>
+                                <div class="statut-text">
+                                    <strong>Coopérative d'Activités (JobYourself)</strong>
+                                    <span>Test 18 mois avec allocations maintenues — pour publics chômage/CPAS principalement</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="check-icon">3</div>
+                                <div class="statut-text">
+                                    <strong>Trajet Retour au Travail</strong>
+                                    <span>Accompagnement mutualité pour réinsertion progressive et encadrée</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="check-icon">4</div>
+                                <div class="statut-text">
+                                    <strong>Mandat Non Rémunéré</strong>
+                                    <span>Conseil d'administration ASBL — cumulable sans impact sur indemnités</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section id="roadmap">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Feuille de Route</span>
+                <h2 class="section-title">Roadmap 2026</h2>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item fade-in">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Janvier - Mars 2026</div>
+                        <h4 class="timeline-title">Phase 1 : Préparation</h4>
+                        <p class="timeline-desc">Constitution noyau 5-8 personnes, contact Régionale, rédaction note d'intention, identification local partenaire.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item fade-in">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Avril - Mai 2026</div>
+                        <h4 class="timeline-title">Phase 2 : Lancement</h4>
+                        <p class="timeline-desc">Présentation au Bureau Régionale, élection comité local, événement public autour du 1er Mai.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item fade-in">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Septembre 2026</div>
+                        <h4 class="timeline-title">Rentrée Associative</h4>
+                        <p class="timeline-desc">Participation Forum des Associations Auderghem, premiers ciné-débats et cafés citoyens.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item fade-in">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2026 - 2027</div>
+                        <h4 class="timeline-title">Consolidation</h4>
+                        <p class="timeline-desc">4-6 activités/an, formation écrivains publics, développement prototype ARG, partenariats locaux.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item fade-in">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2027 - 2029</div>
+                        <h4 class="timeline-title">Montée en Puissance</h4>
+                        <p class="timeline-desc">Ancrage Maison des Associations, déploiement ARG grandeur nature, préparation élections 2029.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Passer à l'Action</span>
+                <h2 class="section-title">Contacts & Ressources</h2>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info fade-in">
+                    <h3>📍 Régionale PAC Bruxelles</h3>
+                    <div class="contact-item">
+                        <div class="contact-icon">👤</div>
+                        <div class="contact-details">
+                            <strong>Stéphanie Gillet</strong>
+                            <span>Coordinatrice Régionale</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div class="contact-details">
+                            <strong>Email</strong>
+                            <a href="mailto:bruxelles@pac-g.be">bruxelles@pac-g.be</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <div class="contact-details">
+                            <strong>Téléphone</strong>
+                            <a href="tel:+3223664075">+32 2 366 40 75</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">🏢</div>
+                        <div class="contact-details">
+                            <strong>Adresse</strong>
+                            <span>Rue des Foulons 47-49, 1000 Bruxelles</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="resources fade-in">
+                    <h3>📚 Ressources Utiles</h3>
+                    <ul class="resource-list">
+                        <li><a href="https://www.pac-g.be" target="_blank">PAC — Site officiel</a></li>
+                        <li><a href="https://www.pac-g.be/regionale/bruxelles/" target="_blank">PAC Bruxelles — Régionale</a></li>
+                        <li><a href="https://www.espace-ecrivain-public.be" target="_blank">Espace Écrivain Public</a></li>
+                        <li><a href="https://www.inami.fgov.be/fr/themes/incapacite-de-travail/salaries-et-chomeurs/exercer-un-travail-volontaire" target="_blank">INAMI — Travail volontaire</a></li>
+                        <li><a href="https://jobyourself.be" target="_blank">JobYourself — Coopérative d'activités</a></li>
+                        <li><a href="https://www.auderghem.be" target="_blank">Commune d'Auderghem</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">PAC 1160 Auderghem</div>
+            <p class="footer-text">Proposition stratégique pour la création d'une section locale PAC<br>Guerre Cognitive Bienveillante • ARG Civique • Éducation Permanente</p>
+            <p class="footer-text" style="margin-top: 1rem; opacity: 0.6;">© 2026 — Document de travail</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation toggle
+        function toggleNav() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        }
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile nav
+                    document.querySelector('.nav-links').classList.remove('active');
+                }
+            });
+        });
+
+        // Parallax effect on hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                hero.style.backgroundPositionY = scrolled * 0.5 + 'px';
+            }
+        });
+
+        // Counter animation for stats
+        function animateCounter(el, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    el.textContent = target.toLocaleString('fr-BE');
+                    clearInterval(timer);
+                } else {
+                    el.textContent = Math.floor(current).toLocaleString('fr-BE');
+                }
+            }, 30);
+        }
+
+        // Initialize counters when visible
+        const statObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumber = entry.target.querySelector('.stat-number');
+                    if (statNumber && !statNumber.classList.contains('animated')) {
+                        const value = statNumber.textContent.replace(/[^\d]/g, '');
+                        if (value && !isNaN(parseInt(value))) {
+                            statNumber.classList.add('animated');
+                            animateCounter(statNumber, parseInt(value));
+                        }
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-card').forEach(card => {
+            statObserver.observe(card);
+        });
+
+        // Console easter egg
+        console.log('%c🎮 PAC 1160 — Guerre Cognitive Bienveillante', 'color: #7dd3a0; font-size: 16px; font-weight: bold;');
+        console.log('%cLe jeu commence ici. Rejoignez le mouvement.', 'color: #c4a7e7; font-size: 12px;');
+    </script>
+</body>
+</html>
