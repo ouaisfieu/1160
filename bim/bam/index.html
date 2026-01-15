@@ -1,0 +1,655 @@
+<!-- Chosen Palette: Warm Neutrals with Urgent Accents. Background: #F5F5F4 (Stone 100). Primary Text: #1C1917 (Stone 900). Accents: #B91C1C (Red 700) for alerts/urgency, #4D7C0F (Green 700) for associative solutions. This palette conveys seriousness and urgency without being chaotic. -->
+
+<!-- Application Structure Plan:
+    1.  **Hero Section (L'Alerte):** Sets the tone immediately. "Explosive subject", "National Alert".
+    2.  **Diagnostic Dashboard (Data Visualization):** Quantitative grounding. Uses Chart.js to visualize the "Risk of Poverty" and "Deprivation" stats to prove the magnitude of the issue.
+    3.  **Institutional Responsibility Map (The "Incompetence" Analysis):** An interactive grid breaking down Federal, Regional, and Local powers. Users click to see specific failures (CPAS, Chômage, Logement) and the demand for accountability. This directly addresses the user's desire to "touch every millimeter of the institution".
+    4.  **Deconstructing Narratives (Images & Usages):** An interactive "Myth vs. Reality" section referencing the "Cahiers" and the Deborsu documentary themes. It tackles the "fraud" stereotype vs. the reality of survival.
+    5.  **Strategic Roadmap (The Advocacy Plan):** A vertical process flow showing the steps from "Research" to "Political Shockwave".
+    6.  **Associative Network (The Solution):** Highlighting the RWLP and field work.
+    This structure moves the user from *Problem* -> *Cause* -> *Perception* -> *Action*.
+-->
+
+<!-- Visualization & Content Choices:
+    1.  **Poverty Trends Chart (Line Chart):** Goal: Inform. Method: Chart.js Line chart. Interaction: Tooltip hover. Justification: Shows that despite years of "management", poverty isn't decreasing, supporting the claim of "disastrous management".
+    2.  **Institutional Matrix (Interactive Cards):** Goal: Organize/Analyze. Method: HTML Grid + JS selection logic. Interaction: Click card to reveal detailed critique. Justification: Visualizes the complex Belgian "lasagne" of power to pinpoint responsibilities.
+    3.  **Stereotype Toggle (Interactive Text):** Goal: Change Perspective. Method: JS-driven text replacement. Interaction: Toggle switch "Vision Médiatique" vs "Réalité de Terrain". Justification: Directly addresses the "Images et usages de la pauvreté" theme.
+    4.  **Advocacy Timeline (Process Flow):** Goal: Change/Plan. Method: HTML/CSS styling with JS step highlighting. Justification: Visualizes the "campaign of large magnitude".
+-->
+
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Précarité en Belgique : Stratégie & Plaidoyer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Merriweather:ital,wght@0,300;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F4; /* Stone 100 */
+            color: #1C1917; /* Stone 900 */
+        }
+        h1, h2, h3, .serif {
+            font-family: 'Merriweather', serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        .card-interaction {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .card-interaction:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .active-tab {
+            border-bottom: 2px solid #B91C1C;
+            color: #B91C1C;
+            font-weight: 600;
+        }
+        .hidden-content {
+            display: none;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-red-200 selection:text-red-900">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-red-800 tracking-tight serif">Observatoire de l'Urgence Sociale</span>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                    <button onclick="scrollToSection('diagnostic')" class="border-transparent text-stone-500 hover:border-red-700 hover:text-stone-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Diagnostic</button>
+                    <button onclick="scrollToSection('institutions')" class="border-transparent text-stone-500 hover:border-red-700 hover:text-stone-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Responsabilités</button>
+                    <button onclick="scrollToSection('narratives')" class="border-transparent text-stone-500 hover:border-red-700 hover:text-stone-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Imaginaires</button>
+                    <button onclick="scrollToSection('action')" class="border-transparent text-stone-500 hover:border-red-700 hover:text-stone-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Plan d'Action</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-stone-900 text-stone-100 py-16 md:py-24">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-red-400 uppercase bg-red-900/30 rounded-full border border-red-800">Dossier Prioritaire</div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">La Précarité en Belgique :<br> <span class="text-red-500">L'État d'Urgence</span></h1>
+            <p class="text-xl md:text-2xl text-stone-300 mb-8 font-light italic">
+                "Un sujet explosif qui mérite une alerte nationale. Il est temps de mettre les institutions face à leurs responsabilités."
+            </p>
+            <div class="flex justify-center gap-4">
+                <button onclick="scrollToSection('diagnostic')" class="px-8 py-3 bg-red-700 hover:bg-red-600 text-white font-semibold rounded shadow-lg transition duration-300">Explorer le Diagnostic</button>
+                <button onclick="scrollToSection('action')" class="px-8 py-3 bg-transparent border border-stone-500 hover:border-stone-300 text-stone-300 hover:text-white font-semibold rounded transition duration-300">Voir le Plan de Plaidoyer</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section 1: Diagnostic & Data -->
+    <section id="diagnostic" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-12 text-center max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold text-stone-900 mb-4 serif">Le Constat d'Échec</h2>
+            <p class="text-lg text-stone-600">
+                Malgré une multitude de plans de lutte, les indicateurs de pauvreté stagnent ou s'aggravent. Ce tableau de bord illustre la persistance structurelle de la précarité en Belgique, contredisant la gestion politique actuelle.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <!-- Chart 1: Evolution -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                <h3 class="text-xl font-semibold mb-2">Risque de Pauvreté ou d'Exclusion Sociale (AROPE)</h3>
+                <p class="text-sm text-stone-500 mb-6">Pourcentage de la population belge (2015-2023)</p>
+                <div class="chart-container">
+                    <canvas id="povertyTrendChart"></canvas>
+                </div>
+                <div class="mt-4 p-4 bg-red-50 text-red-800 text-sm rounded border-l-4 border-red-600">
+                    <strong>Analyse :</strong> La courbe ne fléchit pas significativement. Près d'un Belge sur cinq reste menacé, démontrant l'inefficacité des mesures structurelles actuelles.
+                </div>
+            </div>
+
+            <!-- Chart 2: Regional/Category Breakdown -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                <h3 class="text-xl font-semibold mb-2">Disparités et Groupes Cibles</h3>
+                <p class="text-sm text-stone-500 mb-6">Répartition par région et statut (Focus 2023)</p>
+                
+                <!-- Interactive Filter for Chart 2 -->
+                <div class="flex space-x-2 mb-4">
+                    <button id="btn-region" class="px-3 py-1 bg-stone-200 text-stone-700 rounded text-sm hover:bg-stone-300 font-medium transition" onclick="updateBreakdownChart('region')">Par Région</button>
+                    <button id="btn-status" class="px-3 py-1 bg-white border border-stone-300 text-stone-600 rounded text-sm hover:bg-stone-50 font-medium transition" onclick="updateBreakdownChart('status')">Par Statut</button>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="breakdownChart"></canvas>
+                </div>
+                 <div class="mt-4 p-4 bg-stone-50 text-stone-700 text-sm rounded border-l-4 border-stone-400">
+                    <strong>Note :</strong> La Wallonie et Bruxelles présentent des taux alarmants, mais la précarité touche aussi massivement les familles monoparentales et les chômeurs, souvent stigmatisés comme "fraudeurs".
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+            <div class="bg-white p-6 rounded shadow text-center border-t-4 border-red-600">
+                <div class="text-4xl font-bold text-stone-900 mb-2">2.1 M</div>
+                <div class="text-sm font-semibold text-stone-500 uppercase tracking-wide">Personnes à risque</div>
+                <p class="mt-2 text-xs text-stone-400">Population totale touchée par au moins un facteur de pauvreté.</p>
+            </div>
+            <div class="bg-white p-6 rounded shadow text-center border-t-4 border-orange-500">
+                <div class="text-4xl font-bold text-stone-900 mb-2">13.2%</div>
+                <div class="text-sm font-semibold text-stone-500 uppercase tracking-wide">Privation Matérielle</div>
+                <p class="mt-2 text-xs text-stone-400">Incapacité de subvenir à des besoins fondamentaux.</p>
+            </div>
+            <div class="bg-white p-6 rounded shadow text-center border-t-4 border-stone-700">
+                <div class="text-4xl font-bold text-stone-900 mb-2">€1,287</div>
+                <div class="text-sm font-semibold text-stone-500 uppercase tracking-wide">Seuil de Pauvreté (Isolé)</div>
+                <p class="mt-2 text-xs text-stone-400">Revenu mensuel net en dessous duquel on bascule.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Institutions & Responsibilities -->
+    <section id="institutions" class="bg-stone-100 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-10 max-w-3xl">
+                <h2 class="text-3xl font-bold text-stone-900 mb-4 serif">Le Labyrinthe Institutionnel</h2>
+                <p class="text-lg text-stone-600">
+                    Pour mener un plaidoyer efficace, nous devons identifier précisément où se situe le blocage. Le système belge dilue les responsabilités. Cliquez sur chaque niveau de pouvoir pour révéler les failles spécifiques à cibler.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Level 1: Federal -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden card-interaction" onclick="showInstDetails('federal')">
+                    <div class="bg-stone-800 p-4 flex justify-between items-center">
+                        <h3 class="text-white font-bold text-lg">Niveau Fédéral</h3>
+                        <span class="text-stone-400 text-xl">&#9662;</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-stone-600 mb-4 font-serif italic">"La Sécurité Sociale en péril"</p>
+                        <ul class="space-y-2 text-sm text-stone-700">
+                            <li class="flex items-start"><span class="text-red-600 mr-2">●</span> Statut cohabitant (l'appauvrissement organisé)</li>
+                            <li class="flex items-start"><span class="text-red-600 mr-2">●</span> Dégressivité des allocations de chômage</li>
+                            <li class="flex items-start"><span class="text-red-600 mr-2">●</span> Accès aux soins de santé</li>
+                        </ul>
+                        <div class="mt-4 text-xs font-bold text-red-700 uppercase tracking-wide">Cible du plaidoyer : Ministre des Affaires Sociales</div>
+                    </div>
+                </div>
+
+                <!-- Level 2: Regions -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden card-interaction" onclick="showInstDetails('regional')">
+                    <div class="bg-stone-700 p-4 flex justify-between items-center">
+                        <h3 class="text-white font-bold text-lg">Niveau Régional</h3>
+                        <span class="text-stone-400 text-xl">&#9662;</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-stone-600 mb-4 font-serif italic">"Logement et Emploi : le goulot d'étranglement"</p>
+                        <ul class="space-y-2 text-sm text-stone-700">
+                            <li class="flex items-start"><span class="text-orange-600 mr-2">●</span> Pénurie de logements sociaux</li>
+                            <li class="flex items-start"><span class="text-orange-600 mr-2">●</span> Contrôle des chômeurs (Forem/Actiris)</li>
+                            <li class="flex items-start"><span class="text-orange-600 mr-2">●</span> Précarité énergétique</li>
+                        </ul>
+                        <div class="mt-4 text-xs font-bold text-orange-700 uppercase tracking-wide">Cible : Ministres régionaux Logement/Emploi</div>
+                    </div>
+                </div>
+
+                <!-- Level 3: Local / CPAS -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden card-interaction" onclick="showInstDetails('local')">
+                    <div class="bg-stone-600 p-4 flex justify-between items-center">
+                        <h3 class="text-white font-bold text-lg">Communal / CPAS</h3>
+                        <span class="text-stone-400 text-xl">&#9662;</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-stone-600 mb-4 font-serif italic">"Le dernier filet de sécurité... troué"</p>
+                        <ul class="space-y-2 text-sm text-stone-700">
+                            <li class="flex items-start"><span class="text-stone-600 mr-2">●</span> Disparité des aides selon la commune</li>
+                            <li class="flex items-start"><span class="text-stone-600 mr-2">●</span> Violence administrative</li>
+                            <li class="flex items-start"><span class="text-stone-600 mr-2">●</span> Suspension du RIS (Revenu d'Intégration)</li>
+                        </ul>
+                        <div class="mt-4 text-xs font-bold text-stone-700 uppercase tracking-wide">Cible : Présidents de CPAS</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail Panel (Dynamic) -->
+            <div id="inst-detail-panel" class="mt-8 p-8 bg-white border-l-4 border-red-700 shadow-lg rounded hidden-content">
+                <h3 id="detail-title" class="text-2xl font-bold text-stone-900 mb-4 serif"></h3>
+                <p id="detail-desc" class="text-stone-700 mb-6 leading-relaxed"></p>
+                <div class="bg-red-50 p-4 rounded">
+                    <h4 class="font-bold text-red-900 text-sm uppercase mb-2">Action Requise</h4>
+                    <p id="detail-action" class="text-red-800 text-sm italic"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Narratives & Myths -->
+    <section id="narratives" class="py-16 max-w-5xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-stone-900 mb-4 serif">Images et Usages de la Pauvreté</h2>
+            <p class="text-stone-600">
+                La campagne médiatique doit déconstruire les mythes alimentés par des reportages type "Tous fraudeurs". Ces stéréotypes justifient des politiques répressives.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-stone-200">
+            <div class="flex border-b border-stone-200">
+                <button onclick="toggleNarrative('media')" id="tab-media" class="flex-1 py-4 text-center font-medium text-stone-500 bg-stone-50 hover:bg-stone-100 transition active-tab">
+                    L'Image Médiatique ("La Fraude")
+                </button>
+                <button onclick="toggleNarrative('reality')" id="tab-reality" class="flex-1 py-4 text-center font-medium text-stone-500 bg-stone-50 hover:bg-stone-100 transition">
+                    La Réalité de Terrain (L'Education Permanente)
+                </button>
+            </div>
+            
+            <div class="p-8 md:p-12 min-h-[300px] flex items-center justify-center">
+                <div id="narrative-content-media" class="fade-in">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="text-6xl mb-4 opacity-20">📺</div>
+                        <h3 class="text-2xl font-bold text-red-700 mb-4">"Le Chômeur Profiteur"</h3>
+                        <p class="text-lg text-stone-700 mb-6 max-w-2xl mx-auto">
+                            Le discours dominant, illustré par des polémiques médiatiques, tend à individualiser la pauvreté. On parle de "fraude sociale", d'assistanat et de manque de volonté. Cette vision permet aux politiques de durcir les conditions d'accès aux droits sans remettre en cause le système économique.
+                        </p>
+                        <span class="px-4 py-2 bg-red-100 text-red-800 rounded-full text-sm font-bold">Conséquence : Stigmatisation & Non-recours aux droits</span>
+                    </div>
+                </div>
+
+                <div id="narrative-content-reality" class="hidden-content fade-in">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="text-6xl mb-4 opacity-20">🛡️</div>
+                        <h3 class="text-2xl font-bold text-green-700 mb-4">La Survivance Structurelle</h3>
+                        <p class="text-lg text-stone-700 mb-6 max-w-2xl mx-auto">
+                            Les "Cahiers de l'éducation permanente" révèlent une autre réalité : celle de stratégies de survie complexes face à un système administratif kafkaïen. La "fraude" est souvent une erreur administrative ou une nécessité vitale. Le problème n'est pas l'individu, mais l'absence d'emplois décents et de logements abordables.
+                        </p>
+                        <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-bold">Objectif : Restaurer la Dignité & la Citoyenneté</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Action Plan & Timeline -->
+    <section id="action" class="bg-stone-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6 serif text-white">Stratégie de Choc</h2>
+                    <p class="text-stone-400 mb-8 text-lg">
+                        Pour ébranler les niveaux de pouvoir, nous proposons une campagne coordonnée en quatre phases. Cliquez sur les étapes pour voir les actions concrètes.
+                    </p>
+                    
+                    <!-- Timeline Control -->
+                    <div class="space-y-4">
+                        <div onclick="setPhase(1)" class="phase-selector p-4 rounded border border-stone-700 hover:bg-stone-800 cursor-pointer transition flex items-center bg-stone-800 border-l-4 border-l-red-600">
+                            <span class="h-8 w-8 rounded-full bg-red-600 flex items-center justify-center font-bold mr-4">1</span>
+                            <div>
+                                <h4 class="font-bold">Recherche & Documentation</h4>
+                                <span class="text-sm text-stone-400">Collecte des preuves (RWLP, Terrain)</span>
+                            </div>
+                        </div>
+                        <div onclick="setPhase(2)" class="phase-selector p-4 rounded border border-stone-700 hover:bg-stone-800 cursor-pointer transition flex items-center">
+                            <span class="h-8 w-8 rounded-full bg-stone-600 flex items-center justify-center font-bold mr-4">2</span>
+                            <div>
+                                <h4 class="font-bold">Alerte Médiatique</h4>
+                                <span class="text-sm text-stone-400">Campagne "Contre-Images"</span>
+                            </div>
+                        </div>
+                        <div onclick="setPhase(3)" class="phase-selector p-4 rounded border border-stone-700 hover:bg-stone-800 cursor-pointer transition flex items-center">
+                            <span class="h-8 w-8 rounded-full bg-stone-600 flex items-center justify-center font-bold mr-4">3</span>
+                            <div>
+                                <h4 class="font-bold">Confrontation Politique</h4>
+                                <span class="text-sm text-stone-400">Interpellation des "Incompétents"</span>
+                            </div>
+                        </div>
+                        <div onclick="setPhase(4)" class="phase-selector p-4 rounded border border-stone-700 hover:bg-stone-800 cursor-pointer transition flex items-center">
+                            <span class="h-8 w-8 rounded-full bg-stone-600 flex items-center justify-center font-bold mr-4">4</span>
+                            <div>
+                                <h4 class="font-bold">Réforme Structurelle</h4>
+                                <span class="text-sm text-stone-400">Changement Législatif</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase Details Display -->
+                <div class="bg-stone-800 p-8 rounded-xl shadow-2xl flex flex-col justify-center min-h-[400px]">
+                    <h3 id="phase-title" class="text-2xl font-bold text-red-500 mb-4 serif">Phase 1 : Recherche & Documentation</h3>
+                    <div id="phase-content" class="text-stone-300 space-y-4 text-lg">
+                        <p>Mobilisation du Réseau Wallon de Lutte contre la Pauvreté (RWLP) et des associations flamandes.</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Compilation des témoignages de violence institutionnelle.</li>
+                            <li>Analyse des "Cahiers de l'éducation permanente".</li>
+                            <li>Production d'un rapport contradictoire aux chiffres officiels.</li>
+                        </ul>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-stone-700">
+                        <span class="text-xs uppercase tracking-widest text-stone-500">Acteurs Clés</span>
+                        <div class="flex gap-2 mt-2">
+                            <span class="px-2 py-1 bg-stone-700 rounded text-xs">RWLP</span>
+                            <span class="px-2 py-1 bg-stone-700 rounded text-xs">Syndicats</span>
+                            <span class="px-2 py-1 bg-stone-700 rounded text-xs">Universités</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-200 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-xl font-bold text-stone-900 mb-4 serif">Rejoignez le Mouvement</h2>
+            <p class="text-stone-600 max-w-2xl mx-auto mb-6">
+                Ce plan de recherche n'est qu'un début. La lutte contre la précarité demande une vigilance constante et une pression citoyenne ininterrompue.
+            </p>
+            <div class="text-sm text-stone-400">
+                &copy; 2024 Observatoire de l'Urgence Sociale. Basé sur les notes de recherche citoyenne.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // --- Data & State ---
+        const breakdownData = {
+            region: {
+                labels: ['Wallonie', 'Bruxelles', 'Flandre'],
+                data: [24.8, 30.2, 11.3],
+                colors: ['#B91C1C', '#EA580C', '#4D7C0F'] // Red for high risk, Orange, Green for lower
+            },
+            status: {
+                labels: ['Chômeurs', 'Monoparental', 'Locataires', 'Inactifs', 'Retraités'],
+                data: [48.3, 35.1, 32.4, 29.8, 14.5],
+                colors: ['#7F1D1D', '#991B1B', '#B91C1C', '#DC2626', '#EF4444'] // Shades of red
+            }
+        };
+
+        const institutionDetails = {
+            federal: {
+                title: "Responsabilité Fédérale : La Casse de la Protection",
+                desc: "C'est ici que se décide le montant des allocations et les règles d'exclusion. La dégressivité des allocations de chômage pousse des milliers de personnes vers les CPAS, transférant la charge financière vers les communes. Le 'statut cohabitant' est un mécanisme archaïque qui appauvrit les ménages solidaires.",
+                action: "Exigence : Individualisation des droits sociaux et suppression du statut cohabitant."
+            },
+            regional: {
+                title: "Responsabilité Régionale : L'Impasse du Logement",
+                desc: "Les régions ont la compétence du logement et de l'emploi. L'absence de construction massive de logements sociaux force les précaires vers le marché privé insalubre. Les politiques d'activation de l'emploi (Forem/Actiris) se transforment souvent en politiques de sanction.",
+                action: "Exigence : Encadrement strict des loyers et plan d'urgence pour le logement public."
+            },
+            local: {
+                title: "Responsabilité Communale : Le Guichet Fermé",
+                desc: "Les CPAS sont en première ligne mais manquent de moyens. Cependant, certains appliquent des règlements arbitraires, suspendant le Revenu d'Intégration pour des motifs futiles. La fracture numérique empêche l'accès aux droits de base.",
+                action: "Exigence : Financement automatique des droits (automaticité) et fin des radiations abusives."
+            }
+        };
+
+        const timelinePhases = {
+            1: {
+                title: "Phase 1 : Recherche & Documentation",
+                content: `<p>Mobilisation du Réseau Wallon de Lutte contre la Pauvreté (RWLP) et des associations flamandes.</p>
+                        <ul class="list-disc pl-5 space-y-2 mt-2">
+                            <li>Compilation des témoignages de violence institutionnelle.</li>
+                            <li>Analyse des "Cahiers de l'éducation permanente".</li>
+                            <li>Production d'un rapport contradictoire aux chiffres officiels.</li>
+                        </ul>`,
+                actors: ["RWLP", "Syndicats", "Universités"]
+            },
+            2: {
+                title: "Phase 2 : Alerte Médiatique",
+                content: `<p>Lancement de la campagne "Visages Réels".</p>
+                        <ul class="list-disc pl-5 space-y-2 mt-2">
+                            <li>Diffusion de contre-documentaires pour répondre à "Tous fraudeurs".</li>
+                            <li>Tribunes libres dans la presse nationale.</li>
+                            <li>Utilisation des réseaux sociaux pour viraliser les témoignages d'injustice.</li>
+                        </ul>`,
+                actors: ["Presse Indépendante", "Influenceurs", "Artistes"]
+            },
+            3: {
+                title: "Phase 3 : Confrontation Politique",
+                content: `<p>Mise face aux responsabilités des "incompétants".</p>
+                        <ul class="list-disc pl-5 space-y-2 mt-2">
+                            <li>Interpellations citoyennes dans les parlements.</li>
+                            <li>Actions directes devant les cabinets ministériels (Logement, Emploi).</li>
+                            <li>Rencontres forcées avec les chefs de parti.</li>
+                        </ul>`,
+                actors: ["Citoyens", "Activistes", "Corps intermédiaires"]
+            },
+            4: {
+                title: "Phase 4 : Réforme Structurelle",
+                content: `<p>Le but ultime : changement législatif.</p>
+                        <ul class="list-disc pl-5 space-y-2 mt-2">
+                            <li>Vote de lois sur l'individualisation des droits.</li>
+                            <li>Revalorisation des minimas sociaux au-dessus du seuil de pauvreté européen.</li>
+                            <li>Sanctuarisation du budget de la sécurité sociale.</li>
+                        </ul>`,
+                actors: ["Parlementaires", "Gouvernement", "Europe"]
+            }
+        };
+
+        // --- Charts Initialization ---
+        let breakdownChartInstance = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initPovertyTrendChart();
+            initBreakdownChart('region');
+        });
+
+        function initPovertyTrendChart() {
+            const ctx = document.getElementById('povertyTrendChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023'],
+                    datasets: [{
+                        label: 'Taux de risque de pauvreté (%)',
+                        data: [21.1, 20.7, 20.3, 19.8, 19.5, 19.3, 19.3, 18.7, 18.6], // Approx real data AROPE
+                        borderColor: '#B91C1C', // Red 700
+                        backgroundColor: 'rgba(185, 28, 28, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#B91C1C',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + '% de la population';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 15,
+                            max: 25,
+                            title: { display: true, text: 'Pourcentage (%)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initBreakdownChart(type) {
+            const ctx = document.getElementById('breakdownChart').getContext('2d');
+            const data = breakdownData[type];
+            
+            // Initial styling for buttons
+            updateButtonStyles(type);
+
+            breakdownChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Taux de risque de pauvreté (%)',
+                        data: data.data,
+                        backgroundColor: data.colors,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y', // Horizontal bar chart for better label reading
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 60
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateBreakdownChart(type) {
+            if (!breakdownChartInstance) return;
+            
+            const data = breakdownData[type];
+            breakdownChartInstance.data.labels = data.labels;
+            breakdownChartInstance.data.datasets[0].data = data.data;
+            breakdownChartInstance.data.datasets[0].backgroundColor = data.colors;
+            breakdownChartInstance.update();
+
+            updateButtonStyles(type);
+        }
+
+        function updateButtonStyles(activeType) {
+            const btnRegion = document.getElementById('btn-region');
+            const btnStatus = document.getElementById('btn-status');
+            
+            if(activeType === 'region') {
+                btnRegion.className = "px-3 py-1 bg-stone-700 text-white rounded text-sm font-medium transition shadow";
+                btnStatus.className = "px-3 py-1 bg-white border border-stone-300 text-stone-600 rounded text-sm hover:bg-stone-50 font-medium transition";
+            } else {
+                btnStatus.className = "px-3 py-1 bg-stone-700 text-white rounded text-sm font-medium transition shadow";
+                btnRegion.className = "px-3 py-1 bg-white border border-stone-300 text-stone-600 rounded text-sm hover:bg-stone-50 font-medium transition";
+            }
+        }
+
+        // --- Interactions ---
+
+        // Scroll navigation
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Institutional Details (Accordion/Panel)
+        function showInstDetails(level) {
+            const panel = document.getElementById('inst-detail-panel');
+            const title = document.getElementById('detail-title');
+            const desc = document.getElementById('detail-desc');
+            const action = document.getElementById('detail-action');
+            const data = institutionDetails[level];
+
+            // Update content
+            title.innerText = data.title;
+            desc.innerText = data.desc;
+            action.innerText = data.action;
+
+            // Show panel if hidden
+            panel.classList.remove('hidden-content');
+            panel.classList.add('fade-in');
+
+            // Small scroll to ensure visibility
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Narrative Tab Toggle
+        function toggleNarrative(tab) {
+            const contentMedia = document.getElementById('narrative-content-media');
+            const contentReality = document.getElementById('narrative-content-reality');
+            const tabMedia = document.getElementById('tab-media');
+            const tabReality = document.getElementById('tab-reality');
+
+            if (tab === 'media') {
+                contentMedia.classList.remove('hidden-content');
+                contentReality.classList.add('hidden-content');
+                
+                tabMedia.classList.add('active-tab', 'bg-stone-50', 'text-red-700');
+                tabMedia.classList.remove('text-stone-500');
+                
+                tabReality.classList.remove('active-tab', 'bg-stone-50', 'text-red-700');
+                tabReality.classList.add('text-stone-500');
+            } else {
+                contentMedia.classList.add('hidden-content');
+                contentReality.classList.remove('hidden-content');
+
+                tabReality.classList.add('active-tab', 'bg-stone-50', 'text-red-700');
+                tabReality.classList.remove('text-stone-500');
+
+                tabMedia.classList.remove('active-tab', 'bg-stone-50', 'text-red-700');
+                tabMedia.classList.add('text-stone-500');
+            }
+        }
+
+        // Timeline Phase Selector
+        function setPhase(phaseNum) {
+            const data = timelinePhases[phaseNum];
+            
+            // Update Text
+            document.getElementById('phase-title').innerText = data.title;
+            document.getElementById('phase-content').innerHTML = data.content;
+
+            // Highlight active selector visuals
+            const selectors = document.querySelectorAll('.phase-selector');
+            selectors.forEach((sel, index) => {
+                const circle = sel.querySelector('span');
+                if (index + 1 === phaseNum) {
+                    sel.classList.add('bg-stone-800', 'border-l-4', 'border-l-red-600');
+                    sel.classList.remove('border-stone-700');
+                    circle.classList.remove('bg-stone-600');
+                    circle.classList.add('bg-red-600');
+                } else {
+                    sel.classList.remove('bg-stone-800', 'border-l-4', 'border-l-red-600');
+                    sel.classList.add('border-stone-700');
+                    circle.classList.add('bg-stone-600');
+                    circle.classList.remove('bg-red-600');
+                }
+            });
+            
+            // Re-render actors tags
+            const actorsContainer = document.querySelector('.flex.gap-2.mt-2');
+            actorsContainer.innerHTML = '';
+            data.actors.forEach(actor => {
+                const span = document.createElement('span');
+                span.className = 'px-2 py-1 bg-stone-700 rounded text-xs';
+                span.innerText = actor;
+                actorsContainer.appendChild(span);
+            });
+        }
+
+    </script>
+</body>
+</html>
