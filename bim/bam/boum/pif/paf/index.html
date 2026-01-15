@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIXO | L'Agence de Renseignement Citoyenne</title>
+    <style>
+        /* --- CONFIGURATION & VARIABLES --- */
+        :root {
+            --bg-deep: #050510;
+            --primary: #00ffcc; /* Cyan néon (Signalus) */
+            --secondary: #9d00ff; /* Violet néon (Nixo) */
+            --text-main: #e0e0e0;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --font-head: 'Courier New', monospace; /* Esthétique Hacker/Data */
+            --font-body: system-ui, -apple-system, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- CANVAS BACKGROUND (EFFET SIGNALUS) --- */
+        #network-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        /* --- TYPOGRAPHIE & UI --- */
+        h1, h2, h3 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 2px; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            color: #000;
+            font-weight: bold;
+            text-decoration: none;
+            text-transform: uppercase;
+            border-radius: 4px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: var(--font-head);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        /* --- HEADER / HERO SECTION --- */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .logo-container img {
+            max-width: 250px;
+            filter: drop-shadow(0 0 15px var(--secondary));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            margin: 20px 0;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 40px;
+            color: #ccc;
+        }
+
+        /* --- GLASS CARDS (DECIDEURS) --- */
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 20px 0;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 50px 0;
+        }
+
+        .level-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s;
+        }
+
+        .level-card:hover { transform: translateY(-5px); border-left-color: var(--secondary); }
+        .level-card h3 { color: var(--primary); margin-bottom: 15px; }
+
+        /* --- TIMELINE (LE PLAN) --- */
+        .timeline {
+            position: relative;
+            margin: 60px 0;
+            padding-left: 30px;
+            border-left: 2px solid var(--glass-border);
+        }
+
+        .phase {
+            position: relative;
+            margin-bottom: 50px;
+            padding-left: 20px;
+        }
+
+        .phase::before {
+            content: '';
+            position: absolute;
+            left: -39px;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            background: var(--bg-deep);
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .phase-meta {
+            font-family: var(--font-head);
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            border-top: 1px solid var(--glass-border);
+            background: #020205;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hidden { opacity: 0; transform: translateY(20px); transition: all 0.8s; }
+        .visible { opacity: 1; transform: translateY(0); }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="network-canvas"></canvas>
+
+    <header class="container">
+        <div class="logo-container">
+            <img src="og-image-en.png" alt="Logo NIXO DemoGarchy">
+        </div>
+        <h1>Le Pouvoir en Poche</h1>
+        <p class="subtitle">Hackons le labyrinthe de la santé mentale. <br>De la Commune à l'ONU, l'Agence de Renseignement Citoyenne (ARC) redonne le contrôle.</p>
+        <div>
+            <a href="#roadmap" class="btn">Découvrir le Plan</a>
+        </div>
+    </header>
+
+    <section class="container" id="levels">
+        <div class="glass-panel hidden">
+            <h2 style="text-align: center;">Une Stratégie Multi-Échelles</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 30px;">
+                L'ARC ne se contente pas de réparer le système, elle le transforme en validant les besoins réels via l'Économie Contributive Provisionnée.
+            </p>
+            
+            <div class="levels-grid">
+                <div class="level-card">
+                    <h3>MICRO : Le Citoyen</h3>
+                    <p><strong>"De la Commune..."</strong></p>
+                    <p>Ne soyez plus perdu. Devenez acteur de votre santé via des outils "Offline-First" et sécurisés. Participez localement dans des lieux de liens comme le <em>Babel'Zin</em>.</p>
+                </div>
+
+                <div class="level-card">
+                    <h3>MESO : L'Institution</h3>
+                    <p><strong>"...aux Décideurs..."</strong></p>
+                    <p>Mutuelles, Hôpitaux : accédez à une cartographie en temps réel standardisée (FHIR). Réduisez l'errance médicale grâce à des données coconstruites.</p>
+                </div>
+
+                <div class="level-card">
+                    <h3>MACRO : La Politique</h3>
+                    <p><strong>"...jusqu'à l'ONU."</strong></p>
+                    <p>Vers 2029 : Un cadre légal pour le "Contributeur Citoyen". Une réponse systémique aux crises globales de santé mentale.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container" id="roadmap">
+        <div class="glass-panel hidden">
+            <h2>Le Plan d'Action (12 Mois)</h2>
+            <p>Notre projet pilote transforme Bruxelles en laboratoire vivant.</p>
+            
+            <div class="timeline">
+                <div class="phase">
+                    <div class="phase-meta">MOIS 1 à 3</div>
+                    <h3>Cartographie & Coconstruction</h3>
+                    <p>Validation des besoins réels. Ateliers physiques avec usagers et professionnels pour établir le cahier des charges.</p>
+                </div>
+
+                <div class="phase">
+                    <div class="phase-meta">MOIS 4 à 6</div>
+                    <h3>Prototype "Offline-First"</h3>
+                    <p>Déploiement d'une preuve de concept (HTML/JS) fonctionnant sans connexion. Structure de données ouverte (Standard FHIR) pour l'interopérabilité.</p>
+                </div>
+
+                <div class="phase">
+                    <div class="phase-meta">MOIS 7 à 10</div>
+                    <h3>Gamification & Missions</h3>
+                    <p>Lancement des "quêtes" citoyennes : vérifier des horaires, valider l'accessibilité, enrichir le réseau. Création d'une dynamique durable.</p>
+                </div>
+
+                <div class="phase">
+                    <div class="phase-meta">MOIS 11 à 12</div>
+                    <h3>Impact & Évaluation</h3>
+                    <p>Analyse quantitative et qualitative. Preuve d'impact pour convaincre les partenaires institutionnels de la généralisation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container" id="future">
+        <div class="glass-panel hidden" style="border-color: var(--primary);">
+            <h2 style="color: var(--primary);">Feuille de Route 2026-2029</h2>
+            <p>Au-delà du pilote, vers l'institutionnalisation.</p>
+            <ul style="margin-top: 20px; list-style: none;">
+                <li style="margin-bottom: 15px;">
+                    <strong>🚀 2026 (Coalition) :</strong> Consortium formel avec Mutuelles (Solidaris, MC) et Syndicats. Publication du Livre Blanc.
+                </li>
+                <li>
+                    <strong>🏛️ 2027-2029 (Loi) :</strong> Négociation du cadre légal "Contributeur Citoyen" et financement via l'Économie Contributive.
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <h3>NIXO! DemoGarchy's not dead... (YET!)</h3>
+            <p>Rejoignez l'Agence de Renseignement Citoyenne.</p>
+            <br>
+            <a href="#" class="btn">Devenir Partenaire Pilote</a>
+        </div>
+    </footer>
+
+    <script>
+        // 1. ANIMATION CANVAS "SIGNALUS"
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        
+        // Configuration du réseau
+        const config = {
+            particleCount: 60, // Nombre de nœuds
+            connectionDistance: 150, // Distance pour créer une ligne
+            speed: 0.5 // Vitesse de mouvement
+        };
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * config.speed;
+                this.vy = (Math.random() - 0.5) * config.speed;
+                // Couleurs basées sur l'image signalus (vert/cyan ou violet/blanc)
+                this.isSpecial = Math.random() > 0.8; 
+                this.color = this.isSpecial ? '#9d00ff' : '#00ffcc';
+                this.size = Math.random() * 3 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Rebond sur les bords
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < config.particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.update();
+                p.draw();
+
+                // Dessiner les connexions
+                for (let j = i; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dx = p.x - p2.x;
+                    let dy = p.y - p2.y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+
+                    if (distance < config.connectionDistance) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(100, 200, 255, ${1 - distance/config.connectionDistance})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => { resize(); initParticles(); });
+        resize();
+        initParticles();
+        animate();
+
+        // 2. SCROLL REVEAL (Apparition des éléments)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.hidden').forEach((el) => observer.observe(el));
+
+    </script>
+</body>
+</html>
