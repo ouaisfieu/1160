@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auderghem en Action | Quartier Durable & Solidaire</title>
+    <style>
+        :root {
+            --primary: #2E8B57; /* SeaGreen - Nature */
+            --secondary: #2F4F4F; /* DarkSlateGray - Institutional */
+            --accent: #FFD700; /* Gold - Highlight */
+            --bg: #f4f9f4;
+            --text: #333;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Header / Hero --- */
+        header {
+            height: 90vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1490750967868-58cb75063ed4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80'); /* Image générique nature/ville */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: slideDown 1s ease-out;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin-bottom: 40px;
+            font-weight: 300;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .btn-cta {
+            padding: 15px 30px;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: transform 0.3s, background 0.3s;
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.4);
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            background-color: #267345;
+        }
+
+        /* --- Citations Style --- */
+        .cite {
+            font-size: 0.7em;
+            color: #888;
+            vertical-align: super;
+            margin-left: 2px;
+            text-decoration: none;
+            cursor: help;
+        }
+        
+        header .cite { color: #ddd; }
+
+        /* --- Sections --- */
+        section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 50px;
+            text-align: center;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* --- Cards & Grid --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            border-bottom: 5px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-bottom: 5px solid var(--primary);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: block;
+            margin: 10px 0;
+        }
+
+        /* --- Budget Highlight --- */
+        .budget-highlight {
+            background: var(--secondary);
+            color: white;
+            padding: 60px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .budget-highlight h3 { font-size: 2rem; margin-bottom: 10px; }
+        .big-number { font-size: 4rem; font-weight: 800; color: var(--accent); }
+        
+        /* --- Interactive List --- */
+        .feature-list li {
+            list-style: none;
+            padding: 15px;
+            border-left: 3px solid var(--primary);
+            margin-bottom: 10px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        /* --- Animations --- */
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Reveal on scroll class */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Auderghem en Action</h1>
+        [cite_start]<p class="subtitle">Bâtir Ensemble un Quartier Durable et Solidaire <span class="cite">[cite: 1]</span></p>
+        <p style="max-width: 600px; margin-bottom: 30px;">
+            "Votre voix est le matériau le plus essentiel." [cite_start]<span class="cite">[cite: 4]</span><br>
+            Découvrez comment nous transformons la démocratie participative en réalité. [cite_start]<span class="cite">[cite: 6]</span>
+        </p>
+        <a href="#participation" class="btn-cta">Découvrir les Projets</a>
+    </header>
+
+    <section id="participation">
+        <div class="reveal">
+            <h2>Le Pouvoir est entre Vos Mains</h2>
+            <p style="text-align: center; margin-bottom: 40px;">La commune met à votre disposition des outils concrets pour proposer, voter et décider. [cite_start]<span class="cite">[cite: 10]</span></p>
+            
+            <div class="budget-highlight">
+                <h3>Le Budget Partagé</h3>
+                <span class="big-number" id="counter">0 €</span>
+                <p>Dédiés entièrement à la concrétisation de vos idées. [cite_start]<span class="cite">[cite: 15]</span></p>
+                <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">Objectif : Rendre opérationnels au moins 70% des projets choisis. [cite_start]<span class="cite">[cite: 15]</span></p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card-icon">💻</div>
+                    <h3>Plateforme en Ligne</h3>
+                    <p>Votre espace numérique pour vous informer, débattre et voter. [cite_start]<span class="cite">[cite: 18]</span></p>
+                    <span class="stat-number">12 000 €</span>
+                    <p>Investissement annuel pour le dialogue constant. [cite_start]<span class="cite">[cite: 19]</span></p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🗣️</div>
+                    <h3>Assemblée des Habitants</h3>
+                    <p>Le contact humain direct pour discuter des enjeux de quartier. [cite_start]<span class="cite">[cite: 21]</span></p>
+                    <p style="margin-top: 10px;">Géré par les ressources humaines existantes de la commune. [cite_start]<span class="cite">[cite: 23]</span></p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🗳️</div>
+                    <h3>Votre Rôle</h3>
+                    <p>Proposez des projets et l'ensemble des habitants vote pour ses préférés. [cite_start]<span class="cite">[cite: 14]</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="green" style="background-color: #eafbea;">
+        <div class="reveal">
+            <h2>Un Cadre de Vie Plus Vert</h2>
+            <p style="text-align: center; margin-bottom: 40px;">Des actions locales pour un quartier respectueux de la planète. [cite_start]<span class="cite">[cite: 33]</span></p>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>🌱 Jardins & Compost</h3>
+                    <ul class="feature-list">
+                        <li><strong>Potagers collectifs :</strong> 2 000 € pour bacs, terreau et graines. [cite_start]<span class="cite">[cite: 36]</span></li>
+                        <li><strong>Compostage :</strong> Création de sites dédiés (600 € pour deux bacs). [cite_start]<span class="cite">[cite: 38]</span></li>
+                        <li><strong>Objectif :</strong> Créer du lien social et réduire les déchets. [cite_start]<span class="cite">[cite: 35]</span></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>🔄 Économie Circulaire</h3>
+                    <ul class="feature-list">
+                        <li><strong>Donnerie en ligne :</strong> 4 000 € pour faciliter le don d'objets. [cite_start]<span class="cite">[cite: 41]</span></li>
+                        <li><strong>Frigo solidaire :</strong> 650 €/unité pour partager la nourriture et aider les démunis. [cite_start]<span class="cite">[cite: 42]</span></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>🌳 Embellissement</h3>
+                    <p><strong>"J'adopte un pied d'arbre"</strong> : Devenez le jardinier de votre rue en fleurissant le pied des arbres. [cite_start]<span class="cite">[cite: 43, 44]</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="solidarity">
+        <div class="reveal">
+            <h2>Un Quartier Vivant & Solidaire</h2>
+            <p style="text-align: center; margin-bottom: 40px;">Sécurité, dynamisme commercial et culture. [cite_start]<span class="cite">[cite: 49]</span></p>
+            
+            <div class="grid">
+                <div class="card" style="border-left: 5px solid #FFD700;">
+                    <h3>🛍️ Commerces</h3>
+                    <p>Dispositif <strong>"Boutique à l'essai"</strong> pour aider les nouvelles initiatives commerciales à se lancer. [cite_start]<span class="cite">[cite: 52]</span></p>
+                </div>
+                <div class="card" style="border-left: 5px solid #FFD700;">
+                    <h3>🔇 Tranquillité</h3>
+                    <p>Lutte contre les nuisances sonores et les dépôts clandestins via les stewards urbains. [cite_start]<span class="cite">[cite: 57, 58]</span></p>
+                </div>
+                <div class="card" style="border-left: 5px solid #FFD700;">
+                    <h3>🎭 Culture & Sport</h3>
+                    <p>Événements conviviaux :</p>
+                    <ul>
+                        [cite_start]<li>"Cinéma en plein air" (Place de l’Amitié) <span class="cite">[cite: 62]</span></li>
+                        [cite_start]<li>"Lire dans les parcs" (Parc Seny) <span class="cite">[cite: 62]</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="reveal">
+            <h2>Et Vous ?</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 20px;">Ce projet collectif ne peut se faire sans vous. [cite_start]<span class="cite">[cite: 66]</span></p>
+            <p style="margin-bottom: 30px;">Imaginez votre idée devenir le projet de demain. [cite_start]<span class="cite">[cite: 67]</span></p>
+            [cite_start]<a href="#" class="btn-cta" style="background-color: white; color: var(--secondary);">Visiter la Plateforme Participative [cite: 69]</a>
+        </div>
+        <p style="margin-top: 50px; font-size: 0.8rem; opacity: 0.6;">Document de synthèse basé sur "Auderghem en Action".</p>
+    </footer>
+
+    <script>
+        // --- JS Logic for Animations ---
+
+        // 1. Intersection Observer for Scroll Animations
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealOnScroll = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    
+                    // Trigger number counter if the budget section is visible
+                    if(entry.target.querySelector('#counter')) {
+                        animateValue("counter", 0, 520825, 2000);
+                        observer.unobserve(entry.target); // Run once
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(el => revealOnScroll.observe(el));
+
+        // 2. Number Counter Animation Logic
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                
+                // Format number with spaces (e.g., 520 825)
+                const currentVal = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(currentVal);
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // 3. Smooth Scrolling for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
