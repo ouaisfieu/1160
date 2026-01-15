@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan du Site & Explorateur - dl.ouaisfi.eu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Sand & Slate -->
+    <!-- 
+         Palette: 
+         Background: #FDFCF8 (Warm off-white/paper)
+         Surface: #F4F1EA (Sand)
+         Text Main: #333333 (Soft Black)
+         Text Muted: #6B7280 (Slate Gray)
+         Accent: #7CA1B4 (Muted Blue - Calm)
+         Secondary Accent: #D4A373 (Soft Bronze - Warmth)
+    -->
+
+    <!-- Application Structure Plan: 
+         1. Header & Context: Clear identity of the site being mapped.
+         2. Dashboard Overview: High-level stats (Categories, Total Links, Status) to give immediate context.
+         3. Interactive Explorer (The Core): A dual-pane or filtered list view that allows searching and navigating the hierarchy without page reloads. 
+            - Logic: Search bar filters everything. Categories act as quick filters.
+         4. Visual Analytics: Charts to show content distribution (Heavy files vs Documents) to help the user understand *what* is on the site.
+         5. Footer: Simple links.
+         
+         Why this structure? A directory listing ('dl') is often dry. This app turns it into a 'Netflix-like' or 'File Explorer' experience, making it 'Human-readable'.
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Content Distribution (Doughnut Chart): Goal -> Inform. Viz -> Chart.js Doughnut. Justification -> Quickly shows if the site is mostly video, music, or docs.
+         2. File Types (Bar Chart): Goal -> Compare. Viz -> Chart.js Bar. Justification -> Helps user find specific formats (ISO vs MKV).
+         3. Navigation Tree: Goal -> Organize. Viz -> HTML/JS Dynamic List. Justification -> Core sitemap functionality.
+         4. Search: Goal -> Find. Interaction -> Real-time JS filtering.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            background-color: #FDFCF8;
+            color: #333333;
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 300px;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .btn-filter.active {
+            background-color: #333333;
+            color: #FFFFFF;
+        }
+        .folder-icon::before {
+            content: "📂";
+            margin-right: 8px;
+        }
+        .file-icon::before {
+            content: "📄";
+            margin-right: 8px;
+        }
+        /* Scrollbar styling for the list */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="w-full bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-gray-800 tracking-tight">dl.ouaisfi.eu <span class="text-sm font-normal text-gray-500 ml-2">| Explorateur de Site</span></span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-gray-500 hidden sm:block">Dernière mise à jour: <span id="last-update">...</span></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Intro Section -->
+        <section class="mb-10 text-center max-w-3xl mx-auto">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Bienvenue sur votre Sitemap Humain</h1>
+            <p class="text-lg text-gray-600 leading-relaxed">
+                Cette interface transforme la liste brute de fichiers de <strong>dl.ouaisfi.eu</strong> en un tableau de bord interactif. 
+                Vous pouvez explorer les contenus indexés et non-indexés, visualiser la répartition des données et trouver rapidement ce que vous cherchez sans naviguer à l'aveugle.
+            </p>
+        </section>
+
+        <!-- Stats Overview Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="card p-6 border-l-4 border-blue-400">
+                <h3 class="text-gray-500 text-sm uppercase tracking-wide font-semibold">Total Éléments</h3>
+                <div class="mt-2 flex items-baseline">
+                    <span class="text-4xl font-bold text-gray-900" id="stat-total-items">0</span>
+                    <span class="ml-2 text-sm text-gray-600">fichiers & dossiers</span>
+                </div>
+            </div>
+            <div class="card p-6 border-l-4 border-yellow-400">
+                <h3 class="text-gray-500 text-sm uppercase tracking-wide font-semibold">Catégories</h3>
+                <div class="mt-2 flex items-baseline">
+                    <span class="text-4xl font-bold text-gray-900" id="stat-categories">0</span>
+                    <span class="ml-2 text-sm text-gray-600">sections principales</span>
+                </div>
+            </div>
+            <div class="card p-6 border-l-4 border-green-400">
+                <h3 class="text-gray-500 text-sm uppercase tracking-wide font-semibold">Statut Indexation</h3>
+                <div class="mt-2 flex items-baseline">
+                    <span class="text-2xl font-bold text-gray-900">Mixte</span>
+                    <span class="ml-2 text-sm text-gray-600">Public & Privé</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <!-- Chart 1: Distribution -->
+            <div class="card p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Répartition du Contenu</h3>
+                <p class="text-sm text-gray-500 mb-4">Vue d'ensemble des types de fichiers disponibles sur le serveur.</p>
+                <div class="chart-container">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Volume -->
+            <div class="card p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Profondeur & Volume</h3>
+                <p class="text-sm text-gray-500 mb-4">Nombre de fichiers par catégorie principale.</p>
+                <div class="chart-container">
+                    <canvas id="volumeChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Explorer Section -->
+        <section class="mb-12">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-6 border-b border-gray-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Explorateur de Fichiers</h2>
+                    <p class="text-gray-500 mt-1">Naviguez dans l'arborescence complète ou utilisez la recherche.</p>
+                </div>
+                
+                <!-- Controls -->
+                <div class="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0 w-full md:w-auto">
+                    <!-- Search -->
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="Rechercher un fichier..." 
+                            class="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                        <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex flex-wrap gap-2 mb-6" id="category-filters">
+                <button class="btn-filter active px-4 py-2 rounded-full text-sm font-medium transition-colors border border-gray-300 bg-white text-gray-700 hover:bg-gray-50" data-filter="all">Tout voir</button>
+                <!-- Dynamic buttons will be injected here -->
+            </div>
+
+            <!-- List/Tree View -->
+            <div class="card overflow-hidden">
+                <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 grid grid-cols-12 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <div class="col-span-8 md:col-span-6">Nom / Chemin</div>
+                    <div class="col-span-4 md:col-span-2">Catégorie</div>
+                    <div class="col-span-0 md:col-span-2 hidden md:block text-right">Taille (Est.)</div>
+                    <div class="col-span-0 md:col-span-2 hidden md:block text-right">Action</div>
+                </div>
+                <div id="file-list" class="divide-y divide-gray-100 max-h-[600px] overflow-y-auto custom-scroll bg-white">
+                    <!-- Items injected via JS -->
+                    <div class="p-8 text-center text-gray-500">Chargement des données...</div>
+                </div>
+                <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 text-xs text-gray-500 flex justify-between">
+                    <span id="showing-count">Affichage de 0 éléments</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex justify-between items-center">
+            <p class="text-sm text-gray-500">© 2024 dl.ouaisfi.eu - Généré pour usage humain.</p>
+            <div class="text-sm text-gray-400">v1.0.4</div>
+        </div>
+    </footer>
+
+    <!-- LOGIC -->
+    <script>
+        // --- DATA STORE ---
+        // REPLACE THIS DATA WITH YOUR REAL LINKS/FILES for a perfect sitemap.
+        // I have simulated a typical "DL" subdomain structure.
+        const siteData = [
+            // Movies / Videos
+            { name: "Vacances_2023.mp4", path: "/public/videos/perso/", category: "Vidéo", size: "1.2 GB", indexed: false },
+            { name: "Big_Buck_Bunny_1080p.mkv", path: "/movies/open-source/", category: "Vidéo", size: "800 MB", indexed: true },
+            { name: "Tutoriel_Montage.mov", path: "/tutos/video/", category: "Vidéo", size: "450 MB", indexed: true },
+            
+            // Software / ISOs
+            { name: "ubuntu-22.04-desktop-amd64.iso", path: "/isos/linux/", category: "Image Disque", size: "3.6 GB", indexed: true },
+            { name: "windows_tools_pack.zip", path: "/software/utils/", category: "Logiciel", size: "120 MB", indexed: false },
+            { name: "driver_pack_legacy.rar", path: "/software/drivers/", category: "Logiciel", size: "85 MB", indexed: false },
+
+            // Documents
+            { name: "CV_2024_Final.pdf", path: "/documents/public/", category: "Document", size: "2.4 MB", indexed: true },
+            { name: "Guide_Installation_Reseau.pdf", path: "/documents/tech/", category: "Document", size: "5.1 MB", indexed: true },
+            { name: "Factures_Modele.xlsx", path: "/documents/admin/", category: "Document", size: "45 KB", indexed: false },
+            { name: "Notes_Reunion.txt", path: "/documents/misc/", category: "Document", size: "12 KB", indexed: false },
+
+            // Music / Audio
+            { name: "Podcast_Ep1_Intro.mp3", path: "/audio/podcasts/", category: "Audio", size: "55 MB", indexed: true },
+            { name: "Mix_Soiree_Ete.mp3", path: "/audio/music/", category: "Audio", size: "120 MB", indexed: false },
+            
+            // Images
+            { name: "Logo_OuaisFi_Vector.ai", path: "/assets/branding/", category: "Image", size: "12 MB", indexed: true },
+            { name: "Banner_Site_v2.png", path: "/assets/web/", category: "Image", size: "2.5 MB", indexed: true },
+            { name: "Screenshot_Error_Log.jpg", path: "/debug/", category: "Image", size: "500 KB", indexed: false }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            filter: 'all',
+            search: '',
+            data: siteData
+        };
+
+        // --- DOM ELEMENTS ---
+        const els = {
+            list: document.getElementById('file-list'),
+            searchInput: document.getElementById('searchInput'),
+            filterContainer: document.getElementById('category-filters'),
+            countLabel: document.getElementById('showing-count'),
+            stats: {
+                total: document.getElementById('stat-total-items'),
+                cats: document.getElementById('stat-categories'),
+                update: document.getElementById('last-update')
+            }
+        };
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            els.stats.update.innerText = new Date().toLocaleDateString('fr-FR');
+            initStats();
+            initCharts();
+            renderFilters();
+            renderList();
+            setupListeners();
+        });
+
+        // --- CORE LOGIC ---
+
+        function initStats() {
+            els.stats.total.innerText = state.data.length;
+            const uniqueCats = [...new Set(state.data.map(i => i.category))];
+            els.stats.cats.innerText = uniqueCats.length;
+        }
+
+        function renderFilters() {
+            const categories = ['all', ...new Set(state.data.map(i => i.category))];
+            els.filterContainer.innerHTML = ''; // Clear
+
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `btn-filter px-4 py-2 rounded-full text-sm font-medium transition-colors border border-gray-300 ${cat === 'all' ? 'bg-gray-800 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`;
+                btn.innerText = cat === 'all' ? 'Tout voir' : cat;
+                btn.onclick = () => {
+                    // Update active state visuals
+                    document.querySelectorAll('.btn-filter').forEach(b => {
+                        b.classList.remove('bg-gray-800', 'text-white');
+                        b.classList.add('bg-white', 'text-gray-700');
+                    });
+                    btn.classList.remove('bg-white', 'text-gray-700');
+                    btn.classList.add('bg-gray-800', 'text-white');
+                    
+                    // Update state and render
+                    state.filter = cat;
+                    renderList();
+                };
+                els.filterContainer.appendChild(btn);
+            });
+        }
+
+        function renderList() {
+            els.list.innerHTML = '';
+            
+            const filtered = state.data.filter(item => {
+                const matchesCat = state.filter === 'all' || item.category === state.filter;
+                const matchesSearch = item.name.toLowerCase().includes(state.search.toLowerCase()) || 
+                                      item.path.toLowerCase().includes(state.search.toLowerCase());
+                return matchesCat && matchesSearch;
+            });
+
+            els.countLabel.innerText = `Affichage de ${filtered.length} sur ${state.data.length} éléments`;
+
+            if (filtered.length === 0) {
+                els.list.innerHTML = `<div class="p-8 text-center text-gray-500">Aucun résultat trouvé pour cette recherche.</div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'px-6 py-4 hover:bg-gray-50 transition-colors grid grid-cols-12 items-center group cursor-pointer';
+                row.onclick = () => {
+                   // Simulate navigation
+                   alert(`Navigation vers : dl.ouaisfi.eu${item.path}${item.name}`);
+                };
+
+                // Icon Logic
+                let iconClass = 'file-icon';
+                let iconColor = 'text-gray-400';
+                if (item.category === 'Vidéo') iconColor = 'text-red-400';
+                if (item.category === 'Audio') iconColor = 'text-purple-400';
+                if (item.category === 'Image Disque') iconColor = 'text-yellow-500';
+                if (item.category === 'Document') iconColor = 'text-blue-400';
+
+                row.innerHTML = `
+                    <div class="col-span-8 md:col-span-6 flex flex-col">
+                        <span class="font-medium text-gray-900 flex items-center">
+                            <span class="${iconClass} ${iconColor}"></span>
+                            ${item.name}
+                        </span>
+                        <span class="text-xs text-gray-400 ml-6">${item.path}</span>
+                    </div>
+                    <div class="col-span-4 md:col-span-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            ${item.category}
+                        </span>
+                    </div>
+                    <div class="col-span-0 md:col-span-2 hidden md:block text-right text-sm text-gray-500 font-mono">
+                        ${item.size}
+                    </div>
+                    <div class="col-span-0 md:col-span-2 hidden md:block text-right">
+                        <button class="text-blue-600 hover:text-blue-900 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                            Télécharger
+                        </button>
+                    </div>
+                `;
+                els.list.appendChild(row);
+            });
+        }
+
+        function setupListeners() {
+            els.searchInput.addEventListener('input', (e) => {
+                state.search = e.target.value;
+                renderList();
+            });
+        }
+
+        // --- CHARTS CONFIGURATION ---
+        function initCharts() {
+            // Data Processing for Charts
+            const catCounts = {};
+            state.data.forEach(d => {
+                catCounts[d.category] = (catCounts[d.category] || 0) + 1;
+            });
+            const catLabels = Object.keys(catCounts);
+            const catValues = Object.values(catCounts);
+
+            // Chart 1: Distribution (Doughnut)
+            const ctxDist = document.getElementById('distributionChart').getContext('2d');
+            new Chart(ctxDist, {
+                type: 'doughnut',
+                data: {
+                    labels: catLabels,
+                    datasets: [{
+                        data: catValues,
+                        backgroundColor: [
+                            '#7CA1B4', // Muted Blue
+                            '#D4A373', // Bronze
+                            '#A3B18A', // Sage Green
+                            '#E07A5F', // Terra Cotta
+                            '#3D405B', // Navy
+                            '#F2CC8F'  // Pale Yellow
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+
+            // Chart 2: Volume (Bar)
+            const ctxVol = document.getElementById('volumeChart').getContext('2d');
+            new Chart(ctxVol, {
+                type: 'bar',
+                data: {
+                    labels: catLabels,
+                    datasets: [{
+                        label: 'Nombre de fichiers',
+                        data: catValues,
+                        backgroundColor: '#7CA1B4',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f3f4f6' } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
