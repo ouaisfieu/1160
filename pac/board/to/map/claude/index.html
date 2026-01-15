@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dl.ouaisfi.eu - Le Portail 📁</title>
+    <style>
+        /* === RESET & BASE === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            background: #f5f5dc;
+            color: #000;
+            min-height: 100vh;
+        }
+
+        a {
+            color: #0000cc;
+            text-decoration: underline;
+        }
+
+        a:visited {
+            color: #551a8b;
+        }
+
+        a:hover {
+            color: #ff0000;
+            text-decoration: underline;
+        }
+
+        /* === HEADER YAHOO STYLE === */
+        .header-bar {
+            background: linear-gradient(to bottom, #6600cc 0%, #4400aa 100%);
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #ffcc00;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-text {
+            font-family: Impact, 'Arial Black', sans-serif;
+            font-size: 32px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000, -1px -1px 0 #ffcc00;
+            letter-spacing: -1px;
+        }
+
+        .logo-subtitle {
+            font-size: 10px;
+            color: #ffcc00;
+            font-weight: bold;
+        }
+
+        .header-search {
+            display: flex;
+            gap: 5px;
+        }
+
+        .header-search input[type="text"] {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: 2px inset #ccc;
+            width: 200px;
+        }
+
+        .header-search button {
+            background: linear-gradient(to bottom, #ffcc00, #ff9900);
+            border: 2px outset #ffcc00;
+            padding: 4px 12px;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .header-search button:active {
+            border-style: inset;
+        }
+
+        /* === NAV BAR === */
+        .nav-bar {
+            background: #e0e0e0;
+            border-bottom: 1px solid #999;
+            padding: 4px 15px;
+            display: flex;
+            gap: 15px;
+            font-size: 11px;
+        }
+
+        .nav-bar a {
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-bar a:hover {
+            color: #6600cc;
+            text-decoration: underline;
+        }
+
+        /* === MAIN CONTAINER === */
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        /* === WELCOME BOX === */
+        .welcome-box {
+            background: #ffffcc;
+            border: 2px solid #cc9900;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .welcome-box img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .welcome-icon {
+            font-size: 40px;
+        }
+
+        .welcome-text h2 {
+            font-size: 14px;
+            color: #660066;
+            margin-bottom: 5px;
+        }
+
+        .welcome-text p {
+            font-size: 11px;
+        }
+
+        /* === STATS BAR === */
+        .stats-bar {
+            background: #ddd;
+            border: 1px solid #999;
+            padding: 8px 15px;
+            margin-bottom: 15px;
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-item strong {
+            color: #6600cc;
+        }
+
+        /* === CATEGORY GRID === */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-box {
+            background: #fff;
+            border: 1px solid #999;
+            box-shadow: 2px 2px 0 #ccc;
+        }
+
+        .category-header {
+            background: linear-gradient(to bottom, #6600cc, #4400aa);
+            color: #fff;
+            padding: 6px 10px;
+            font-weight: bold;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-header .icon {
+            font-size: 16px;
+        }
+
+        .category-content {
+            padding: 10px;
+        }
+
+        .category-content ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .category-content li {
+            padding: 3px 0;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        .category-content li:last-child {
+            border-bottom: none;
+        }
+
+        .category-content li::before {
+            content: "▸ ";
+            color: #6600cc;
+        }
+
+        .new-badge {
+            background: #ff0000;
+            color: #fff;
+            font-size: 9px;
+            padding: 1px 4px;
+            font-weight: bold;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hot-badge {
+            background: #ff6600;
+            color: #fff;
+            font-size: 9px;
+            padding: 1px 4px;
+            font-weight: bold;
+        }
+
+        /* === SUB-SECTIONS === */
+        .sub-section {
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            margin: 8px 0;
+            padding: 8px;
+        }
+
+        .sub-section-title {
+            font-weight: bold;
+            color: #660066;
+            font-size: 11px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #999;
+            padding-bottom: 3px;
+        }
+
+        /* === FULL WIDTH SECTION === */
+        .full-section {
+            background: #fff;
+            border: 1px solid #999;
+            box-shadow: 2px 2px 0 #ccc;
+            margin-bottom: 15px;
+        }
+
+        .full-section .category-header {
+            background: linear-gradient(to bottom, #009900, #006600);
+        }
+
+        .full-section.alt .category-header {
+            background: linear-gradient(to bottom, #cc6600, #994400);
+        }
+
+        .full-section.blue .category-header {
+            background: linear-gradient(to bottom, #003399, #002266);
+        }
+
+        /* === TABLE STYLE === */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .data-table th {
+            background: #e0e0e0;
+            border: 1px solid #999;
+            padding: 5px 8px;
+            text-align: left;
+            font-size: 10px;
+        }
+
+        .data-table td {
+            border: 1px solid #ccc;
+            padding: 4px 8px;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f5f5f5;
+        }
+
+        .data-table tr:hover {
+            background: #ffffcc;
+        }
+
+        /* === SIDEBAR === */
+        .content-wrapper {
+            display: flex;
+            gap: 15px;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-box {
+            background: #fff;
+            border: 1px solid #999;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-header {
+            background: #ffcc00;
+            padding: 5px 8px;
+            font-weight: bold;
+            font-size: 11px;
+            border-bottom: 1px solid #999;
+        }
+
+        .sidebar-content {
+            padding: 8px;
+            font-size: 10px;
+        }
+
+        .sidebar-content ul {
+            list-style: square;
+            margin-left: 15px;
+        }
+
+        .sidebar-content li {
+            margin: 4px 0;
+        }
+
+        /* === TAGS CLOUD === */
+        .tags-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 8px;
+        }
+
+        .tag {
+            background: #e0e0e0;
+            border: 1px solid #999;
+            padding: 2px 6px;
+            font-size: 10px;
+            text-decoration: none;
+            color: #000;
+        }
+
+        .tag:hover {
+            background: #ffcc00;
+        }
+
+        .tag.large {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .tag.medium {
+            font-size: 11px;
+        }
+
+        /* === FOOTER === */
+        .footer {
+            background: #333;
+            color: #ccc;
+            padding: 15px;
+            text-align: center;
+            font-size: 10px;
+            margin-top: 20px;
+        }
+
+        .footer a {
+            color: #ffcc00;
+        }
+
+        .footer-links {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            margin: 0 10px;
+        }
+
+        /* === MARQUEE === */
+        .marquee-container {
+            background: #000;
+            color: #0f0;
+            padding: 5px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            overflow: hidden;
+        }
+
+        .marquee-text {
+            white-space: nowrap;
+            animation: scroll-left 30s linear infinite;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* === DECORATIVE HR === */
+        .fancy-hr {
+            border: none;
+            height: 3px;
+            background: linear-gradient(to right, #6600cc, #ffcc00, #6600cc);
+            margin: 15px 0;
+        }
+
+        /* === BUTTONS OLD SCHOOL === */
+        .btn-old {
+            background: linear-gradient(to bottom, #e0e0e0, #c0c0c0);
+            border: 2px outset #ddd;
+            padding: 4px 12px;
+            font-size: 11px;
+            cursor: pointer;
+            font-family: Verdana, sans-serif;
+        }
+
+        .btn-old:active {
+            border-style: inset;
+        }
+
+        /* === COUNTER === */
+        .visitor-counter {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 3px 8px;
+            display: inline-block;
+            border: 2px inset #333;
+        }
+
+        /* === COLLAPSIBLE === */
+        .collapsible-header {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .collapsible-header::before {
+            content: "[+] ";
+            font-family: monospace;
+        }
+
+        .collapsible-header.open::before {
+            content: "[-] ";
+        }
+
+        .collapsible-content {
+            display: none;
+            padding-left: 15px;
+        }
+
+        .collapsible-content.open {
+            display: block;
+        }
+
+        /* === UNDER CONSTRUCTION === */
+        .under-construction {
+            display: inline-block;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect fill="%23ffcc00" width="10" height="10"/><rect fill="%23000" x="10" width="10" height="10"/><rect fill="%23000" y="10" width="10" height="10"/><rect fill="%23ffcc00" x="10" y="10" width="10" height="10"/></svg>') repeat-x;
+            height: 10px;
+            width: 60px;
+            margin-left: 5px;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            .content-wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .header-search {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header-bar">
+    <div class="logo">
+        <div>
+            <div class="logo-text">dl.ouaisfi.eu</div>
+            <div class="logo-subtitle">📁 Le Portail de la Veille Citoyenne</div>
+        </div>
+    </div>
+    <div class="header-search">
+        <input type="text" placeholder="Rechercher sur le site..." id="searchInput">
+        <button onclick="filterContent()">Chercher!</button>
+    </div>
+</div>
+
+<!-- NAV BAR -->
+<div class="nav-bar">
+    <a href="https://dl.ouaisfi.eu/">🏠 Accueil</a>
+    <a href="https://dl.ouaisfi.eu/1160/">📰 11·60 bis</a>
+    <a href="https://dl.ouaisfi.eu/biologia/">📓 Biologia</a>
+    <a href="https://ouaisfi.eu/">🌐 ouaisfi.eu</a>
+    <a href="#ressources">📥 Téléchargements</a>
+    <a href="#contact">✉️ Contact</a>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-container">
+    <div class="marquee-text">
+        ★★★ Bienvenue sur dl.ouaisfi.eu — 150+ pages de veille citoyenne et d'analyse politique ★★★ Nouveaux dossiers sur l'extrême droite en Belgique et le champ médiatique France/Belgique ★★★ Licence Creative Commons BY-NC 4.0 ★★★ Propulsé par Hugo + FixIt ★★★
+    </div>
+</div>
+
+<div class="main-container">
+
+    <!-- WELCOME BOX -->
+    <div class="welcome-box">
+        <div class="welcome-icon">🗂️</div>
+        <div class="welcome-text">
+            <h2>Bienvenue sur le Sitemap Humain de dl.ouaisfi.eu !</h2>
+            <p>Ce portail répertorie <strong>toutes les pages, dossiers, articles et ressources</strong> disponibles sur dl.ouaisfi.eu. 
+            Deux sous-sites : <strong>11·60 bis</strong> (veille citoyenne & politique belge) et <strong>biologia</strong> (blog personnel assisté par IA).
+            Dernière mise à jour : Janvier 2026</p>
+        </div>
+    </div>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+        <div class="stat-item">📊 <strong>150+</strong> pages indexées</div>
+        <div class="stat-item">📁 <strong>2</strong> sous-sites</div>
+        <div class="stat-item">📝 <strong>6+</strong> dossiers</div>
+        <div class="stat-item">🛠️ <strong>5+</strong> outils</div>
+        <div class="stat-item">📰 <strong>100+</strong> articles blog</div>
+        <div class="stat-item">📥 <strong>4</strong> PDFs</div>
+        <div class="stat-item">Visiteur n° <span class="visitor-counter">004827</span></div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="main-content">
+
+            <!-- CATEGORIES GRID -->
+            <div class="categories-grid">
+
+                <!-- 11·60 BIS - DOSSIERS -->
+                <div class="category-box">
+                    <div class="category-header">
+                        <span class="icon">📚</span>
+                        11·60 bis — Dossiers
+                    </div>
+                    <div class="category-content">
+                        <ul>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/dossiers/veille-citoyenne/">Veille Stratégique Et Veille Citoyenne</a>
+                                <span class="new-badge">NEW</span><br>
+                                <small>Concepts, Méthodes Et Impacts Démocratiques — ~2600 mots</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/dossiers/champ-mediatique-france-belgique/">Champ Médiatique : Belgique vs France</a>
+                                <span class="hot-badge">HOT</span><br>
+                                <small>Repères historiques & Bilan 2025 — ~1300 mots</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/dossiers/extreme-droite-en-belgique-depuis-1945/">L'extrême Droite en Belgique depuis 1945</a><br>
+                                <small>Cordon Sanitaire Et Contamination Idéologique — ~2600 mots</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/dossiers/pilier-liberal/">Pilier Libéral : Dossier 2025</a><br>
+                                <small>~1700 mots</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/dossiers/greves-de-60/">Quand L'Europe Se Souvient De Ses Grèves</a><br>
+                                <small>1960-1961 — ~1600 mots</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/dossiers/information-domination-economique/">L'information Comme Instrument De Domination</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 11·60 BIS - ARTICLES -->
+                <div class="category-box">
+                    <div class="category-header">
+                        <span class="icon">📰</span>
+                        11·60 bis — Articles
+                    </div>
+                    <div class="category-content">
+                        <ul>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/articles/article-11-dudh/">L'article 11 De La DUDH Face À L'épreuve Du Réel</a><br>
+                                <small>Quand Les Droits Universels S'arrêtent Aux Frontières — ~1300 mots</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/articles/separation-responsabilites/">Séparer Les Pouvoirs… Et Les Responsabilités ?</a><br>
+                                <small>Austérité Et Démocratie en Belgique — ~600 mots</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/articles/core-business/">Core Business</a>
+                            </li>
+                        </ul>
+
+                        <div class="sub-section">
+                            <div class="sub-section-title">🔧 Navigation 11·60 bis</div>
+                            <ul>
+                                <li><a href="https://dl.ouaisfi.eu/1160/">Accueil</a></li>
+                                <li><a href="https://dl.ouaisfi.eu/1160/categories/">Publications</a></li>
+                                <li><a href="https://dl.ouaisfi.eu/1160/categories/dossiers/">Index Dossiers</a></li>
+                                <li><a href="https://dl.ouaisfi.eu/1160/a-propos/">À propos</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OUTILS PÉDAGOGIQUES -->
+                <div class="category-box">
+                    <div class="category-header">
+                        <span class="icon">🛠️</span>
+                        Outils Pédagogiques
+                    </div>
+                    <div class="category-content">
+                        <ul>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/outils/comprendre-la-belgique/">Comprendre La Belgique</a>
+                                <span class="hot-badge">★</span><br>
+                                <small>Guide Complet D'un Pays Complexe Et Fascinant — ~2100 mots</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/outils/gptpardi/">GPTPardi</a><br>
+                                <small>Le Template Qui Démocratise La Recherche Assistée Par IA</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/outils/kit-perso/">Kit Perso</a><br>
+                                <small>Explorez Les Mystères De La Personnalité Humaine</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/outils/kit-equipe-presentation/">Kit Équipe</a><br>
+                                <small>Architecturez La Dream Team Parfaite</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/outils/kit-dev-perso-presentation/">Kit Développement Personnel</a><br>
+                                <small>Votre Boussole Pour Une Transformation Authentique</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ATELIERS -->
+                <div class="category-box">
+                    <div class="category-header">
+                        <span class="icon">🎓</span>
+                        Ateliers Pratiques
+                    </div>
+                    <div class="category-content">
+                        <ul>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/ateliers/parcours-debutants-solo-groupe/">Parcours Débutant·e·s</a>
+                                <span class="new-badge">NEW</span><br>
+                                <small>24 Idées Concrètes Pour Agir Sans Se Noyer</small>
+                            </li>
+                            <li>
+                                <a href="https://dl.ouaisfi.eu/1160/publications/ateliers/atelier-ateliers/">Créer Son Propre Atelier en Ligne</a><br>
+                                <small>(Sans Se Prendre La Tête)</small>
+                            </li>
+                        </ul>
+
+                        <div class="sub-section">
+                            <div class="sub-section-title">📖 Modes de lecture</div>
+                            <small>
+                                🌿 Flâneur (ultra léger)<br>
+                                🌱 Curieux Débutant (léger)<br>
+                                🛤️ Normal (modéré)<br>
+                                ⚡ Expert (exigeant)<br>
+                                🔥 Hardcore (extrême)
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- BIOLOGIA - FULL WIDTH -->
+            <div class="full-section">
+                <div class="category-header">
+                    <span class="icon">📓</span>
+                    biologia — Blog Personnel (Walt)
+                </div>
+                <div class="category-content">
+                    <p style="margin-bottom:10px;"><em>"Blog d'humeurs auto-bio-logico-graphiques assisté par IA : récits, dossiers et bidouilles numériques"</em> — Licence CC BY-NC-SA 4.0</p>
+                    
+                    <div class="sub-section">
+                        <div class="sub-section-title collapsible-header" onclick="toggleSection(this)">📅 Octobre 2025 (sélection)</div>
+                        <div class="collapsible-content">
+                            <table class="data-table">
+                                <tr>
+                                    <th>Article</th>
+                                    <th>Tags</th>
+                                    <th>Lecture</th>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/10/cctv/">Conseils communaux visibles : démocratie locale connectée</a></td>
+                                    <td>Analyse, Dossier</td>
+                                    <td>17 min</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/10/le-monologue-du-virus-dans-matrix-et-létrange-miroir-du-vivant/">Le Monologue du Virus dans Matrix</a></td>
+                                    <td>—</td>
+                                    <td>6 min</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/10/pouvoir-agir-avenir/">Quel avenir pour le pouvoir d'agir collectif ?</a></td>
+                                    <td>Dossiers, Société</td>
+                                    <td>5 min</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/10/age-de-cristal/">Résonances de Soleil Vert et L'Âge de Cristal</a></td>
+                                    <td>Analyse, Société</td>
+                                    <td>8 min</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/10/carnet-dapprentissage-pour-débarquée-en-réalité/">Carnet d'apprentissage pour débarqué·e en réalité</a></td>
+                                    <td>Log, Intro</td>
+                                    <td>9 min</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/10/education-ideale/">L'Éducation Idéale : Un tour d'horizon</a></td>
+                                    <td>Dossiers, Société</td>
+                                    <td>13 min</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/10/bestiaire-paranormal-plausible/">Bestiaire du « paranormal plausible »</a></td>
+                                    <td>Société, Dossier</td>
+                                    <td>20 min</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/10/la-boussole-de-valeurs-un-outil-pour-sorienter-dans-la-complexité/">La boussole de valeurs</a></td>
+                                    <td>outils, log</td>
+                                    <td>10 min</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/10/obsidian-introduction/">Débuter avec Obsidian</a></td>
+                                    <td>Tech, Outils</td>
+                                    <td>—</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/10/x-c-mal/">Croiser les effluves</a></td>
+                                    <td>Réflexion</td>
+                                    <td>16 min</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="sub-section">
+                        <div class="sub-section-title collapsible-header" onclick="toggleSection(this)">📅 Septembre 2025 (sélection)</div>
+                        <div class="collapsible-content">
+                            <table class="data-table">
+                                <tr>
+                                    <th>Article</th>
+                                    <th>Tags</th>
+                                    <th>Lecture</th>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/09/langage-intérieur-la-voix-dans-ta-tête-qui-met-tes-pensées-en-mots/">Langage intérieur : la voix dans ta tête</a></td>
+                                    <td>Intro, Analyse</td>
+                                    <td>10 min</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/09/berurier-noir/">Bérurier Noir : Origines, Évolution, Héritage</a></td>
+                                    <td>Société, Dossier, Culture</td>
+                                    <td>15 min</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/09/scandales-democratie-metabolisme/">Le métabolisme du scandale</a></td>
+                                    <td>Analyse, Société</td>
+                                    <td>12 min</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/09/guerre-narrative-entre-influence-douce-manipulation-et-résistance-citoyenne/">Guerre Narrative</a></td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/09/droit-information-paywalls-belgique/">Ce Qu'il Reste Du Droit À L'information À L'ère Des Paywalls</a></td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="https://dl.ouaisfi.eu/biologia/posts/2025/09/crisp-vocabulaire-politique/">Le CRISP et le Vocabulaire Politique</a></td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="sub-section">
+                        <div class="sub-section-title">🔧 Navigation biologia</div>
+                        <a href="https://dl.ouaisfi.eu/biologia/">Accueil</a> |
+                        <a href="https://dl.ouaisfi.eu/biologia/about/">À propos</a> |
+                        <a href="https://dl.ouaisfi.eu/biologia/posts/">Archives</a> |
+                        <a href="https://dl.ouaisfi.eu/biologia/tags/">Tags</a> |
+                        <a href="https://dl.ouaisfi.eu/biologia/categories/">Catégories</a> |
+                        Pages: <a href="https://dl.ouaisfi.eu/biologia/page/2/">2</a> <a href="https://dl.ouaisfi.eu/biologia/page/3/">3</a> <a href="https://dl.ouaisfi.eu/biologia/page/4/">4</a> ... <a href="https://dl.ouaisfi.eu/biologia/page/14/">14</a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="fancy-hr">
+
+            <!-- RESSOURCES TÉLÉCHARGEABLES -->
+            <div class="full-section alt" id="ressources">
+                <div class="category-header">
+                    <span class="icon">📥</span>
+                    Ressources Téléchargeables
+                </div>
+                <div class="category-content">
+                    <div class="sub-section">
+                        <div class="sub-section-title">📄 Documents PDF</div>
+                        <table class="data-table">
+                            <tr>
+                                <th>Fichier</th>
+                                <th>Description</th>
+                                <th>Taille</th>
+                            </tr>
+                            <tr>
+                                <td><a href="https://dl.ouaisfi.eu/pdfs/Tutoriel-Obsidian.pdf">📄 Tutoriel-Obsidian.pdf</a></td>
+                                <td>Guide complet Obsidian pour débutants (14 sections)</td>
+                                <td>~8 pages</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://dl.ouaisfi.eu/1160/docs/dossier-mediatique-belgique-france.pdf">📄 dossier-mediatique-belgique-france.pdf</a></td>
+                                <td>Dossier champ médiatique Belgique/France</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://dl.ouaisfi.eu/documents/greves-1960-austerite-europeenne.pdf">📄 greves-1960-austerite-europeenne.pdf</a></td>
+                                <td>Analyse grèves 1960 et austérité européenne</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://dl.ouaisfi.eu/documents/separation-responsabilites-belgique.pdf">📄 separation-responsabilites-belgique.pdf</a></td>
+                                <td>Séparation des responsabilités en Belgique</td>
+                                <td>—</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="sub-section">
+                        <div class="sub-section-title collapsible-header" onclick="toggleSection(this)">🖼️ Images & Fichiers graphiques</div>
+                        <div class="collapsible-content">
+                            <p><strong>/1160/images/</strong></p>
+                            <small>
+                                share-default.jpg · andre-renard.jpg · logo-tech.jpg · veille-process.jpg · 
+                                veille-citoyenne-impacts.jpg · institutionalisation-veille-citoyenne.jpg · 
+                                extreme-droite-belgique-cordon-sanitaire.jpg · ed-impact.jpg · ed-resultats.jpg · 
+                                ed-contamination.jpg · effluves.jpg · hugo.min.svg · fixit.min.svg
+                            </small>
+                            <p style="margin-top:8px;"><strong>/biologia/images/</strong></p>
+                            <small>walt.webp · hugo.min.svg · fixit.min.svg</small>
+                            <p style="margin-top:8px;"><strong>/gifs/</strong></p>
+                            <small>rems.gif</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉCOSYSTÈME -->
+            <div class="full-section blue">
+                <div class="category-header">
+                    <span class="icon">🌐</span>
+                    Écosystème ouaisfi.eu
+                </div>
+                <div class="category-content">
+                    <table class="data-table">
+                        <tr>
+                            <th>Domaine</th>
+                            <th>Description</th>
+                            <th>Technologie</th>
+                        </tr>
+                        <tr>
+                            <td><a href="https://ouaisfi.eu/">🟢 ouaisfi.eu</a></td>
+                            <td>Site principal — Veille citoyenne & ressources libres</td>
+                            <td>Grav CMS</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://dl.ouaisfi.eu/">📁 dl.ouaisfi.eu</a></td>
+                            <td>Serveur de contenus (ce portail)</td>
+                            <td>Hugo + FixIt</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://ouaisfieu.github.io/">🔄 ouaisfieu.github.io</a></td>
+                            <td>Site miroir en migration</td>
+                            <td>Jekyll</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://ouaisfieu.github.io/tech/">📖 DOCTech</a></td>
+                            <td>Documentation technique</td>
+                            <td>Jekyll</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://ouaisfieu.github.io/bxl2030/">🏙️ Bruxelles 2030</a></td>
+                            <td>Projet prospectif</td>
+                            <td>Jekyll</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://ouaisfieu.github.io/GPTPardi/">🤖 GPTPardi</a></td>
+                            <td>Outil de recherche IA</td>
+                            <td>Jekyll</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://ouaisfieu.github.io/dossiers/">📚 Archives Dossiers</a></td>
+                            <td>Archives des dossiers</td>
+                            <td>Jekyll</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://publish.obsidian.md/ouaisfieu/index">🔮 Obsidian Zone</a></td>
+                            <td>Zone de test (mdp: batman1234)</td>
+                            <td>Obsidian Publish</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+
+            <div class="sidebar-box">
+                <div class="sidebar-header">🏷️ Tags populaires</div>
+                <div class="tags-cloud">
+                    <a href="#" class="tag large">#Société</a>
+                    <a href="#" class="tag large">#Pouvoir</a>
+                    <a href="#" class="tag medium">#OSINT</a>
+                    <a href="#" class="tag medium">#Culture</a>
+                    <a href="#" class="tag">#Soi</a>
+                    <a href="#" class="tag">#Bio</a>
+                    <a href="#" class="tag">#Info</a>
+                    <a href="#" class="tag">#Tech</a>
+                    <a href="#" class="tag">#valeurs</a>
+                    <a href="#" class="tag">#outils</a>
+                    <a href="#" class="tag">#anarchisme</a>
+                    <a href="#" class="tag">#Flop</a>
+                    <a href="#" class="tag">#Goodies</a>
+                    <a href="#" class="tag">#fiction tactique</a>
+                </div>
+            </div>
+
+            <div class="sidebar-box">
+                <div class="sidebar-header">📂 Catégories</div>
+                <div class="sidebar-content">
+                    <ul>
+                        <li><a href="#">Analyse</a></li>
+                        <li><a href="#">Dossier</a></li>
+                        <li><a href="#">Société</a></li>
+                        <li><a href="#">Log</a></li>
+                        <li><a href="#">Intro</a></li>
+                        <li><a href="#">Outils</a></li>
+                        <li><a href="#">Atelier</a></li>
+                        <li><a href="#">Réflexion</a></li>
+                        <li><a href="#">Culture</a></li>
+                        <li><a href="#">Tech</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="sidebar-box">
+                <div class="sidebar-header">📊 Thématiques</div>
+                <div class="sidebar-content">
+                    <ul>
+                        <li>Veille citoyenne</li>
+                        <li>Politique belge</li>
+                        <li>Médias</li>
+                        <li>Droits humains</li>
+                        <li>Économie</li>
+                        <li>Culture alternative</li>
+                        <li>Dév. personnel</li>
+                        <li>Technologie</li>
+                        <li>Dystopies</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="sidebar-box">
+                <div class="sidebar-header">⚙️ Infos techniques</div>
+                <div class="sidebar-content">
+                    <p><strong>Stack:</strong> Hugo v0.148.1<br>
+                    <strong>Thème:</strong> FixIt v0.4.0-alpha<br>
+                    <strong>Licence:</strong> CC BY-NC 4.0<br>
+                    <strong>Contact:</strong><br>
+                    <a href="mailto:souad.effek@ouaisfi.eu">✉️ Email</a><br>
+                    <a href="https://bsky.app/profile/ouaisfi.eu">🦋 Bluesky</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="sidebar-box">
+                <div class="sidebar-header">🔗 Liens rapides</div>
+                <div class="sidebar-content">
+                    <ul>
+                        <li><a href="https://dl.ouaisfi.eu/robots.txt">robots.txt</a> <span class="under-construction"></span></li>
+                        <li><a href="https://dl.ouaisfi.eu/sitemap.xml">sitemap.xml</a> <span class="under-construction"></span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="sidebar-box" id="contact">
+                <div class="sidebar-header">📧 Contact</div>
+                <div class="sidebar-content">
+                    <p>souad.effek@ouaisfi.eu</p>
+                    <p>@ouaisfi.eu sur Bluesky</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="footer-links">
+        <a href="https://dl.ouaisfi.eu/">Accueil</a>
+        <a href="https://dl.ouaisfi.eu/1160/">11·60 bis</a>
+        <a href="https://dl.ouaisfi.eu/biologia/">biologia</a>
+        <a href="https://ouaisfi.eu/">ouaisfi.eu</a>
+        <a href="#top">↑ Haut de page</a>
+    </div>
+    <p>
+        📁 <strong>dl.ouaisfi.eu</strong> — Portail de veille citoyenne<br>
+        Licence Creative Commons BY-NC 4.0 | Propulsé par Hugo + FixIt<br>
+        © 2024-2026 ouaisfi.eu | Ce portail a été généré le 15/01/2026
+    </p>
+    <p style="margin-top:10px;">
+        <img src="data:image/gif;base64,R0lGODlhMgANAIAAAP///wAAACH5BAEAAAEALAAAAAAyAA0AAAIdjI+py+0Po5y02ouz3rz7D4biSJbmiabqyrbuCxcAOw==" alt="Best viewed with any browser" style="margin:0 5px;">
+        <img src="data:image/gif;base64,R0lGODlhQAAQAIAAAP///wAAACH5BAEAAAEALAAAAABAABAAAAJBjI+py+0Po5y02ouz3rz7D4biSJbmiabqyrbuC8fyTNf2jef6zvf+DwwKh8Si8YhMKpfMpvMJjUqn1Kr1is1qtwAAOw==" alt="Made with HTML" style="margin:0 5px;">
+    </p>
+</div>
+
+<script>
+    // Toggle collapsible sections
+    function toggleSection(header) {
+        header.classList.toggle('open');
+        const content = header.nextElementSibling;
+        content.classList.toggle('open');
+    }
+
+    // Search/filter functionality
+    function filterContent() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const allLinks = document.querySelectorAll('.category-content a, .data-table a');
+        
+        if (searchTerm === '') {
+            allLinks.forEach(link => {
+                link.closest('li, tr').style.display = '';
+            });
+            return;
+        }
+
+        allLinks.forEach(link => {
+            const text = link.textContent.toLowerCase();
+            const container = link.closest('li') || link.closest('tr');
+            if (container) {
+                if (text.includes(searchTerm)) {
+                    container.style.display = '';
+                    container.style.background = '#ffff00';
+                } else {
+                    container.style.display = 'none';
+                }
+            }
+        });
+
+        // Open all collapsible sections when searching
+        document.querySelectorAll('.collapsible-content').forEach(content => {
+            content.classList.add('open');
+            content.previousElementSibling.classList.add('open');
+        });
+    }
+
+    // Enter key to search
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            filterContent();
+        }
+    });
+
+    // Reset on empty search
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        if (e.target.value === '') {
+            const allContainers = document.querySelectorAll('.category-content li, .data-table tr');
+            allContainers.forEach(container => {
+                container.style.display = '';
+                container.style.background = '';
+            });
+        }
+    });
+
+    // Random visitor count on load
+    const counter = document.querySelector('.visitor-counter');
+    const baseCount = 4827;
+    const randomAdd = Math.floor(Math.random() * 100);
+    counter.textContent = String(baseCount + randomAdd).padStart(6, '0');
+
+    // Open first sections by default
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstCollapsible = document.querySelector('.collapsible-header');
+        if (firstCollapsible) {
+            firstCollapsible.classList.add('open');
+            firstCollapsible.nextElementSibling.classList.add('open');
+        }
+    });
+</script>
+
+</body>
+</html>
