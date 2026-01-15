@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auderghem 2026 : Le Réveil de la Souveraineté</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- Chosen Palette: Warm Neutrals with "Resistance" Accents
+         Background: Stone-50 (Warm light gray)
+         Primary Text: Stone-800
+         Accents: Red-700 (Resistance), Amber-600 (Community), Blue-700 (Tech), Emerald-700 (Growth)
+    -->
+
+    <!-- Application Structure Plan:
+         1. Hero Section: Sets the dramatic context ("Resistance", "Sovereignty") immediately.
+         2. Context Dashboard: Visualizes the "Problem" (Institutional Trap) vs "Solution" (ARG).
+         3. The Ecosystem (Modules): A 2x2 Interactive Grid. This is the core navigation. 
+            Users select a module to see deep details without leaving the view.
+            Rational: Allows partners to quickly find their specific role while seeing the whole picture.
+         4. Data & Logistics: Charts for Budget and Timeline.
+            Rational: Demonstrates feasibility and seriousness of the project.
+         5. Call to Action: Clear steps to apply.
+    -->
+
+    <!-- Visualization & Content Choices:
+         - Context Stats: Big Numbers for impact (24 Billion cost).
+         - Module Grid: Interactive Cards. Goal: Organize. Method: HTML/JS Filtering.
+         - Budget: Bar Chart (Startup vs Run). Goal: Compare. Method: Chart.js.
+         - Timeline: Interactive Horizontal Steps. Goal: Change/Process. Method: JS + Tailwind.
+         - NO SVG/Mermaid used. Unicode icons used for visual anchors.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .card-active {
+            border-left: 4px solid #b91c1c; /* red-700 */
+            background-color: #fff7ed; /* orange-50 */
+        }
+        .timeline-dot {
+            transition: all 0.3s ease;
+        }
+        .timeline-dot.active {
+            transform: scale(1.5);
+            background-color: #b91c1c;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 leading-relaxed">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-red-800 tracking-tighter">✊ RÉSISTANCE COGNITIVE</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <button onclick="scrollToSection('contexte')" class="text-stone-600 hover:text-red-700 font-medium transition">Contexte</button>
+                    <button onclick="scrollToSection('modules')" class="text-stone-600 hover:text-red-700 font-medium transition">Modules</button>
+                    <button onclick="scrollToSection('data')" class="text-stone-600 hover:text-red-700 font-medium transition">Budget & Tech</button>
+                    <button onclick="scrollToSection('candidature')" class="px-4 py-2 bg-red-800 text-white rounded hover:bg-red-900 transition shadow-md">Rejoindre</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-stone-900 text-stone-100 py-20">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-red-500 font-bold uppercase tracking-widest text-sm mb-4">Appel à Projet Collaboratif</h2>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+                Auderghem 2026 : <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-amber-400">Le Réveil de la Souveraineté</span>
+            </h1>
+            <p class="text-xl text-stone-300 mb-10 max-w-2xl mx-auto">
+                Co-construction d'un écosystème territorial de démocratie générative alliant inclusion numérique, santé mentale et médiation administrative.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="scrollToSection('modules')" class="px-8 py-3 bg-red-700 text-white font-bold rounded hover:bg-red-600 transition shadow-lg transform hover:-translate-y-1">
+                    Découvrir les Modules
+                </button>
+                <button onclick="scrollToSection('contexte')" class="px-8 py-3 bg-stone-700 text-white font-bold rounded hover:bg-stone-600 transition shadow-lg">
+                    Lire le Manifeste
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section 1: Contexte -->
+    <section id="contexte" class="py-16 max-w-6xl mx-auto px-6">
+        <div class="mb-10 text-center">
+            <h2 class="text-3xl font-bold text-stone-800 mb-4">Le Contexte : L'Insurrection par le Lien</h2>
+            <p class="max-w-3xl mx-auto text-stone-600">
+                Auderghem est aujourd'hui un « vide stratégique ». Nous proposons de combler ce vide non par des services classiques, mais par un dispositif narratif immersif (ARG) qui redonne le pouvoir d'agir.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <!-- Problem Card -->
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-stone-400 h-full flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <span class="text-2xl">📉</span> Le Piège Institutionnel
+                    </h3>
+                    <p class="text-stone-600 mb-6">
+                        Des parcours de soins arides et des démarches administratives incompréhensibles paralysent près d'un million de Belges.
+                    </p>
+                </div>
+                <div class="bg-stone-100 p-6 rounded-lg text-center">
+                    <span class="block text-4xl font-extrabold text-stone-800 mb-1">24 Mrd €</span>
+                    <span class="text-sm font-semibold text-stone-500 uppercase tracking-wide">Coût estimé de l'inaction</span>
+                </div>
+            </div>
+
+            <!-- Solution Card -->
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-red-600 h-full flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <span class="text-2xl">🎮</span> La Solution : Souveraineté Fantôme
+                    </h3>
+                    <p class="text-stone-600 mb-6">
+                        Un <strong>Jeu en Réalité Alternée (ARG)</strong> qui transforme la bureaucratie en aventure.
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-600 mt-1">✓</span>
+                            <span>Transforme les démarches en <strong>quêtes citoyennes</strong>.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-600 mt-1">✓</span>
+                            <span>Restaure le <strong>pouvoir d'agir</strong> par la narration.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-600 mt-1">✓</span>
+                            <span>Brise l'isolement par le <strong>jeu collectif</strong>.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Modules (The Core Interaction) -->
+    <section id="modules" class="py-16 bg-stone-100">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-stone-800 mb-4">L'Écosystème des Partenaires</h2>
+                <p class="max-w-3xl mx-auto text-stone-600">
+                    Ce projet repose sur la collaboration de quatre piliers. Cliquez sur un module pour découvrir votre rôle potentiel dans cette insurrection bienveillante.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Navigation List -->
+                <div class="lg:col-span-1 space-y-4">
+                    <button onclick="updateModule('A')" id="btn-A" class="module-btn w-full text-left p-4 bg-white rounded-lg shadow hover:shadow-md transition flex items-center gap-4 card-active">
+                        <div class="bg-amber-100 text-amber-800 p-3 rounded-full font-bold">A</div>
+                        <div>
+                            <div class="font-bold text-stone-800">Le Quartier Général</div>
+                            <div class="text-xs text-stone-500 uppercase">Cible : Babel'Zin</div>
+                        </div>
+                    </button>
+
+                    <button onclick="updateModule('B')" id="btn-B" class="module-btn w-full text-left p-4 bg-white rounded-lg shadow hover:shadow-md transition flex items-center gap-4">
+                        <div class="bg-blue-100 text-blue-800 p-3 rounded-full font-bold">B</div>
+                        <div>
+                            <div class="font-bold text-stone-800">Sentinelles Numériques</div>
+                            <div class="text-xs text-stone-500 uppercase">Cible : Informaticien Public</div>
+                        </div>
+                    </button>
+
+                    <button onclick="updateModule('C')" id="btn-C" class="module-btn w-full text-left p-4 bg-white rounded-lg shadow hover:shadow-md transition flex items-center gap-4">
+                        <div class="bg-green-100 text-green-800 p-3 rounded-full font-bold">C</div>
+                        <div>
+                            <div class="font-bold text-stone-800">Les Traducteurs</div>
+                            <div class="text-xs text-stone-500 uppercase">Cible : Écrivains Publics</div>
+                        </div>
+                    </button>
+
+                    <button onclick="updateModule('D')" id="btn-D" class="module-btn w-full text-left p-4 bg-white rounded-lg shadow hover:shadow-md transition flex items-center gap-4">
+                        <div class="bg-red-100 text-red-800 p-3 rounded-full font-bold">D</div>
+                        <div>
+                            <div class="font-bold text-stone-800">Coordination</div>
+                            <div class="text-xs text-stone-500 uppercase">Cible : PAC Bruxelles</div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Interactive Content Area -->
+                <div class="lg:col-span-2 bg-white p-8 rounded-xl shadow-lg border border-stone-200 relative overflow-hidden">
+                    <!-- Dynamic Content -->
+                    <div id="module-content">
+                        <!-- Content injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Data & Budget -->
+    <section id="data" class="py-16 max-w-6xl mx-auto px-6">
+        <div class="mb-10 text-center">
+            <h2 class="text-3xl font-bold text-stone-800 mb-4">Cadre Technique et Budgétaire</h2>
+            <p class="max-w-3xl mx-auto text-stone-600">
+                Une infrastructure radicale pour une souveraineté durable. Transparence totale sur les moyens et les ambitions.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <!-- Tech Specs -->
+            <div>
+                <h3 class="text-xl font-bold mb-6 border-b border-stone-200 pb-2">Infrastructure "Radicale"</h3>
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-stone-800 text-white p-2 rounded text-lg font-mono">100</div>
+                        <div>
+                            <h4 class="font-bold text-stone-800">Score Lighthouse Visé</h4>
+                            <p class="text-sm text-stone-600">Site statique (Eleventy + USWDS) pour une accessibilité et une rapidité maximales.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-600 text-white p-2 rounded text-lg">💾</div>
+                        <div>
+                            <h4 class="font-bold text-stone-800">Souveraineté Temporelle</h4>
+                            <p class="text-sm text-stone-600">Utilisation du « Git Scraping » pour archiver une vérité administrative inaltérable.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="bg-green-600 text-white p-2 rounded text-lg">🔐</div>
+                        <div>
+                            <h4 class="font-bold text-stone-800">Solid Pods & WebID</h4>
+                            <p class="text-sm text-stone-600">Reprise de contrôle des données personnelles par les citoyens.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Chart -->
+            <div>
+                <h3 class="text-xl font-bold mb-6 border-b border-stone-200 pb-2">Modèle Économique</h3>
+                <div class="chart-container">
+                    <canvas id="budgetChart"></canvas>
+                </div>
+                <div class="mt-4 text-center text-sm text-stone-500 italic">
+                    Comparaison : Investissement initial (Démarrage) vs Coût de fonctionnement annuel.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Timeline -->
+    <section id="timeline" class="py-16 bg-stone-800 text-stone-100">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-white mb-2">Calendrier d'Insurrection</h2>
+                <p class="text-stone-400">Le compte à rebours est lancé.</p>
+            </div>
+
+            <!-- Timeline Interface -->
+            <div class="relative">
+                <!-- Line -->
+                <div class="absolute top-1/2 left-0 w-full h-1 bg-stone-600 -translate-y-1/2 rounded hidden sm:block"></div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-0 relative z-10">
+                    <!-- Step 1 -->
+                    <div class="flex flex-col items-center text-center group cursor-pointer" onclick="updateTimeline(0)">
+                        <div id="dot-0" class="timeline-dot active w-6 h-6 rounded-full bg-red-600 border-4 border-stone-800 mb-4 shadow-[0_0_15px_rgba(220,38,38,0.5)]"></div>
+                        <h4 class="text-lg font-bold text-red-400">15 Janvier 2026</h4>
+                        <p class="text-sm text-stone-300 mt-2">Lancement de l'Appel</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex flex-col items-center text-center group cursor-pointer" onclick="updateTimeline(1)">
+                        <div id="dot-1" class="timeline-dot w-6 h-6 rounded-full bg-stone-500 border-4 border-stone-800 mb-4 hover:bg-red-400"></div>
+                        <h4 class="text-lg font-bold">15 Mars 2026</h4>
+                        <p class="text-sm text-stone-300 mt-2">Clôture des Réponses</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex flex-col items-center text-center group cursor-pointer" onclick="updateTimeline(2)">
+                        <div id="dot-2" class="timeline-dot w-6 h-6 rounded-full bg-stone-500 border-4 border-stone-800 mb-4 hover:bg-red-400"></div>
+                        <h4 class="text-lg font-bold">1er Mai 2026</h4>
+                        <p class="text-sm text-stone-300 mt-2">Lancement Opérationnel</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Step View -->
+            <div id="timeline-detail" class="mt-12 bg-stone-700 p-8 rounded-xl text-center shadow-lg border border-stone-600 transition-all duration-300">
+                <h3 class="text-2xl font-bold text-white mb-2">Phase 1 : Mobilisation</h3>
+                <p class="text-stone-300 max-w-2xl mx-auto">
+                    Diffusion de l'appel aux partenaires cibles (Babel'Zin, Informaticien Public, PAC). Réception des notes d'intention.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Candidature / Footer -->
+    <section id="candidature" class="py-20 max-w-4xl mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold text-stone-800 mb-6">Rejoignez la Résistance Cognitive</h2>
+        <div class="bg-white p-8 rounded-xl shadow-xl border-t-8 border-red-700">
+            <p class="text-lg text-stone-600 mb-8">
+                Les candidatures et notes d'intention doivent être adressées à la coordination régionale avant le <strong>15 Mars 2026</strong>.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left mb-8">
+                <div class="bg-stone-50 p-4 rounded border border-stone-200">
+                    <h4 class="font-bold text-stone-800 mb-2">Contenu de la note :</h4>
+                    <ul class="text-sm text-stone-600 space-y-1 list-disc list-inside">
+                        <li>Confirmation d'intérêt pour le module</li>
+                        <li>Ressources humaines disponibles</li>
+                        <li>Propositions d'ajustements</li>
+                    </ul>
+                </div>
+                <div class="bg-stone-50 p-4 rounded border border-stone-200">
+                    <h4 class="font-bold text-stone-800 mb-2">Contact :</h4>
+                    <p class="text-sm text-stone-600 font-mono select-all bg-white p-2 border rounded">bruxelles@pac-g.be</p>
+                    <p class="text-xs text-stone-400 mt-2">Objet : [Candidature Auderghem 2026] - Nom Structure</p>
+                </div>
+            </div>
+
+            <button onclick="window.location.href='mailto:bruxelles@pac-g.be?subject=[Candidature Auderghem 2026]'" class="w-full sm:w-auto px-10 py-4 bg-red-700 text-white font-bold text-lg rounded hover:bg-red-800 transition transform hover:scale-105 shadow-lg">
+                Envoyer ma candidature
+            </button>
+        </div>
+        <p class="mt-12 text-stone-400 text-sm">
+            Locale PAC 1160 « Résistance Cognitive » — Ensemble, faisons d'Auderghem le miroir où le système dominant est forcé de se regarder en face.
+        </p>
+    </section>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA STORE ---
+        const modulesData = {
+            'A': {
+                title: "Module A : Le « Quartier Général » de l'Accueil",
+                target: "Babel'Zin",
+                icon: "🏠",
+                color: "text-amber-600",
+                mission: "Utiliser le Babel'Zin comme porte d'entrée physique et humaine pour le dispositif.",
+                actions: [
+                    "Ancrer les « missions d'interaction » de l'ARG dans la réalité du lieu.",
+                    "Utiliser l'accueil inconditionnel comme levier ludique.",
+                    "Organiser des temps de socialisation médiés par le jeu."
+                ],
+                objective: "Briser l'isolement social des seniors et précaires d'Auderghem.",
+                stat: "Lieu de Liens"
+            },
+            'B': {
+                title: "Module B : Les Sentinelles Numériques",
+                target: "Informaticien Public",
+                icon: "🛡️",
+                color: "text-blue-600",
+                mission: "Déployer la couche technique souveraine pour les citoyens.",
+                actions: [
+                    "Création de Solid Pods (coffre-forts personnels).",
+                    "Génération de WebID uniques.",
+                    "Rôle d'« Architecte de souveraineté »."
+                ],
+                objective: "Naviguer sans subir de capture de données (GAFAM).",
+                stat: "Souveraineté"
+            },
+            'C': {
+                title: "Module C : Traduction des « Grimoires »",
+                target: "Écrivains Publics PAC",
+                icon: "📜",
+                color: "text-green-600",
+                mission: "Assurer la médiation sémantique et l'accès aux droits.",
+                actions: [
+                    "Convertir les règlements en « quêtes » ludiques.",
+                    "Décoder le standard FHIR (santé/social).",
+                    "Système de badges narratifs de réussite."
+                ],
+                objective: "Lutter contre le non-recours aux droits (Statut BIM).",
+                stat: "Médiation"
+            },
+            'D': {
+                title: "Module D : Coordination et Rayonnement",
+                target: "Régionale PAC Bruxelles",
+                icon: "📢",
+                color: "text-red-600",
+                mission: "Adoubement institutionnel et montée en puissance.",
+                actions: [
+                    "Intégration au maillage Action Commune.",
+                    "Implémentation de Decidim (Vote Quadratique).",
+                    "Modèle de Public-Common Partnership."
+                ],
+                objective: "Créer un précédent politique transférable.",
+                stat: "Politique"
+            }
+        };
+
+        const timelineData = [
+            {
+                date: "15 Janvier 2026",
+                title: "Phase 1 : Mobilisation & Appel",
+                desc: "Diffusion de l'appel aux partenaires cibles (Babel'Zin, Informaticien Public, PAC). Réception des notes d'intention."
+            },
+            {
+                date: "15 Mars 2026",
+                title: "Phase 2 : Sélection & Coalition",
+                desc: "Clôture des candidatures. Analyse des ressources humaines et techniques. Constitution du consortium opérationnel."
+            },
+            {
+                date: "1er Mai 2026",
+                title: "Phase 3 : Lancement Opérationnel",
+                desc: "Déploiement de l'ARG « Souveraineté Fantôme » sur le territoire d'Auderghem. Premières permanences et quêtes actives."
+            }
+        ];
+
+        // --- INTERACTION LOGIC ---
+
+        function updateModule(id) {
+            // Update buttons styling
+            document.querySelectorAll('.module-btn').forEach(btn => {
+                btn.classList.remove('card-active', 'bg-orange-50');
+                btn.classList.add('bg-white');
+            });
+            const activeBtn = document.getElementById(`btn-${id}`);
+            activeBtn.classList.add('card-active');
+            activeBtn.classList.remove('bg-white');
+
+            // Update content with fade effect
+            const contentDiv = document.getElementById('module-content');
+            contentDiv.style.opacity = '0';
+            
+            setTimeout(() => {
+                const data = modulesData[id];
+                contentDiv.innerHTML = `
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-stone-800">${data.title}</h3>
+                        <span class="text-4xl shadow-sm bg-stone-50 p-2 rounded-full border border-stone-100">${data.icon}</span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <span class="text-xs font-bold uppercase tracking-wider text-stone-400">Partenaire Cible</span>
+                        <div class="text-lg font-semibold ${data.color}">${data.target}</div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-stone-50 p-4 rounded border-l-4 border-stone-300">
+                            <h4 class="font-bold text-stone-700 mb-1">🎯 Mission</h4>
+                            <p class="text-stone-600">${data.mission}</p>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-stone-700 mb-2">⚡ Actions Clés</h4>
+                            <ul class="space-y-2">
+                                ${data.actions.map(action => `<li class="flex items-start text-stone-600"><span class="mr-2 text-stone-400">•</span> ${action}</li>`).join('')}
+                            </ul>
+                        </div>
+
+                        <div class="pt-4 border-t border-stone-100">
+                            <h4 class="font-bold text-stone-700 mb-1">🚀 Objectif Ultime</h4>
+                            <p class="text-sm italic text-stone-500">${data.objective}</p>
+                        </div>
+                    </div>
+                `;
+                contentDiv.style.opacity = '1';
+            }, 200);
+        }
+
+        function updateTimeline(index) {
+            // Update dots
+            document.querySelectorAll('.timeline-dot').forEach((dot, idx) => {
+                if (idx === index) {
+                    dot.classList.add('active', 'bg-red-600');
+                    dot.classList.remove('bg-stone-500');
+                    dot.parentElement.querySelector('h4').classList.add('text-red-400');
+                    dot.parentElement.querySelector('h4').classList.remove('text-white');
+                } else {
+                    dot.classList.remove('active', 'bg-red-600');
+                    dot.classList.add('bg-stone-500');
+                    dot.parentElement.querySelector('h4').classList.remove('text-red-400');
+                    dot.parentElement.querySelector('h4').classList.add('text-white');
+                }
+            });
+
+            // Update text
+            const detailDiv = document.getElementById('timeline-detail');
+            const data = timelineData[index];
+            
+            // Simple fade animation
+            detailDiv.style.transform = 'translateY(10px)';
+            detailDiv.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                detailDiv.innerHTML = `
+                    <h3 class="text-2xl font-bold text-white mb-2">${data.title}</h3>
+                    <p class="text-stone-300 max-w-2xl mx-auto">${data.desc}</p>
+                `;
+                detailDiv.style.transform = 'translateY(0)';
+                detailDiv.style.opacity = '1';
+            }, 150);
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- INITIALIZATION & CHARTS ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Init Module A
+            updateModule('A');
+
+            // Init Chart
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            
+            // Chart Data: Visualizing the "Demo Budget" vs "Running Cost"
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Budget Démarrage (12 mois)', 'Coût Opérationnel (Annuel)'],
+                    datasets: [{
+                        label: 'Budget en €',
+                        data: [24000, 16000],
+                        backgroundColor: [
+                            'rgba(185, 28, 28, 0.8)', // Red-700
+                            'rgba(217, 119, 6, 0.8)'  // Amber-600
+                        ],
+                        borderColor: [
+                            'rgba(185, 28, 28, 1)',
+                            'rgba(217, 119, 6, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + ' €';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + ' €';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
