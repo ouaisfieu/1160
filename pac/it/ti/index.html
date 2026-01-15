@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAC-G · Jardin Numérique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #FDFCF9;
+            --color-bg-warm: #F7F5F0;
+            --color-text: #1A1915;
+            --color-text-soft: #5C5A54;
+            --color-primary: #2D5A4A;
+            --color-primary-light: #3D7A62;
+            --color-accent: #C17F59;
+            --color-accent-light: #E8D5C4;
+            --color-success: #4A7C59;
+            --color-warning: #B8860B;
+            --color-error: #9B3D3D;
+            --color-border: #E5E2DB;
+            --font-display: 'Fraunces', serif;
+            --font-body: 'Work Sans', sans-serif;
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 2px 8px rgba(26, 25, 21, 0.06);
+            --shadow-md: 0 4px 20px rgba(26, 25, 21, 0.08);
+            --shadow-lg: 0 8px 40px rgba(26, 25, 21, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: white;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo-text h1 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-text span {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-role {
+            background: rgba(255,255,255,0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Navigation */
+        .nav {
+            background: white;
+            border-bottom: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 0;
+        }
+
+        .nav-tab {
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            color: var(--color-text-soft);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-tab:hover {
+            color: var(--color-primary);
+            background: var(--color-bg-warm);
+        }
+
+        .nav-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .nav-tab .badge {
+            background: var(--color-accent);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .stat-card.warning {
+            border-left: 4px solid var(--color-warning);
+        }
+
+        .stat-card.success {
+            border-left: 4px solid var(--color-success);
+        }
+
+        .stat-card.error {
+            border-left: 4px solid var(--color-error);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .stat-label {
+            color: var(--color-text-soft);
+            font-size: 0.9rem;
+        }
+
+        /* Section Header */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .section-subtitle {
+            color: var(--color-text-soft);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: var(--font-body);
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-bg-warm);
+            border-color: var(--color-text-soft);
+        }
+
+        .btn-warning {
+            background: var(--color-warning);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+            margin-bottom: 1rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* Resources List */
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background: var(--color-bg-warm);
+            border-radius: var(--radius-md);
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .resource-item:hover {
+            background: white;
+            border-color: var(--color-border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .resource-item.has-issue {
+            border-left: 3px solid var(--color-warning);
+        }
+
+        .resource-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .resource-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--color-accent-light);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .resource-details h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.15rem;
+        }
+
+        .resource-details span {
+            font-size: 0.8rem;
+            color: var(--color-text-soft);
+        }
+
+        .resource-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--color-border);
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--color-bg-warm);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        /* Tag / Status */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .tag-success { background: #E8F5E9; color: var(--color-success); }
+        .tag-warning { background: #FFF8E1; color: var(--color-warning); }
+        .tag-error { background: #FFEBEE; color: var(--color-error); }
+        .tag-info { background: #E3F2FD; color: #1976D2; }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--color-text);
+        }
+
+        .form-hint {
+            font-size: 0.85rem;
+            color: var(--color-text-soft);
+            margin-top: 0.25rem;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(45, 90, 74, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 25, 21, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            font-size: 1.5rem;
+            color: var(--color-text-soft);
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--color-bg-warm);
+            color: var(--color-text);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            background: var(--color-bg-warm);
+        }
+
+        /* Help Panel */
+        .help-panel {
+            background: linear-gradient(135deg, var(--color-accent-light) 0%, #F5EDE4 100%);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(193, 127, 89, 0.2);
+        }
+
+        .help-panel h3 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .help-panel p {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* Timeline / Activity */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            margin-top: 0.35rem;
+            flex-shrink: 0;
+        }
+
+        .activity-dot.warning { background: var(--color-warning); }
+        .activity-dot.success { background: var(--color-success); }
+        .activity-dot.error { background: var(--color-error); }
+
+        .activity-content h4 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-content span {
+            font-size: 0.8rem;
+            color: var(--color-text-soft);
+        }
+
+        /* Signal Form (for non-tech team) */
+        .signal-widget {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+        }
+
+        .signal-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        .signal-btn:hover {
+            transform: scale(1.1);
+            background: var(--color-primary);
+        }
+
+        /* Search */
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input-wrap {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input-wrap .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-text-soft);
+        }
+
+        .search-input-wrap input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .search-input-wrap input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(45, 90, 74, 0.1);
+        }
+
+        /* Data Grid */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .data-table th {
+            background: var(--color-bg-warm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--color-text-soft);
+        }
+
+        .data-table tr:hover td {
+            background: var(--color-bg-warm);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--color-text-soft);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-text);
+        }
+
+        /* Grid layout for resources */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .toast {
+            background: var(--color-text);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: toastIn 0.3s ease;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toast.success { background: var(--color-success); }
+        .toast.error { background: var(--color-error); }
+        .toast.warning { background: var(--color-warning); }
+
+        /* Quick Add Form */
+        .quick-add {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 2px dashed var(--color-border);
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-add:hover {
+            border-color: var(--color-primary);
+        }
+
+        /* Two column layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .nav-inner {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Checkbox styling */
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--color-primary);
+        }
+
+        /* Type Selector */
+        .type-selector {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .type-option {
+            flex: 1;
+            min-width: 120px;
+            padding: 1rem;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .type-option:hover {
+            border-color: var(--color-primary);
+        }
+
+        .type-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(45, 90, 74, 0.05);
+        }
+
+        .type-option .icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .type-option .label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">🌱</div>
+                <div class="logo-text">
+                    <h1>PAC-G · Jardin Numérique</h1>
+                    <span>Maintenance collaborative</span>
+                </div>
+            </div>
+            <div class="user-menu">
+                <div class="user-role" id="currentUser">👤 Thomas (Admin)</div>
+                <button class="btn btn-secondary btn-sm" onclick="switchUser()">Changer rôle</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <div class="nav-tab active" data-section="dashboard" onclick="showSection('dashboard')">
+                📊 Tableau de bord
+            </div>
+            <div class="nav-tab" data-section="resources" onclick="showSection('resources')">
+                📚 Ressources
+                <span class="badge" id="resourceCount">24</span>
+            </div>
+            <div class="nav-tab" data-section="issues" onclick="showSection('issues')">
+                🔧 Maintenance
+                <span class="badge" id="issueCount">3</span>
+            </div>
+            <div class="nav-tab" data-section="signals" onclick="showSection('signals')">
+                💬 Signalements
+                <span class="badge" id="signalCount">2</span>
+            </div>
+            <div class="nav-tab admin-only" data-section="settings" onclick="showSection('settings')">
+                ⚙️ Paramètres
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- Dashboard Section -->
+        <section class="section active" id="section-dashboard">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Bienvenue, Thomas 👋</h2>
+                    <p class="section-subtitle">Voici l'état de santé de votre jardin numérique</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="runScan()">🔍 Lancer un scan</button>
+                </div>
+            </div>
+
+            <!-- Help Panel -->
+            <div class="help-panel">
+                <h3>🌿 Philosophie du Jardinage Numérique</h3>
+                <p>
+                    Les liens morts sont comme des branches mortes : ils ne sont pas une faute, mais une partie naturelle de l'écosystème web. 
+                    Votre équipe peut signaler ces "mauvaises herbes" d'un simple clic, sans culpabilité. 
+                    Vous traitez ensuite ces signalements par lots, selon votre rythme.
+                </p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="dashboard-grid">
+                <div class="stat-card success">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-value" id="stat-resources">24</div>
+                    <div class="stat-label">Ressources indexées</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-value" id="stat-issues">3</div>
+                    <div class="stat-label">Liens à vérifier</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="stat-healthy">87%</div>
+                    <div class="stat-label">Score de santé</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="stat-team">2</div>
+                    <div class="stat-label">Signalements en attente</div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="resources-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📋 Activité récente</h3>
+                    </div>
+                    <div class="activity-list" id="activityList">
+                        <div class="activity-item">
+                            <div class="activity-dot success"></div>
+                            <div class="activity-content">
+                                <h4>Marie a signalé un lien mort</h4>
+                                <span>Sur "Cahier 38" · Il y a 2 heures</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-dot"></div>
+                            <div class="activity-content">
+                                <h4>Nouvelle ressource ajoutée</h4>
+                                <span>"Analyse #52 - Féminisme" · Il y a 5 heures</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-dot warning"></div>
+                            <div class="activity-content">
+                                <h4>Scan automatique terminé</h4>
+                                <span>3 problèmes détectés · Hier</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-dot success"></div>
+                            <div class="activity-content">
+                                <h4>Pierre a corrigé une coquille</h4>
+                                <span>Sur "Contact" · Il y a 2 jours</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">⚡ Actions rapides</h3>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <button class="btn btn-primary" onclick="openModal('add-resource')">
+                            ➕ Ajouter une ressource
+                        </button>
+                        <button class="btn btn-secondary" onclick="showSection('issues')">
+                            🔧 Traiter les signalements
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportData()">
+                            📥 Exporter les données
+                        </button>
+                        <button class="btn btn-secondary" onclick="openModal('redirects')">
+                            🔄 Gérer redirections
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources Section -->
+        <section class="section" id="section-resources">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">📚 Ressources</h2>
+                    <p class="section-subtitle">Toutes les publications et pages indexées</p>
+                </div>
+                <button class="btn btn-primary" onclick="openModal('add-resource')">
+                    ➕ Nouvelle ressource
+                </button>
+            </div>
+
+            <!-- Search -->
+            <div class="search-bar">
+                <div class="search-input-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Rechercher par titre, catégorie..." id="searchResources" oninput="filterResources()">
+                </div>
+                <select class="form-select" style="width: auto; min-width: 180px;" id="filterType" onchange="filterResources()">
+                    <option value="">Tous les types</option>
+                    <option value="cahier">📖 Cahiers</option>
+                    <option value="analyse">📊 Analyses</option>
+                    <option value="formation">🎓 Formations</option>
+                    <option value="page">📄 Pages</option>
+                </select>
+            </div>
+
+            <!-- Resources List -->
+            <div class="card">
+                <div class="resource-list" id="resourcesList">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Issues Section -->
+        <section class="section" id="section-issues">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">🔧 Maintenance</h2>
+                    <p class="section-subtitle">Liens morts et problèmes détectés automatiquement</p>
+                </div>
+                <button class="btn btn-primary" onclick="runScan()">
+                    🔍 Relancer le scan
+                </button>
+            </div>
+
+            <div class="help-panel">
+                <h3>💡 Conseil du jardinier</h3>
+                <p>
+                    Pas besoin de tout corriger immédiatement ! Priorisez les ressources les plus consultées. 
+                    Les redirections automatiques gèrent les cas les plus courants pendant que vous travaillez sur le reste.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Problèmes en attente</h3>
+                    <button class="btn btn-sm btn-success" onclick="markAllResolved()">✅ Tout marquer résolu</button>
+                </div>
+                <div class="resource-list" id="issuesList">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Signals Section -->
+        <section class="section" id="section-signals">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">💬 Signalements de l'équipe</h2>
+                    <p class="section-subtitle">Retours bienveillants de vos collègues</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="resource-list" id="signalsList">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section (Admin only) -->
+        <section class="section admin-only" id="section-settings">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">⚙️ Paramètres</h2>
+                    <p class="section-subtitle">Configuration du système</p>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom: 1rem;">🔄 Redirections automatiques</h3>
+                    <p style="color: var(--color-text-soft); margin-bottom: 1rem; font-size: 0.9rem;">
+                        Configurez les règles de redirection pour les anciennes URLs
+                    </p>
+                    <div class="form-group">
+                        <label class="form-label">Redirection boutique</label>
+                        <div class="two-col" style="gap: 0.5rem;">
+                            <input type="text" class="form-input" value="boutique.pac-g.be/*" readonly>
+                            <input type="text" class="form-input" value="pac-g.be/publications/">
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary">➕ Ajouter une redirection</button>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom: 1rem;">📧 Notifications</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" checked>
+                            <span>Email hebdomadaire de synthèse</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" checked>
+                            <span>Alerte immédiate si erreur critique</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox">
+                            <span>Notification à chaque signalement</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom: 1rem;">👥 Membres de l'équipe</h3>
+                    <div class="resource-list">
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-icon">👤</div>
+                                <div class="resource-details">
+                                    <h4>Thomas</h4>
+                                    <span>Administrateur</span>
+                                </div>
+                            </div>
+                            <span class="tag tag-success">Admin</span>
+                        </div>
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-icon">👤</div>
+                                <div class="resource-details">
+                                    <h4>Marie</h4>
+                                    <span>Contributeur</span>
+                                </div>
+                            </div>
+                            <span class="tag tag-info">Équipe</span>
+                        </div>
+                        <div class="resource-item">
+                            <div class="resource-info">
+                                <div class="resource-icon">👤</div>
+                                <div class="resource-details">
+                                    <h4>Pierre</h4>
+                                    <span>Contributeur</span>
+                                </div>
+                            </div>
+                            <span class="tag tag-info">Équipe</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom: 1rem;">💾 Sauvegardes</h3>
+                    <p style="color: var(--color-text-soft); margin-bottom: 1rem; font-size: 0.9rem;">
+                        Dernière sauvegarde : Il y a 2 heures
+                    </p>
+                    <button class="btn btn-primary" onclick="exportData()">
+                        📥 Exporter toutes les données (JSON)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Signal Widget (for team) -->
+    <div class="signal-widget team-only">
+        <button class="signal-btn" onclick="openModal('signal')" title="Signaler un problème">
+            💬
+        </button>
+    </div>
+
+    <!-- Modal: Add Resource -->
+    <div class="modal-overlay" id="modal-add-resource">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">➕ Ajouter une ressource</h3>
+                <button class="modal-close" onclick="closeModal('add-resource')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Type de ressource</label>
+                    <div class="type-selector">
+                        <div class="type-option selected" data-type="cahier" onclick="selectType(this)">
+                            <div class="icon">📖</div>
+                            <div class="label">Cahier</div>
+                        </div>
+                        <div class="type-option" data-type="analyse" onclick="selectType(this)">
+                            <div class="icon">📊</div>
+                            <div class="label">Analyse</div>
+                        </div>
+                        <div class="type-option" data-type="formation" onclick="selectType(this)">
+                            <div class="icon">🎓</div>
+                            <div class="label">Formation</div>
+                        </div>
+                        <div class="type-option" data-type="page" onclick="selectType(this)">
+                            <div class="icon">📄</div>
+                            <div class="label">Page</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Titre</label>
+                    <input type="text" class="form-input" id="resource-title" placeholder="Ex: Cahier 38 - Images et usages de la pauvreté">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">URL</label>
+                    <input type="text" class="form-input" id="resource-url" placeholder="https://pac-g.be/...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description (optionnel)</label>
+                    <textarea class="form-textarea" id="resource-description" placeholder="Résumé ou notes internes..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Liens associés (PDF, sources...)</label>
+                    <input type="text" class="form-input" id="resource-links" placeholder="Un lien par ligne">
+                    <p class="form-hint">Ces liens seront vérifiés automatiquement lors des scans</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('add-resource')">Annuler</button>
+                <button class="btn btn-primary" onclick="saveResource()">💾 Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Signal (Team) -->
+    <div class="modal-overlay" id="modal-signal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">💬 Signaler un problème</h3>
+                <button class="modal-close" onclick="closeModal('signal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-panel" style="margin-bottom: 1.5rem;">
+                    <h3>🌿 Merci de participer au jardinage !</h3>
+                    <p>
+                        Votre signalement aide à garder notre site en bonne santé. 
+                        Pas besoin d'être technique — décrivez simplement ce que vous avez vu.
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Type de problème</label>
+                    <select class="form-select" id="signal-type">
+                        <option value="lien-mort">🔗 Lien qui ne fonctionne pas</option>
+                        <option value="coquille">✏️ Faute d'orthographe</option>
+                        <option value="contenu">📝 Contenu à mettre à jour</option>
+                        <option value="autre">❓ Autre problème</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Où avez-vous vu ce problème ?</label>
+                    <input type="text" class="form-input" id="signal-page" placeholder="Ex: Page du Cahier 38, section 'Téléchargements'">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="signal-description" placeholder="Décrivez ce que vous avez observé..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Votre nom (optionnel)</label>
+                    <input type="text" class="form-input" id="signal-name" placeholder="Pour qu'on puisse vous remercier !">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('signal')">Annuler</button>
+                <button class="btn btn-primary" onclick="submitSignal()">📨 Envoyer le signalement</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ==========================================
+        // DATA STORE (Flat-file simulation)
+        // ==========================================
+        
+        // In production, this would be loaded from JSON files
+        let appData = {
+            currentUser: { name: 'Thomas', role: 'admin' },
+            resources: [
+                {
+                    id: 1,
+                    type: 'cahier',
+                    title: 'Cahier 38 - Images et usages de la pauvreté',
+                    url: 'https://pac-g.be/cahier-38-images-et-usages-de-la-pauvrete/',
+                    description: 'Analyse des représentations médiatiques de la pauvreté',
+                    links: ['https://pac-g.be/wp-content/uploads/cahier-38.pdf'],
+                    status: 'ok',
+                    lastChecked: '2026-01-14',
+                    createdAt: '2011-03-15'
+                },
+                {
+                    id: 2,
+                    type: 'cahier',
+                    title: 'Cahier 55 - Éducation permanente et numérique',
+                    url: 'https://pac-g.be/cahier-55/',
+                    description: 'Les enjeux du numérique dans l\'éducation permanente',
+                    links: [],
+                    status: 'ok',
+                    lastChecked: '2026-01-14',
+                    createdAt: '2023-06-20'
+                },
+                {
+                    id: 3,
+                    type: 'analyse',
+                    title: 'Analyse #52 - Pétromasculinité',
+                    url: 'https://pac-g.be/analyse-52-petromasculinite/',
+                    description: 'Les liens entre masculinité et industrie pétrolière',
+                    links: ['https://www.example.com/source-externe.pdf'],
+                    status: 'warning',
+                    issues: ['Lien externe cassé: source-externe.pdf'],
+                    lastChecked: '2026-01-14',
+                    createdAt: '2020-09-10'
+                },
+                {
+                    id: 4,
+                    type: 'formation',
+                    title: 'Formation Arpentage - Lecture collective',
+                    url: 'https://pac-g.be/formation-arpentage/',
+                    description: 'Méthode de lecture collective pour groupes',
+                    links: [],
+                    status: 'ok',
+                    lastChecked: '2026-01-14',
+                    createdAt: '2022-01-15'
+                },
+                {
+                    id: 5,
+                    type: 'page',
+                    title: 'Boutique PAC',
+                    url: 'https://boutique.pac-g.be/',
+                    description: 'Boutique en ligne (actuellement inaccessible)',
+                    links: [],
+                    status: 'error',
+                    issues: ['Sous-domaine inaccessible - Vérifier DNS'],
+                    lastChecked: '2026-01-14',
+                    createdAt: '2018-05-01'
+                },
+                {
+                    id: 6,
+                    type: 'analyse',
+                    title: 'Analyse #38 - Marc Sinnaeve',
+                    url: 'https://pac-g.be/analyse-38-marc-sinnaeve/',
+                    description: 'Ne pas dissoudre la matrice politique',
+                    links: [],
+                    status: 'ok',
+                    lastChecked: '2026-01-14',
+                    createdAt: '2019-11-20'
+                }
+            ],
+            signals: [
+                {
+                    id: 1,
+                    type: 'lien-mort',
+                    page: 'Cahier 38 - Section téléchargements',
+                    description: 'Le lien vers le PDF du cahier ne fonctionne plus',
+                    author: 'Marie',
+                    status: 'pending',
+                    createdAt: '2026-01-14T10:30:00'
+                },
+                {
+                    id: 2,
+                    type: 'coquille',
+                    page: 'Page Contact',
+                    description: 'Le numéro de téléphone semble incorrect',
+                    author: 'Pierre',
+                    status: 'pending',
+                    createdAt: '2026-01-13T15:45:00'
+                }
+            ],
+            issues: [
+                {
+                    id: 1,
+                    resourceId: 3,
+                    type: 'broken-link',
+                    description: 'Lien externe cassé: source-externe.pdf',
+                    severity: 'warning',
+                    detectedAt: '2026-01-14T08:00:00'
+                },
+                {
+                    id: 2,
+                    resourceId: 5,
+                    type: 'dns-error',
+                    description: 'Sous-domaine boutique.pac-g.be inaccessible',
+                    severity: 'error',
+                    detectedAt: '2026-01-14T08:00:00'
+                },
+                {
+                    id: 3,
+                    resourceId: null,
+                    type: 'broken-link',
+                    description: 'Calendrier: anciennes URLs d\'événements génèrent des 404',
+                    severity: 'warning',
+                    detectedAt: '2026-01-14T08:00:00'
+                }
+            ],
+            redirects: [
+                { from: 'boutique.pac-g.be/*', to: 'pac-g.be/publications/' }
+            ]
+        };
+
+        // ==========================================
+        // NAVIGATION
+        // ==========================================
+        
+        function showSection(sectionId) {
+            // Update tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.section === sectionId);
+            });
+            
+            // Update sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.toggle('active', section.id === `section-${sectionId}`);
+            });
+            
+            // Load section data
+            if (sectionId === 'resources') renderResources();
+            if (sectionId === 'issues') renderIssues();
+            if (sectionId === 'signals') renderSignals();
+        }
+
+        // ==========================================
+        // USER MANAGEMENT
+        // ==========================================
+        
+        function switchUser() {
+            const isAdmin = appData.currentUser.role === 'admin';
+            if (isAdmin) {
+                appData.currentUser = { name: 'Marie', role: 'team' };
+            } else {
+                appData.currentUser = { name: 'Thomas', role: 'admin' };
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            const isAdmin = appData.currentUser.role === 'admin';
+            
+            // Update user display
+            document.getElementById('currentUser').textContent = 
+                `👤 ${appData.currentUser.name} (${isAdmin ? 'Admin' : 'Équipe'})`;
+            
+            // Show/hide admin elements
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = isAdmin ? '' : 'none';
+            });
+            
+            // Show/hide team elements
+            document.querySelectorAll('.team-only').forEach(el => {
+                el.style.display = !isAdmin ? '' : 'none';
+            });
+            
+            // Update stats
+            updateStats();
+        }
+
+        // ==========================================
+        // STATS & DASHBOARD
+        // ==========================================
+        
+        function updateStats() {
+            document.getElementById('stat-resources').textContent = appData.resources.length;
+            document.getElementById('resourceCount').textContent = appData.resources.length;
+            
+            const issuesCount = appData.issues.length;
+            document.getElementById('stat-issues').textContent = issuesCount;
+            document.getElementById('issueCount').textContent = issuesCount;
+            
+            const signalsCount = appData.signals.filter(s => s.status === 'pending').length;
+            document.getElementById('stat-team').textContent = signalsCount;
+            document.getElementById('signalCount').textContent = signalsCount;
+            
+            // Health score calculation
+            const totalLinks = appData.resources.length;
+            const brokenLinks = appData.resources.filter(r => r.status !== 'ok').length;
+            const healthScore = Math.round(((totalLinks - brokenLinks) / totalLinks) * 100);
+            document.getElementById('stat-healthy').textContent = healthScore + '%';
+        }
+
+        // ==========================================
+        // RESOURCES
+        // ==========================================
+        
+        function renderResources() {
+            const container = document.getElementById('resourcesList');
+            const search = document.getElementById('searchResources').value.toLowerCase();
+            const typeFilter = document.getElementById('filterType').value;
+            
+            const filtered = appData.resources.filter(r => {
+                const matchesSearch = r.title.toLowerCase().includes(search) || 
+                                     r.description.toLowerCase().includes(search);
+                const matchesType = !typeFilter || r.type === typeFilter;
+                return matchesSearch && matchesType;
+            });
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <h3>Aucune ressource trouvée</h3>
+                        <p>Essayez de modifier vos critères de recherche</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filtered.map(r => {
+                const typeIcons = { cahier: '📖', analyse: '📊', formation: '🎓', page: '📄' };
+                const statusClass = r.status === 'error' ? 'has-issue' : (r.status === 'warning' ? 'has-issue' : '');
+                const statusTag = r.status === 'ok' ? '<span class="tag tag-success">OK</span>' :
+                                 r.status === 'warning' ? '<span class="tag tag-warning">À vérifier</span>' :
+                                 '<span class="tag tag-error">Erreur</span>';
+                
+                return `
+                    <div class="resource-item ${statusClass}">
+                        <div class="resource-info">
+                            <div class="resource-icon">${typeIcons[r.type] || '📄'}</div>
+                            <div class="resource-details">
+                                <h4>${r.title}</h4>
+                                <span>${r.type.charAt(0).toUpperCase() + r.type.slice(1)} · Vérifié le ${r.lastChecked}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            ${statusTag}
+                            <div class="resource-actions">
+                                <button class="action-btn" onclick="window.open('${r.url}', '_blank')" title="Voir">👁️</button>
+                                <button class="action-btn" onclick="editResource(${r.id})" title="Modifier">✏️</button>
+                                <button class="action-btn" onclick="deleteResource(${r.id})" title="Supprimer">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterResources() {
+            renderResources();
+        }
+
+        function saveResource() {
+            const title = document.getElementById('resource-title').value.trim();
+            const url = document.getElementById('resource-url').value.trim();
+            const description = document.getElementById('resource-description').value.trim();
+            const selectedType = document.querySelector('.type-option.selected');
+            
+            if (!title || !url) {
+                showToast('Veuillez remplir le titre et l\'URL', 'error');
+                return;
+            }
+            
+            const newResource = {
+                id: Date.now(),
+                type: selectedType ? selectedType.dataset.type : 'page',
+                title: title,
+                url: url,
+                description: description,
+                links: [],
+                status: 'ok',
+                lastChecked: new Date().toISOString().split('T')[0],
+                createdAt: new Date().toISOString().split('T')[0]
+            };
+            
+            appData.resources.unshift(newResource);
+            closeModal('add-resource');
+            updateStats();
+            showToast('Ressource ajoutée avec succès ! 🌱', 'success');
+            
+            // Clear form
+            document.getElementById('resource-title').value = '';
+            document.getElementById('resource-url').value = '';
+            document.getElementById('resource-description').value = '';
+        }
+
+        function deleteResource(id) {
+            if (confirm('Supprimer cette ressource ?')) {
+                appData.resources = appData.resources.filter(r => r.id !== id);
+                renderResources();
+                updateStats();
+                showToast('Ressource supprimée', 'warning');
+            }
+        }
+
+        function selectType(el) {
+            document.querySelectorAll('.type-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        // ==========================================
+        // ISSUES
+        // ==========================================
+        
+        function renderIssues() {
+            const container = document.getElementById('issuesList');
+            
+            if (appData.issues.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">🌿</div>
+                        <h3>Aucun problème détecté !</h3>
+                        <p>Votre jardin numérique est en pleine forme</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = appData.issues.map(issue => {
+                const resource = appData.resources.find(r => r.id === issue.resourceId);
+                const severityClass = issue.severity === 'error' ? 'tag-error' : 'tag-warning';
+                
+                return `
+                    <div class="resource-item has-issue">
+                        <div class="resource-info">
+                            <div class="resource-icon">${issue.severity === 'error' ? '🚨' : '⚠️'}</div>
+                            <div class="resource-details">
+                                <h4>${issue.description}</h4>
+                                <span>${resource ? resource.title : 'Global'} · Détecté le ${new Date(issue.detectedAt).toLocaleDateString('fr-FR')}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span class="tag ${severityClass}">${issue.severity === 'error' ? 'Critique' : 'Attention'}</span>
+                            <div class="resource-actions">
+                                <button class="action-btn" onclick="resolveIssue(${issue.id})" title="Marquer résolu">✅</button>
+                                <button class="action-btn" onclick="ignoreIssue(${issue.id})" title="Ignorer">🙈</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function resolveIssue(id) {
+            appData.issues = appData.issues.filter(i => i.id !== id);
+            renderIssues();
+            updateStats();
+            showToast('Problème marqué comme résolu ✅', 'success');
+        }
+
+        function ignoreIssue(id) {
+            appData.issues = appData.issues.filter(i => i.id !== id);
+            renderIssues();
+            updateStats();
+            showToast('Problème ignoré', 'warning');
+        }
+
+        function markAllResolved() {
+            if (confirm('Marquer tous les problèmes comme résolus ?')) {
+                appData.issues = [];
+                renderIssues();
+                updateStats();
+                showToast('Tous les problèmes résolus ! 🎉', 'success');
+            }
+        }
+
+        // ==========================================
+        // SIGNALS
+        // ==========================================
+        
+        function renderSignals() {
+            const container = document.getElementById('signalsList');
+            const pending = appData.signals.filter(s => s.status === 'pending');
+            
+            if (pending.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📬</div>
+                        <h3>Aucun signalement en attente</h3>
+                        <p>L'équipe n'a pas encore signalé de problème</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const typeLabels = {
+                'lien-mort': '🔗 Lien mort',
+                'coquille': '✏️ Coquille',
+                'contenu': '📝 Contenu',
+                'autre': '❓ Autre'
+            };
+            
+            container.innerHTML = pending.map(signal => `
+                <div class="resource-item">
+                    <div class="resource-info">
+                        <div class="resource-icon">💬</div>
+                        <div class="resource-details">
+                            <h4>${signal.description}</h4>
+                            <span>${typeLabels[signal.type]} · ${signal.page} · Par ${signal.author || 'Anonyme'}</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span class="tag tag-info">En attente</span>
+                        <div class="resource-actions">
+                            <button class="action-btn" onclick="resolveSignal(${signal.id})" title="Traité">✅</button>
+                            <button class="action-btn" onclick="dismissSignal(${signal.id})" title="Ignorer">🙈</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function submitSignal() {
+            const type = document.getElementById('signal-type').value;
+            const page = document.getElementById('signal-page').value.trim();
+            const description = document.getElementById('signal-description').value.trim();
+            const name = document.getElementById('signal-name').value.trim();
+            
+            if (!page || !description) {
+                showToast('Veuillez indiquer où et ce que vous avez observé', 'error');
+                return;
+            }
+            
+            const newSignal = {
+                id: Date.now(),
+                type: type,
+                page: page,
+                description: description,
+                author: name || 'Anonyme',
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+            
+            appData.signals.unshift(newSignal);
+            closeModal('signal');
+            updateStats();
+            showToast('Merci pour votre signalement ! 🌿', 'success');
+            
+            // Clear form
+            document.getElementById('signal-page').value = '';
+            document.getElementById('signal-description').value = '';
+            document.getElementById('signal-name').value = '';
+        }
+
+        function resolveSignal(id) {
+            const signal = appData.signals.find(s => s.id === id);
+            if (signal) {
+                signal.status = 'resolved';
+            }
+            renderSignals();
+            updateStats();
+            showToast('Signalement traité ✅', 'success');
+        }
+
+        function dismissSignal(id) {
+            const signal = appData.signals.find(s => s.id === id);
+            if (signal) {
+                signal.status = 'dismissed';
+            }
+            renderSignals();
+            updateStats();
+            showToast('Signalement ignoré', 'warning');
+        }
+
+        // ==========================================
+        // ACTIONS
+        // ==========================================
+        
+        function runScan() {
+            showToast('Scan en cours... 🔍', 'info');
+            setTimeout(() => {
+                showToast('Scan terminé ! Aucun nouveau problème détecté 🌿', 'success');
+            }, 2000);
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `pac-g-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            showToast('Données exportées ! 📥', 'success');
+        }
+
+        // ==========================================
+        // MODALS
+        // ==========================================
+        
+        function openModal(modalId) {
+            document.getElementById(`modal-${modalId}`).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(`modal-${modalId}`).classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // ==========================================
+        // TOAST NOTIFICATIONS
+        // ==========================================
+        
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUI();
+            renderResources();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Escape closes modals
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            }
+        });
+    </script>
+</body>
+</html>
