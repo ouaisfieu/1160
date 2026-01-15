@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPocket HR - Moniteur de Valeur Temps</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Animation pour le pulse quand actif */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .active-ring { animation: pulse-ring 2s infinite; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col md:flex-row overflow-hidden">
+
+    <!-- SIDEBAR: Settings & History -->
+    <aside class="w-full md:w-80 bg-slate-900 border-r border-slate-700 flex flex-col z-20 shadow-2xl">
+        <div class="p-6 border-b border-slate-700 bg-slate-900">
+            <h1 class="text-xl font-bold text-white tracking-tight"><i class="fas fa-stopwatch mr-2 text-emerald-500"></i>MyPocket HR</h1>
+            <p class="text-xs text-slate-400 mt-1">Moniteur de rentabilité temps réel</p>
+        </div>
+
+        <!-- Settings Form -->
+        <div class="p-6 space-y-4 border-b border-slate-800">
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">Taux Horaire (€)</label>
+                <div class="relative">
+                    <input type="number" id="hourlyRate" value="75" class="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-emerald-500 mono font-bold">
+                    <span class="absolute right-3 top-2 text-slate-500">€/h</span>
+                </div>
+            </div>
+            
+            <!-- Taxes Toggle -->
+            <div class="flex items-center justify-between">
+                <label class="text-sm text-slate-300">Mode "Net en Poche"</label>
+                <button id="taxToggle" class="w-10 h-6 rounded-full bg-slate-700 relative transition-colors duration-200 focus:outline-none">
+                    <div class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform duration-200"></div>
+                </button>
+            </div>
+            <div id="taxDetails" class="hidden space-y-2 pt-2 transition-all">
+                <div>
+                    <label class="block text-[10px] text-slate-500 uppercase">Charges Est. (%)</label>
+                    <input type="number" id="taxRate" value="50" class="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1 text-xs text-slate-300">
+                </div>
+                <p class="text-[10px] text-slate-500 italic">Simule ONSS + IPP (approx. 50% en BE)</p>
+            </div>
+        </div>
+
+        <!-- History List -->
+        <div class="flex-1 overflow-y-auto p-4">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-xs font-bold text-slate-400 uppercase">Sessions Récentes</h3>
+                <button onclick="exportCSV()" class="text-xs text-emerald-400 hover:text-emerald-300"><i class="fas fa-download mr-1"></i>CSV</button>
+            </div>
+            <ul id="historyList" class="space-y-2">
+                <!-- Javascript will populate this -->
+            </ul>
+        </div>
+
+        <!-- Total Footer -->
+        <div class="p-4 bg-slate-800 border-t border-slate-700">
+            <div class="flex justify-between items-end">
+                <div>
+                    <p class="text-xs text-slate-400">Total Journée</p>
+                    <p id="totalTimeDay" class="text-sm font-mono text-slate-300">00:00:00</p>
+                </div>
+                <div class="text-right">
+                    <p id="totalMoneyDay" class="text-xl font-bold text-emerald-400 mono">€ 0.00</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT: The Big Monitor -->
+    <main class="flex-1 relative flex flex-col justify-center items-center p-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        
+        <!-- Background Decor -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-600 rounded-full blur-3xl mix-blend-screen animate-pulse" style="animation-duration: 10s;"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600 rounded-full blur-3xl mix-blend-screen animate-pulse" style="animation-duration: 7s;"></div>
+        </div>
+
+        <!-- The Monitor Card -->
+        <div class="glass-panel rounded-2xl p-12 w-full max-w-2xl text-center relative z-10 shadow-2xl">
+            
+            <!-- Project Name Input -->
+            <input type="text" id="taskName" placeholder="Sur quoi travaillez-vous ?" class="bg-transparent text-center text-slate-400 text-lg mb-8 focus:outline-none focus:text-white w-full placeholder-slate-600 border-b border-transparent focus:border-slate-600 transition-colors">
+
+            <!-- Money Counter (The Hero) -->
+            <div class="mb-4 relative inline-block">
+                <span class="text-7xl md:text-8xl font-bold text-white mono tracking-tighter" id="liveMoney">0.00</span>
+                <span class="text-3xl text-emerald-500 font-bold absolute -top-4 -right-8">€</span>
+            </div>
+            
+            <!-- Net Label -->
+            <div id="netLabel" class="text-sm text-emerald-400/80 font-medium uppercase tracking-widest mb-10 hidden">Estimation Net en Poche</div>
+            <div id="grossLabel" class="text-sm text-slate-500 font-medium uppercase tracking-widest mb-10">Montant Brut Généré</div>
+
+            <!-- Time Counter -->
+            <div class="bg-slate-900/50 rounded-full px-6 py-2 inline-flex items-center border border-slate-700 mb-12">
+                <i class="fas fa-clock text-slate-400 mr-3"></i>
+                <span id="liveTimer" class="text-2xl text-slate-200 mono">00:00:00</span>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex justify-center gap-4">
+                <button id="btnStart" class="w-16 h-16 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/50 transition-all flex items-center justify-center text-xl">
+                    <i class="fas fa-play ml-1"></i>
+                </button>
+                
+                <button id="btnPause" class="hidden w-16 h-16 rounded-full bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-900/50 transition-all flex items-center justify-center text-xl">
+                    <i class="fas fa-pause"></i>
+                </button>
+
+                <button id="btnStop" class="w-16 h-16 rounded-full bg-slate-700 hover:bg-red-500 text-slate-300 hover:text-white transition-all flex items-center justify-center text-xl" disabled>
+                    <i class="fas fa-stop"></i>
+                </button>
+            </div>
+            
+            <p class="mt-6 text-slate-500 text-xs" id="statusText">Prêt à démarrer</p>
+        </div>
+    </main>
+
+    <!-- CONFIRM MODAL -->
+    <div id="saveModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-slate-800 p-6 rounded-lg shadow-2xl max-w-sm w-full border border-slate-700">
+            <h3 class="text-lg font-bold text-white mb-2">Session terminée</h3>
+            <p class="text-slate-400 text-sm mb-4">Voulez-vous sauvegarder cette session dans l'historique ?</p>
+            
+            <div class="flex justify-end gap-3">
+                <button id="modalDiscard" class="px-4 py-2 text-sm text-slate-400 hover:text-white">Jeter</button>
+                <button id="modalSave" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-sm font-bold">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIC: STATE MANAGEMENT ---
+        const state = {
+            startTime: 0,
+            elapsed: 0,
+            intervalId: null,
+            isRunning: false,
+            hourlyRate: 75,
+            isNetMode: false,
+            taxRate: 50,
+            history: []
+        };
+
+        // --- DOM ELEMENTS ---
+        const els = {
+            timer: document.getElementById('liveTimer'),
+            money: document.getElementById('liveMoney'),
+            btnStart: document.getElementById('btnStart'),
+            btnPause: document.getElementById('btnPause'),
+            btnStop: document.getElementById('btnStop'),
+            inputRate: document.getElementById('hourlyRate'),
+            taxToggle: document.getElementById('taxToggle'),
+            taxDetails: document.getElementById('taxDetails'),
+            inputTax: document.getElementById('taxRate'),
+            taskName: document.getElementById('taskName'),
+            status: document.getElementById('statusText'),
+            historyList: document.getElementById('historyList'),
+            totalTimeDay: document.getElementById('totalTimeDay'),
+            totalMoneyDay: document.getElementById('totalMoneyDay'),
+            modal: document.getElementById('saveModal'),
+            modalSave: document.getElementById('modalSave'),
+            modalDiscard: document.getElementById('modalDiscard'),
+            grossLabel: document.getElementById('grossLabel'),
+            netLabel: document.getElementById('netLabel')
+        };
+
+        // --- INITIALIZATION ---
+        function init() {
+            // Load from local storage
+            const savedHistory = localStorage.getItem('myPocketHR_history');
+            const savedRate = localStorage.getItem('myPocketHR_rate');
+            
+            if (savedHistory) state.history = JSON.parse(savedHistory);
+            if (savedRate) {
+                state.hourlyRate = parseFloat(savedRate);
+                els.inputRate.value = state.hourlyRate;
+            }
+
+            renderHistory();
+            updateTotals();
+
+            // Check for unsaved session (crash recovery)
+            // (Simplified for this version: we start fresh)
+        }
+
+        // --- CORE TIMER LOGIC ---
+        function startTimer() {
+            if (!state.isRunning) {
+                state.startTime = Date.now() - state.elapsed;
+                state.intervalId = setInterval(tick, 50); // 50ms for smooth updates
+                state.isRunning = true;
+                updateUIState('running');
+            }
+        }
+
+        function pauseTimer() {
+            if (state.isRunning) {
+                clearInterval(state.intervalId);
+                state.isRunning = false;
+                updateUIState('paused');
+            }
+        }
+
+        function stopTimer() {
+            pauseTimer();
+            els.modal.classList.remove('hidden');
+        }
+
+        function tick() {
+            const now = Date.now();
+            state.elapsed = now - state.startTime;
+            updateDisplay();
+        }
+
+        // --- CALCULATIONS & FORMATTING ---
+        function getMoney(ms) {
+            const hours = ms / 1000 / 60 / 60;
+            let rate = state.hourlyRate;
+            
+            if (state.isNetMode) {
+                rate = rate * (1 - (state.taxRate / 100));
+            }
+
+            return hours * rate;
+        }
+
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+            const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+            const s = (totalSeconds % 60).toString().padStart(2, '0');
+            return `${h}:${m}:${s}`;
+        }
+
+        function formatMoney(amount) {
+            return amount.toLocaleString('fr-BE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function updateDisplay() {
+            const money = getMoney(state.elapsed);
+            
+            // Visual quirk: Update text content
+            els.timer.textContent = formatTime(state.elapsed);
+            els.money.textContent = formatMoney(money);
+
+            // Dynamic Tab Title
+            document.title = `${formatMoney(money)} € - MyPocket HR`;
+        }
+
+        // --- UI STATES ---
+        function updateUIState(mode) {
+            if (mode === 'running') {
+                els.btnStart.classList.add('hidden');
+                els.btnPause.classList.remove('hidden');
+                els.btnStop.disabled = false;
+                els.btnStop.classList.remove('opacity-50', 'cursor-not-allowed');
+                els.btnPause.classList.add('active-ring');
+                els.status.textContent = "Session en cours... L'argent rentre !";
+                els.status.className = "mt-6 text-emerald-400 text-xs animate-pulse";
+            } else if (mode === 'paused') {
+                els.btnStart.classList.remove('hidden');
+                els.btnPause.classList.add('hidden');
+                els.btnPause.classList.remove('active-ring');
+                els.status.textContent = "Session en pause";
+                els.status.className = "mt-6 text-amber-500 text-xs";
+            } else if (mode === 'reset') {
+                els.btnStart.classList.remove('hidden');
+                els.btnPause.classList.add('hidden');
+                els.btnStop.disabled = true;
+                els.btnStop.classList.add('opacity-50', 'cursor-not-allowed');
+                els.status.textContent = "Prêt à démarrer";
+                els.status.className = "mt-6 text-slate-500 text-xs";
+                els.timer.textContent = "00:00:00";
+                els.money.textContent = "0.00";
+                document.title = "MyPocket HR";
+                state.elapsed = 0;
+            }
+        }
+
+        // --- SAVING & HISTORY ---
+        function saveSession() {
+            const sessionMoney = getMoney(state.elapsed);
+            const sessionObj = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                duration: state.elapsed,
+                amount: sessionMoney,
+                rate: state.hourlyRate,
+                isNet: state.isNetMode,
+                task: els.taskName.value || "Tâche sans nom"
+            };
+
+            state.history.unshift(sessionObj); // Add to top
+            localStorage.setItem('myPocketHR_history', JSON.stringify(state.history));
+            
+            renderHistory();
+            updateTotals();
+            closeModal();
+            updateUIState('reset');
+            els.taskName.value = "";
+        }
+
+        function discardSession() {
+            closeModal();
+            updateUIState('reset');
+        }
+
+        function closeModal() {
+            els.modal.classList.add('hidden');
+        }
+
+        function renderHistory() {
+            els.historyList.innerHTML = "";
+            const today = new Date().toDateString();
+
+            state.history.forEach(session => {
+                const dateObj = new Date(session.date);
+                const isToday = dateObj.toDateString() === today;
+                
+                const li = document.createElement('li');
+                li.className = "bg-slate-800 p-3 rounded border-l-2 " + (isToday ? "border-emerald-500" : "border-slate-600");
+                
+                li.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold text-slate-300 truncate w-32">${session.task}</p>
+                            <p class="text-[10px] text-slate-500">${dateObj.toLocaleDateString('fr-BE')} • ${dateObj.toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-emerald-400 font-mono text-sm font-bold">€ ${formatMoney(session.amount)}</p>
+                            <p class="text-[10px] text-slate-500">${formatTime(session.duration)}</p>
+                        </div>
+                    </div>
+                `;
+                els.historyList.appendChild(li);
+            });
+        }
+
+        function updateTotals() {
+            const today = new Date().toDateString();
+            let totalMs = 0;
+            let totalEur = 0;
+
+            state.history.forEach(session => {
+                if (new Date(session.date).toDateString() === today) {
+                    totalMs += session.duration;
+                    totalEur += session.amount;
+                }
+            });
+
+            els.totalTimeDay.textContent = formatTime(totalMs);
+            els.totalMoneyDay.textContent = "€ " + formatMoney(totalEur);
+        }
+
+        function exportCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Date,Heure,Tache,Duree (Sec),Taux,Montant,Type\n";
+
+            state.history.forEach(row => {
+                const date = new Date(row.date);
+                const dateStr = date.toLocaleDateString('fr-BE');
+                const timeStr = date.toLocaleTimeString('fr-BE');
+                const durSeconds = Math.round(row.duration / 1000);
+                const type = row.isNet ? "Net Estimé" : "Brut";
+                
+                csvContent += `${dateStr},${timeStr},"${row.task}",${durSeconds},${row.rate},${row.amount.toFixed(2)},${type}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "mypocket_hr_export.csv");
+            document.body.appendChild(link);
+            link.click();
+        }
+
+        // --- EVENT LISTENERS ---
+        els.btnStart.addEventListener('click', startTimer);
+        els.btnPause.addEventListener('click', pauseTimer);
+        els.btnStop.addEventListener('click', stopTimer);
+        els.modalSave.addEventListener('click', saveSession);
+        els.modalDiscard.addEventListener('click', discardSession);
+
+        els.inputRate.addEventListener('change', (e) => {
+            state.hourlyRate = parseFloat(e.target.value);
+            localStorage.setItem('myPocketHR_rate', state.hourlyRate);
+            if(state.elapsed > 0) updateDisplay();
+        });
+
+        els.inputTax.addEventListener('change', (e) => {
+            state.taxRate = parseFloat(e.target.value);
+            if(state.elapsed > 0) updateDisplay();
+        });
+
+        els.taxToggle.addEventListener('click', () => {
+            state.isNetMode = !state.isNetMode;
+            
+            // Toggle UI Switch
+            const knob = els.taxToggle.querySelector('div');
+            if (state.isNetMode) {
+                els.taxToggle.classList.replace('bg-slate-700', 'bg-emerald-600');
+                knob.classList.replace('left-1', 'translate-x-4');
+                els.taxDetails.classList.remove('hidden');
+                els.grossLabel.classList.add('hidden');
+                els.netLabel.classList.remove('hidden');
+            } else {
+                els.taxToggle.classList.replace('bg-emerald-600', 'bg-slate-700');
+                knob.classList.replace('translate-x-4', 'left-1');
+                els.taxDetails.classList.add('hidden');
+                els.grossLabel.classList.remove('hidden');
+                els.netLabel.classList.add('hidden');
+            }
+            if(state.elapsed > 0) updateDisplay();
+        });
+
+        // Start
+        init();
+
+    </script>
+</body>
+</html>
