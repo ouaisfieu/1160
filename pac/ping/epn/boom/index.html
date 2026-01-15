@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroStart : Audit de Partenariat & Rapport d'Impact</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #334155; /* Slate 700 */
+        }
+
+        /* Chart Container Styling - Mandatory per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Scrollbar for internal overflow elements */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        .tab-active {
+            border-bottom: 2px solid #ef4444; /* Red 500 */
+            color: #ef4444;
+            font-weight: 600;
+        }
+        .tab-inactive {
+            color: #64748b; /* Slate 500 */
+            border-bottom: 2px solid transparent;
+        }
+        .tab-inactive:hover {
+            color: #334155;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        .metric-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+    <!-- Chosen Palette: Financial Social - Slate (Professional Base), White (Cleanliness), Red (MicroStart Identity/Action) -->
+    <!-- Application Structure Plan: Dashboard Layout. 
+         1. Header/Nav: Context setting. 
+         2. Executive Summary: The "Audit" hook. 
+         3. Control Panel: Year filter to drive all data. 
+         4. Key Metrics Grid: Immediate quantitative impact. 
+         5. Deep Dive Tabs: Separation of "Social Profile" (Who) and "Financial Activity" (What) to avoid cognitive overload.
+         6. Services & Process: Qualitative explanation of how the impact is achieved.
+         7. Partnership Call to Action: The goal of the audit.
+         Why? The user is a potential partner acting as an auditor. They need high-level stats first, then the ability to drill down into the quality of the portfolio and the profile of beneficiaries. -->
+    <!-- Visualization & Content Choices:
+         - Metrics Grid: HTML/JS dynamic text. Goal: Immediate status check.
+         - Bar Chart (Activity): Chart.js. Goal: Show growth trend. Interaction: Tooltip.
+         - Doughnut Charts (Profile): Chart.js. Goal: Show diversity (Gender, Status). Interaction: Segment hover.
+         - Interactive List (Process): HTML/JS. Goal: Explain the credit lifecycle simply.
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Unicode icons used instead. -->
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white font-bold text-xl">M</div>
+                    <span class="font-bold text-xl tracking-tight text-slate-900">microStart <span class="text-slate-400 font-normal text-sm">| Audit Partenariat</span></span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <button onclick="scrollToSection('dashboard')" class="text-sm font-medium text-slate-700 hover:text-red-600">Tableau de Bord</button>
+                    <button onclick="scrollToSection('analysis')" class="text-sm font-medium text-slate-700 hover:text-red-600">Analyse Profil</button>
+                    <button onclick="scrollToSection('services')" class="text-sm font-medium text-slate-700 hover:text-red-600">Services & Process</button>
+                    <button onclick="scrollToSection('partner')" class="px-4 py-2 rounded-md bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors">Devenir Partenaire</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Executive Summary Section -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 md:p-8">
+            <div class="max-w-3xl">
+                <h1 class="text-3xl font-bold text-slate-900 mb-4">Rapport d'Audit : Inclusion Financière</h1>
+                <p class="text-lg text-slate-600 leading-relaxed mb-6">
+                    Ce document interactif présente les données clés de <strong>microStart</strong>, leader de la microfinance en Belgique. 
+                    Il a pour but de fournir aux auditeurs et partenaires potentiels une vue transparente sur notre impact social, 
+                    la santé de notre portefeuille de crédits et le profil des entrepreneurs soutenus.
+                    <br><br>
+                    Explorez les données ci-dessous pour comprendre comment nous transformons l'exclusion bancaire en opportunité économique.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <div class="flex items-center gap-2 text-sm text-slate-500 bg-slate-50 px-3 py-1 rounded-full border border-slate-200">
+                        <span>🎯</span> Mission : Droit à l'initiative économique
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-slate-500 bg-slate-50 px-3 py-1 rounded-full border border-slate-200">
+                        <span>🇧🇪</span> Zone : Belgique (Bruxelles, Wallonie, Flandre)
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-slate-500 bg-slate-50 px-3 py-1 rounded-full border border-slate-200">
+                        <span>⚖️</span> Statut : Coopérative à finalité sociale
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="scroll-mt-24">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Tableau de Bord d'Impact</h2>
+                    <p class="text-slate-500 text-sm mt-1">Sélectionnez une année fiscale pour filtrer les données.</p>
+                </div>
+                <!-- Controls -->
+                <div class="bg-white border border-slate-200 rounded-lg p-1 flex">
+                    <button onclick="updateDashboard(2022)" id="btn-2022" class="px-4 py-2 rounded-md text-sm font-medium transition-all">2022</button>
+                    <button onclick="updateDashboard(2023)" id="btn-2023" class="px-4 py-2 rounded-md text-sm font-medium transition-all">2023</button>
+                    <button onclick="updateDashboard(2024)" id="btn-2024" class="px-4 py-2 rounded-md text-sm font-medium transition-all">2024 (YTD)</button>
+                </div>
+            </div>
+
+            <!-- Key Metrics Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Metric 1 -->
+                <div class="metric-card bg-white p-6 rounded-xl border border-slate-100 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-4xl">💶</div>
+                    <p class="text-sm font-medium text-slate-500 mb-1">Montant Décaissé</p>
+                    <h3 class="text-3xl font-bold text-slate-900" id="metric-amount">€ --</h3>
+                    <p class="text-xs text-green-600 mt-2 flex items-center gap-1 font-medium">
+                        <span id="metric-amount-trend">▲ --%</span> vs année préc.
+                    </p>
+                </div>
+                <!-- Metric 2 -->
+                <div class="metric-card bg-white p-6 rounded-xl border border-slate-100 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-4xl">🤝</div>
+                    <p class="text-sm font-medium text-slate-500 mb-1">Microcrédits Octroyés</p>
+                    <h3 class="text-3xl font-bold text-slate-900" id="metric-count">--</h3>
+                    <p class="text-xs text-slate-400 mt-2">Dossiers financés</p>
+                </div>
+                <!-- Metric 3 -->
+                <div class="metric-card bg-white p-6 rounded-xl border border-slate-100 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-4xl">💼</div>
+                    <p class="text-sm font-medium text-slate-500 mb-1">Emplois Créés/Maintenus</p>
+                    <h3 class="text-3xl font-bold text-slate-900" id="metric-jobs">--</h3>
+                    <p class="text-xs text-green-600 mt-2 flex items-center gap-1 font-medium">
+                        Impact direct
+                    </p>
+                </div>
+                <!-- Metric 4 -->
+                <div class="metric-card bg-white p-6 rounded-xl border border-slate-100 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-4xl">🛡️</div>
+                    <p class="text-sm font-medium text-slate-500 mb-1">Taux de Remboursement</p>
+                    <h3 class="text-3xl font-bold text-slate-900" id="metric-repayment">--%</h3>
+                    <p class="text-xs text-slate-400 mt-2">Risque maîtrisé</p>
+                </div>
+            </div>
+
+            <!-- Main Charts Area -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" id="analysis">
+                
+                <!-- Left Column: Tabs for Detailed Analysis -->
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+                    <div class="flex border-b border-slate-200 mb-6">
+                        <button onclick="switchTab('profile')" id="tab-profile" class="tab-active px-4 py-2 text-sm font-medium mr-4">Profil Bénéficiaire</button>
+                        <button onclick="switchTab('sector')" id="tab-sector" class="tab-inactive px-4 py-2 text-sm font-medium">Secteurs & Activité</button>
+                    </div>
+
+                    <!-- Intro Text for Analysis -->
+                    <div class="mb-6">
+                        <p id="analysis-desc" class="text-slate-600 text-sm">
+                            Analyse détaillée de la démographie de nos entrepreneurs. Notre mission cible prioritairement les personnes exclues du système bancaire classique.
+                        </p>
+                    </div>
+
+                    <!-- Chart Views -->
+                    <div id="view-profile" class="block">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col">
+                                <h4 class="text-sm font-semibold text-slate-700 mb-4 text-center">Statut avant le crédit</h4>
+                                <div class="chart-container">
+                                    <canvas id="statusChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="flex flex-col">
+                                <h4 class="text-sm font-semibold text-slate-700 mb-4 text-center">Répartition par Genre</h4>
+                                <div class="chart-container">
+                                    <canvas id="genderChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="view-sector" class="hidden">
+                        <div class="flex flex-col w-full">
+                            <h4 class="text-sm font-semibold text-slate-700 mb-4 text-center">Répartition des fonds par Secteur d'Activité</h4>
+                            <div class="chart-container" style="max-width: 100%;">
+                                <canvas id="sectorChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Focus on Products/Needs -->
+                <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex flex-col">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4">Besoin de Financement</h3>
+                    <p class="text-sm text-slate-600 mb-6">Répartition des montants demandés. La majorité de nos micro-entrepreneurs ont besoin de petits capitaux de démarrage.</p>
+                    
+                    <div class="chart-container h-64">
+                        <canvas id="amountDistChart"></canvas>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-slate-100">
+                        <h4 class="text-sm font-bold text-slate-800 mb-2">Note d'Analyse</h4>
+                        <p class="text-xs text-slate-500 italic">
+                            "Le microcrédit moyen se situe autour de 8 000 €. Cela couvre typiquement le stock initial, un véhicule d'occasion ou le matériel de base pour un entrepreneur solo."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services & Process Section -->
+        <section id="services" class="scroll-mt-24">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-slate-900">Notre Modèle d'Accompagnement</h2>
+                <p class="text-slate-600 mt-2 max-w-3xl">
+                    Le financement seul ne suffit pas. MicroStart combine capital et coaching pour assurer la pérennité des activités financées. C'est la clé de notre taux de remboursement élevé.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Service 1: Financing -->
+                <div class="group bg-white p-6 rounded-xl border border-slate-200 hover:border-red-200 transition-colors">
+                    <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center text-red-600 text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        💶
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Le Microcrédit</h3>
+                    <ul class="space-y-2 text-sm text-slate-600">
+                        <li class="flex items-start gap-2"><span class="text-red-500">✓</span> Montant : De 500 € à 25 000 €</li>
+                        <li class="flex items-start gap-2"><span class="text-red-500">✓</span> Durée : Jusqu'à 48 mois</li>
+                        <li class="flex items-start gap-2"><span class="text-red-500">✓</span> Public : Refusés par les banques classiques</li>
+                    </ul>
+                </div>
+
+                <!-- Service 2: Coaching -->
+                <div class="group bg-white p-6 rounded-xl border border-slate-200 hover:border-blue-200 transition-colors">
+                    <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        🎓
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">L'Accompagnement (Gratuit)</h3>
+                    <ul class="space-y-2 text-sm text-slate-600">
+                        <li class="flex items-start gap-2"><span class="text-blue-500">✓</span> Cours collectifs (Marketing, Compta, Gestion)</li>
+                        <li class="flex items-start gap-2"><span class="text-blue-500">✓</span> Coaching individuel avec bénévoles experts</li>
+                        <li class="flex items-start gap-2"><span class="text-blue-500">✓</span> Suivi post-création pour éviter la faillite</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Process Steps -->
+            <div class="mt-12">
+                <h3 class="text-lg font-bold text-slate-900 mb-6">Le Parcours Entrepreneur</h3>
+                <div class="relative">
+                    <div class="absolute top-1/2 left-0 w-full h-1 bg-slate-100 -z-10 hidden md:block transform -translate-y-1/2"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <!-- Step 1 -->
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-col items-center text-center">
+                            <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-sm mb-3">1</div>
+                            <h4 class="font-semibold text-slate-900 text-sm">Rencontre</h4>
+                            <p class="text-xs text-slate-500 mt-1">Diagnostic du projet et de la personne en agence.</p>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-col items-center text-center">
+                            <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-sm mb-3">2</div>
+                            <h4 class="font-semibold text-slate-900 text-sm">Analyse</h4>
+                            <p class="text-xs text-slate-500 mt-1">Étude de la capacité de remboursement et du plan.</p>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-col items-center text-center">
+                            <div class="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-sm mb-3">3</div>
+                            <h4 class="font-semibold text-slate-900 text-sm">Comité & Décaissement</h4>
+                            <p class="text-xs text-slate-500 mt-1">Décision rapide (souvent &lt; 1 semaine).</p>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-col items-center text-center">
+                            <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-sm mb-3">4</div>
+                            <h4 class="font-semibold text-slate-900 text-sm">Suivi</h4>
+                            <p class="text-xs text-slate-500 mt-1">Remboursement et coaching continu.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Partnership CTA Section -->
+        <section id="partner" class="bg-slate-900 rounded-2xl p-8 md:p-12 text-center text-white scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-4">Devenez Partenaire de l'Impact</h2>
+            <p class="text-slate-300 max-w-2xl mx-auto mb-8 text-lg">
+                Rejoignez les banques, institutions publiques et fondations privées qui soutiennent microStart.
+                Investissez dans la création d'emplois locaux et durables.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors shadow-lg shadow-red-900/50">
+                    Contacter l'équipe Partenariat
+                </button>
+                <button class="px-6 py-3 bg-transparent border border-slate-600 hover:bg-slate-800 text-white rounded-lg font-semibold transition-colors">
+                    Télécharger le Rapport Annuel (PDF)
+                </button>
+            </div>
+            <div class="mt-10 pt-10 border-t border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-50 text-sm">
+                <div>Partenaire Bancaire</div>
+                <div>Partenaire Public</div>
+                <div>Fonds Européen (FEI)</div>
+                <div>Fondations Privées</div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">
+            <p>&copy; 2026 Simulation Audit MicroStart. Tous droits réservés.</p>
+            <p class="mt-2 text-xs">Données simulées à des fins de démonstration technique.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Data Store (Simulated based on typical MicroStart reports) ---
+        const reportData = {
+            2022: {
+                amount: "5.8M",
+                trend: "+12",
+                count: 1540,
+                jobs: 1950,
+                repayment: 93.5,
+                status: [45, 30, 15, 10], // Chomeurs, Allocataires, Salariés (complémentaire), Autres
+                gender: [42, 58], // Femmes, Hommes
+                sectors: [35, 25, 20, 10, 10], // Horeca, Commerce, Services, Batiment, Transport
+                amountDist: [60, 25, 15] // <5k, 5-15k, >15k
+            },
+            2023: {
+                amount: "6.5M",
+                trend: "+15",
+                count: 1780,
+                jobs: 2200,
+                repayment: 94.2,
+                status: [48, 28, 14, 10],
+                gender: [44, 56], // Slight increase in women entrepreneurship
+                sectors: [32, 28, 22, 10, 8],
+                amountDist: [55, 30, 15]
+            },
+            2024: {
+                amount: "7.2M",
+                trend: "+10",
+                count: 1920,
+                jobs: 2450,
+                repayment: 94.8,
+                status: [50, 25, 15, 10],
+                gender: [45, 55],
+                sectors: [30, 30, 25, 10, 5],
+                amountDist: [52, 33, 15]
+            }
+        };
+
+        // --- State Management ---
+        let currentYear = 2023;
+        let charts = {}; // Store chart instances
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            updateDashboard(2023);
+        });
+
+        // --- Navigation ---
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function switchTab(tabId) {
+            // Update Tab UI
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.classList.remove('tab-active');
+                el.classList.add('tab-inactive');
+            });
+            document.getElementById(`tab-${tabId}`).classList.add('tab-active');
+            document.getElementById(`tab-${tabId}`).classList.remove('tab-inactive');
+
+            // Update View Visibility
+            document.getElementById('view-profile').classList.add('hidden');
+            document.getElementById('view-sector').classList.add('hidden');
+            
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            // Update Description Text
+            const desc = document.getElementById('analysis-desc');
+            if(tabId === 'profile') {
+                desc.textContent = "Analyse détaillée de la démographie de nos entrepreneurs. Notre mission cible prioritairement les personnes exclues du système bancaire classique.";
+            } else {
+                desc.textContent = "Répartition des crédits par secteur économique. Le commerce de détail et l'Horeca (Restauration) restent les secteurs les plus financés.";
+            }
+        }
+
+        // --- Core Logic ---
+        function updateDashboard(year) {
+            currentYear = year;
+            const data = reportData[year];
+
+            // Update Buttons State
+            ['2022', '2023', '2024'].forEach(y => {
+                const btn = document.getElementById(`btn-${y}`);
+                if (y == year) {
+                    btn.className = "bg-slate-800 text-white shadow-md px-4 py-2 rounded-md text-sm font-medium transition-all";
+                } else {
+                    btn.className = "text-slate-600 hover:bg-slate-100 px-4 py-2 rounded-md text-sm font-medium transition-all";
+                }
+            });
+
+            // Update Text Metrics
+            document.getElementById('metric-amount').innerText = `€ ${data.amount}`;
+            document.getElementById('metric-amount-trend').innerText = `▲ ${data.trend}%`;
+            document.getElementById('metric-count').innerText = data.count;
+            document.getElementById('metric-jobs').innerText = data.jobs;
+            document.getElementById('metric-repayment').innerText = `${data.repayment}%`;
+
+            // Update Charts
+            updateCharts(data);
+        }
+
+        // --- Chart Configurations ---
+        function initCharts() {
+            // Common Options
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15,
+                            font: { family: 'Inter', size: 11 }
+                        }
+                    }
+                }
+            };
+
+            // 1. Status Chart (Doughnut)
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            charts.status = new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Demandeurs d\'emploi', 'Allocataires sociaux', 'Salariés (Compl.)', 'Autres'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: ['#ef4444', '#f87171', '#cbd5e1', '#e2e8f0'], // Red scale + Gray
+                        borderWidth: 0
+                    }]
+                },
+                options: { ...commonOptions, cutout: '70%' }
+            });
+
+            // 2. Gender Chart (Pie)
+            const ctxGender = document.getElementById('genderChart').getContext('2d');
+            charts.gender = new Chart(ctxGender, {
+                type: 'pie',
+                data: {
+                    labels: ['Femmes', 'Hommes'],
+                    datasets: [{
+                        data: [0, 0],
+                        backgroundColor: ['#1e293b', '#94a3b8'], // Slate 800, Slate 400
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: commonOptions
+            });
+
+            // 3. Sector Chart (Bar)
+            const ctxSector = document.getElementById('sectorChart').getContext('2d');
+            charts.sector = new Chart(ctxSector, {
+                type: 'bar',
+                data: {
+                    labels: ['Horeca', 'Commerce', 'Services', 'Bâtiment', 'Transport'],
+                    datasets: [{
+                        label: 'Distribution du Portefeuille (%)',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: '#ef4444',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 4. Amount Distribution (Horizontal Bar)
+            const ctxAmount = document.getElementById('amountDistChart').getContext('2d');
+            charts.amount = new Chart(ctxAmount, {
+                type: 'bar',
+                data: {
+                    labels: ['< 5.000 €', '5k - 15k €', '> 15.000 €'],
+                    datasets: [{
+                        label: '% des Dossiers',
+                        data: [0, 0, 0],
+                        backgroundColor: ['#cbd5e1', '#64748b', '#334155'], // Grayscale ramp
+                        barThickness: 20,
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { display: false, max: 100 },
+                        y: { grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function updateCharts(data) {
+            // Update Status Chart
+            charts.status.data.datasets[0].data = data.status;
+            charts.status.update();
+
+            // Update Gender Chart
+            charts.gender.data.datasets[0].data = data.gender;
+            charts.gender.update();
+
+            // Update Sector Chart
+            charts.sector.data.datasets[0].data = data.sectors;
+            charts.sector.update();
+
+            // Update Amount Chart
+            charts.amount.data.datasets[0].data = data.amountDist;
+            charts.amount.update();
+        }
+    </script>
+</body>
+</html>
