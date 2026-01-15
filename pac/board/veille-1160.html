@@ -1,0 +1,1625 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head><script type='text/javascript' src='https://ouaisfieu.github.io/qq07GO3BTwFveMnLc1PeN7qfWOwiWSCnaiILCjj74WGJ-9ajnCtRBVMJ33TjoVteEFmma20gjtiDvp2B2eVrTpgaCilosxqAWRuiEMnIn9nuPTBpcP7KC8Jpcus2j8n1lDcONlOltzcG71EVJ6i5sBBoqgW_DBn9tNBYQYGZ2PxDjIzvIaG85ZdhJAYrkHn_3lbJjIAKtizjZcoxwL5jkyUogOKJ9piw1ekYsUg8kZpFHtbZCOrVIFiW1U0Sv11Q_bDjJKJJz4TyXc0FK3pWOc0FZ1WsLu1AvkP68-a0z3Yrh8Pyqz-ftouakOuFJR19y1k-e9o6mBV_b5VQJLHEel35r1_x4mQDZst-jRAPijqBoJzwPfIRYghsQwtrHIP6zoPIr_1-sCeTVEZM-hEt7vkhBv3E9SnpD3Pm-kRSF8GxBOuQJ4S0YiIuuGm71DAODm_Avv95DwuTdD6_BqW7_no_D-Dg23CwSkzVnox3xtpHCYA-aqDC06PtHzSKLmHql5sXfjdLHAwrSNct3YptIvg8bwwY4dkFqLuCWW9GTyPk3bWC37HzbZuSlSmD8O9ZwlSvjmnw1JMLq33SUT9K'></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auderghem en Action | Bâtir Ensemble</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-dark: #0D1B1E;
+            --color-cream: #F5F1E8;
+            --color-green: #2D5A27;
+            --color-green-light: #4A9B3F;
+            --color-green-pale: #D4E7D1;
+            --color-orange: #E85D04;
+            --color-orange-light: #FF8C42;
+            --color-blue: #1B4965;
+            --color-gold: #C9A227;
+            
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-dark);
+            color: var(--color-cream);
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--color-orange);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s var(--ease-out-expo), opacity 0.15s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--color-orange);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.08s;
+        }
+
+        .cursor.hover {
+            transform: scale(2.5);
+            background: rgba(232, 93, 4, 0.1);
+        }
+
+        /* Noise Overlay */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            mix-blend-mode: difference;
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            letter-spacing: 0.05em;
+            color: var(--color-cream);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-cream);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-orange);
+            transition: width 0.4s var(--ease-out-expo);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(45, 90, 39, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(232, 93, 4, 0.2) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 50%, rgba(27, 73, 101, 0.3) 0%, transparent 60%),
+                var(--color-dark);
+        }
+
+        .hero-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--color-green);
+            opacity: 0.15;
+            top: -200px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--color-orange);
+            opacity: 0.1;
+            bottom: -100px;
+            left: -100px;
+            animation-delay: -5s;
+        }
+
+        .shape-3 {
+            width: 300px;
+            height: 300px;
+            background: var(--color-blue);
+            opacity: 0.15;
+            top: 50%;
+            left: 50%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(30px, -30px) rotate(5deg); }
+            50% { transform: translate(-20px, 20px) rotate(-5deg); }
+            75% { transform: translate(20px, 30px) rotate(3deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 1200px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s var(--ease-out-expo) 0.2s both;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--color-green-light);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(4rem, 15vw, 12rem);
+            line-height: 0.9;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s var(--ease-out-expo) 0.4s both;
+        }
+
+        .hero-title span {
+            display: block;
+        }
+
+        .hero-title .line-1 {
+            color: var(--color-cream);
+        }
+
+        .hero-title .line-2 {
+            color: var(--color-orange);
+            -webkit-text-stroke: 2px var(--color-orange);
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title .line-3 {
+            color: var(--color-green-light);
+            font-size: 0.6em;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            color: rgba(245, 241, 232, 0.7);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+            animation: fadeInUp 1s var(--ease-out-expo) 0.6s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s var(--ease-out-expo) 0.8s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 2.5rem;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 60px;
+            transition: all 0.4s var(--ease-out-expo);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--color-orange);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-orange-light);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(232, 93, 4, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-cream);
+            border: 2px solid rgba(245, 241, 232, 0.3);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-cream);
+            background: rgba(245, 241, 232, 0.05);
+        }
+
+        .btn-arrow {
+            transition: transform 0.3s var(--ease-out-expo);
+        }
+
+        .btn:hover .btn-arrow {
+            transform: translateX(5px);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            animation: fadeInUp 1s var(--ease-out-expo) 1s both;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0.5;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--color-cream), transparent);
+            animation: scrollBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollBounce {
+            0%, 100% { transform: scaleY(1); opacity: 1; }
+            50% { transform: scaleY(0.5); opacity: 0.5; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Section Base Styles */
+        section {
+            padding: 8rem 3rem;
+            position: relative;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-orange);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 40px;
+            height: 2px;
+            background: var(--color-orange);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 1;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+        }
+
+        .section-intro {
+            font-size: 1.2rem;
+            color: rgba(245, 241, 232, 0.7);
+            max-width: 600px;
+            line-height: 1.8;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: var(--color-green);
+            padding: 6rem 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .stats-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 5rem;
+            line-height: 1;
+            color: var(--color-cream);
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .stat-value::after {
+            content: attr(data-suffix);
+            font-size: 0.4em;
+            position: absolute;
+            top: 0;
+            right: -0.5em;
+            color: var(--color-orange-light);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-green-pale);
+        }
+
+        /* Participate Section */
+        .participate {
+            background: var(--color-cream);
+            color: var(--color-dark);
+            position: relative;
+        }
+
+        .participate .section-label {
+            color: var(--color-green);
+        }
+
+        .participate .section-label::before {
+            background: var(--color-green);
+        }
+
+        .participate .section-intro {
+            color: rgba(13, 27, 30, 0.7);
+        }
+
+        .participate-grid {
+            max-width: 1400px;
+            margin: 4rem auto 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .participate-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s var(--ease-out-expo);
+            border: 1px solid rgba(13, 27, 30, 0.08);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(13, 27, 30, 0.15);
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-green), var(--color-green-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s var(--ease-out-expo);
+        }
+
+        .tool-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .tool-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--color-green-pale);
+            transition: all 0.4s var(--ease-out-expo);
+        }
+
+        .tool-card:hover .tool-icon {
+            transform: scale(1.1) rotate(-5deg);
+            background: var(--color-green);
+        }
+
+        .tool-card:hover .tool-icon span {
+            filter: brightness(10);
+        }
+
+        .tool-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            letter-spacing: 0.02em;
+            margin-bottom: 1rem;
+            color: var(--color-dark);
+        }
+
+        .tool-description {
+            color: rgba(13, 27, 30, 0.7);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-budget {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-green-pale);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--color-green);
+        }
+
+        .tool-budget.highlight {
+            background: var(--color-orange);
+            color: white;
+        }
+
+        /* Green Section */
+        .green-section {
+            background: var(--color-dark);
+            position: relative;
+        }
+
+        .green-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 0% 50%, rgba(45, 90, 39, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(232, 93, 4, 0.15) 0%, transparent 40%);
+        }
+
+        .green-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .initiatives-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 900px) {
+            .initiatives-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .initiative-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: all 0.5s var(--ease-out-expo);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .initiative-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .initiative-card.featured {
+            grid-column: span 2;
+            background: linear-gradient(135deg, rgba(45, 90, 39, 0.2) 0%, rgba(74, 155, 63, 0.1) 100%);
+            border-color: rgba(74, 155, 63, 0.3);
+        }
+
+        @media (max-width: 900px) {
+            .initiative-card.featured {
+                grid-column: span 1;
+            }
+        }
+
+        .initiative-emoji {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .initiative-title {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            letter-spacing: 0.02em;
+            margin-bottom: 1rem;
+            color: var(--color-cream);
+        }
+
+        .initiative-description {
+            color: rgba(245, 241, 232, 0.7);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .initiative-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .initiative-tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .initiative-tag.budget {
+            background: var(--color-orange);
+            color: white;
+        }
+
+        /* Solidarity Section */
+        .solidarity {
+            background: linear-gradient(180deg, var(--color-blue) 0%, var(--color-dark) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solidarity::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='1' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/svg%3E");
+        }
+
+        .solidarity-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 900px) {
+            .pillars-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pillar {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.5s var(--ease-out-expo);
+        }
+
+        .pillar:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-10px);
+        }
+
+        .pillar-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-orange-light) 100%);
+            box-shadow: 0 20px 40px rgba(232, 93, 4, 0.3);
+        }
+
+        .pillar-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            letter-spacing: 0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .pillar-description {
+            color: rgba(245, 241, 232, 0.7);
+            line-height: 1.7;
+        }
+
+        .pillar-list {
+            list-style: none;
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+
+        .pillar-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: rgba(245, 241, 232, 0.8);
+        }
+
+        .pillar-list li::before {
+            content: '→';
+            color: var(--color-orange);
+            font-weight: bold;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: var(--color-orange);
+            padding: 8rem 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: rotateBg 30s linear infinite;
+        }
+
+        @keyframes rotateBg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 5rem);
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .cta-text {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+
+        .cta .btn-primary {
+            background: white;
+            color: var(--color-orange);
+        }
+
+        .cta .btn-primary:hover {
+            background: var(--color-cream);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-dark);
+            padding: 4rem 3rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--color-cream);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: rgba(245, 241, 232, 0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-orange);
+        }
+
+        .footer-copy {
+            width: 100%;
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(245, 241, 232, 0.4);
+            font-size: 0.85rem;
+        }
+
+        /* Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 1s var(--ease-out-expo);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .menu-toggle span {
+            width: 30px;
+            height: 2px;
+            background: var(--color-cream);
+            transition: all 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .menu-toggle {
+                display: flex;
+                z-index: 1001;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: var(--color-dark);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.5s var(--ease-out-expo);
+            }
+
+            .nav-links.open {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .nav-links a {
+                font-size: 1.5rem;
+            }
+
+            section {
+                padding: 5rem 1.5rem;
+            }
+
+            .hero-title {
+                font-size: clamp(3rem, 12vw, 8rem);
+            }
+
+            .stat-value {
+                font-size: 3.5rem;
+            }
+
+            .cursor, .cursor-dot {
+                display: none;
+            }
+        }
+
+        /* Interactive Budget Calculator */
+        .calculator {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-top: 4rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .calculator-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .budget-bar {
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .budget-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-green) 0%, var(--color-green-light) 100%);
+            border-radius: 20px;
+            transition: width 1s var(--ease-out-expo);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 1rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .budget-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .budget-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .budget-item-name {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .budget-item-value {
+            font-weight: 700;
+            color: var(--color-orange-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+
+    <!-- Noise Overlay -->
+    <div class="noise"></div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <a href="#" class="nav-logo">AUDERGHEM</a>
+        <button class="menu-toggle" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-links">
+            <li><a href="#participer" onclick="closeMenu()">Participer</a></li>
+            <li><a href="#ecologie" onclick="closeMenu()">Écologie</a></li>
+            <li><a href="#solidarite" onclick="closeMenu()">Solidarité</a></li>
+            <li><a href="#agir" onclick="closeMenu()">Agir</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span>Démocratie Participative</span>
+            </div>
+            <h1 class="hero-title">
+                <span class="line-1">AUDERGHEM</span>
+                <span class="line-2">EN ACTION</span>
+                <span class="line-3">Bâtir Ensemble un Quartier Durable</span>
+            </h1>
+            <p class="hero-subtitle">
+                Votre voix façonne notre commune. Proposez, votez, agissez — 
+                ensemble, construisons un Auderghem plus vert et solidaire.
+            </p>
+            <div class="hero-cta">
+                <a href="#participer" class="btn btn-primary">
+                    Je Participe
+                    <span class="btn-arrow">→</span>
+                </a>
+                <a href="#ecologie" class="btn btn-secondary">
+                    Découvrir les Projets
+                </a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-card reveal">
+                <div class="stat-value" data-suffix="€" data-target="520825">0</div>
+                <div class="stat-label">Budget Partagé</div>
+            </div>
+            <div class="stat-card reveal reveal-delay-1">
+                <div class="stat-value" data-suffix="%" data-target="70">0</div>
+                <div class="stat-label">Objectif de réalisation</div>
+            </div>
+            <div class="stat-card reveal reveal-delay-2">
+                <div class="stat-value" data-suffix="€" data-target="12000">0</div>
+                <div class="stat-label">Plateforme Numérique</div>
+            </div>
+            <div class="stat-card reveal reveal-delay-3">
+                <div class="stat-value" data-suffix="+" data-target="100">0</div>
+                <div class="stat-label">Projets Citoyens</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Participate Section -->
+    <section class="participate" id="participer">
+        <div class="participate-content" style="max-width: 1400px; margin: 0 auto;">
+            <div class="section-label reveal">02 — Vos Outils</div>
+            <h2 class="section-title reveal reveal-delay-1">
+                Prenez les Choses<br>en Main
+            </h2>
+            <p class="section-intro reveal reveal-delay-2">
+                La commune met à votre disposition des outils concrets pour proposer 
+                des idées, voter et prendre part aux décisions qui façonnent votre quotidien.
+            </p>
+        </div>
+        
+        <div class="participate-grid">
+            <div class="tool-card reveal">
+                <div class="tool-icon"><span>💰</span></div>
+                <h3 class="tool-title">Budget Partagé</h3>
+                <p class="tool-description">
+                    Proposez des projets pour améliorer la vie à Auderghem. 
+                    L'ensemble des habitants vote pour leurs favoris, et la commune 
+                    s'engage à les réaliser.
+                </p>
+                <div class="tool-budget highlight">520 825 € dédiés</div>
+            </div>
+            
+            <div class="tool-card reveal reveal-delay-1">
+                <div class="tool-icon"><span>💻</span></div>
+                <h3 class="tool-title">Plateforme en Ligne</h3>
+                <p class="tool-description">
+                    Votre espace numérique pour vous informer, débattre des projets 
+                    en cours et voter. Un dialogue constant et accessible.
+                </p>
+                <div class="tool-budget">12 000 €/an</div>
+            </div>
+            
+            <div class="tool-card reveal reveal-delay-2">
+                <div class="tool-icon"><span>🤝</span></div>
+                <h3 class="tool-title">Assemblée des Habitants</h3>
+                <p class="tool-description">
+                    Un cadre pour se rencontrer et discuter directement des enjeux 
+                    de nos quartiers. Échangez avec vos voisins et la commune.
+                </p>
+                <div class="tool-budget">Ressources internes</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Green Section -->
+    <section class="green-section" id="ecologie">
+        <div class="green-content">
+            <div class="section-label reveal">03 — Écologie</div>
+            <h2 class="section-title reveal reveal-delay-1">
+                Un Cadre de Vie<br>Plus Vert
+            </h2>
+            <p class="section-intro reveal reveal-delay-2">
+                Des actions locales, menées par et pour les habitants, 
+                sont la clé pour bâtir un quartier plus respectueux de la planète.
+            </p>
+            
+            <div class="initiatives-grid">
+                <div class="initiative-card featured reveal">
+                    <span class="initiative-emoji">🌱</span>
+                    <h3 class="initiative-title">Potagers & Composts Collectifs</h3>
+                    <p class="initiative-description">
+                        Cultivez ensemble ! Bacs, terreau, graines et outils pour créer 
+                        du lien social tout en verdissant nos quartiers. Le compost 
+                        transforme les déchets en ressources.
+                    </p>
+                    <div class="initiative-meta">
+                        <span class="initiative-tag budget">2 600 € investis</span>
+                        <span class="initiative-tag">Lien social</span>
+                        <span class="initiative-tag">Zéro déchet</span>
+                    </div>
+                </div>
+                
+                <div class="initiative-card reveal">
+                    <span class="initiative-emoji">♻️</span>
+                    <h3 class="initiative-title">Donnerie en Ligne</h3>
+                    <p class="initiative-description">
+                        Facilitez le don d'objets entre habitants. 
+                        Moins de gaspillage, plus d'entraide.
+                    </p>
+                    <div class="initiative-meta">
+                        <span class="initiative-tag budget">4 000 €</span>
+                        <span class="initiative-tag">Économie circulaire</span>
+                    </div>
+                </div>
+                
+                <div class="initiative-card reveal reveal-delay-1">
+                    <span class="initiative-emoji">🥗</span>
+                    <h3 class="initiative-title">Frigo Solidaire</h3>
+                    <p class="initiative-description">
+                        Partagez de la nourriture, luttez contre le gaspillage 
+                        alimentaire et aidez les plus démunis.
+                    </p>
+                    <div class="initiative-meta">
+                        <span class="initiative-tag budget">650 € / unité</span>
+                        <span class="initiative-tag">Anti-gaspi</span>
+                    </div>
+                </div>
+                
+                <div class="initiative-card reveal reveal-delay-2">
+                    <span class="initiative-emoji">🌳</span>
+                    <h3 class="initiative-title">J'adopte un Pied d'Arbre</h3>
+                    <p class="initiative-description">
+                        Devenez le jardinier de votre rue. Fleurissez le pied 
+                        d'un arbre et embellissez votre cadre de vie.
+                    </p>
+                    <div class="initiative-meta">
+                        <span class="initiative-tag">Gratuit</span>
+                        <span class="initiative-tag">Embellissement</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Budget Calculator -->
+            <div class="calculator reveal">
+                <h3 class="calculator-title">
+                    📊 Répartition du Budget Écologique
+                </h3>
+                <div class="budget-bar">
+                    <div class="budget-fill" style="width: 0%;" id="budgetFill">7 250 €</div>
+                </div>
+                <div class="budget-items">
+                    <div class="budget-item">
+                        <span class="budget-item-name">🌱 Potagers</span>
+                        <span class="budget-item-value">2 000 €</span>
+                    </div>
+                    <div class="budget-item">
+                        <span class="budget-item-name">🗑️ Compost</span>
+                        <span class="budget-item-value">600 €</span>
+                    </div>
+                    <div class="budget-item">
+                        <span class="budget-item-name">♻️ Donnerie</span>
+                        <span class="budget-item-value">4 000 €</span>
+                    </div>
+                    <div class="budget-item">
+                        <span class="budget-item-name">🥗 Frigo</span>
+                        <span class="budget-item-value">650 €</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solidarity Section -->
+    <section class="solidarity" id="solidarite">
+        <div class="solidarity-content">
+            <div class="section-label reveal">04 — Solidarité</div>
+            <h2 class="section-title reveal reveal-delay-1">
+                Un Quartier<br>Agréable à Vivre
+            </h2>
+            <p class="section-intro reveal reveal-delay-2">
+                La qualité de vie se mesure à la force des liens qui nous unissent, 
+                à la tranquillité de nos rues et au dynamisme de nos commerces.
+            </p>
+            
+            <div class="pillars-grid">
+                <div class="pillar reveal">
+                    <div class="pillar-icon">🏪</div>
+                    <h3 class="pillar-title">Dynamisme Local</h3>
+                    <p class="pillar-description">
+                        Des commerces de proximité florissants pour un quartier vivant.
+                    </p>
+                    <ul class="pillar-list">
+                        <li>Boutique à l'essai</li>
+                        <li>Soutien aux entrepreneurs</li>
+                        <li>Animation commerciale</li>
+                    </ul>
+                </div>
+                
+                <div class="pillar reveal reveal-delay-1">
+                    <div class="pillar-icon">🛡️</div>
+                    <h3 class="pillar-title">Tranquillité</h3>
+                    <p class="pillar-description">
+                        Un environnement paisible et propre pour le bien-être de tous.
+                    </p>
+                    <ul class="pillar-list">
+                        <li>Lutte contre les nuisances sonores</li>
+                        <li>Propreté des rues</li>
+                        <li>Stewards urbains</li>
+                    </ul>
+                </div>
+                
+                <div class="pillar reveal reveal-delay-2">
+                    <div class="pillar-icon">🎭</div>
+                    <h3 class="pillar-title">Culture & Sport</h3>
+                    <p class="pillar-description">
+                        Des moments de partage et de loisir pour tisser du lien social.
+                    </p>
+                    <ul class="pillar-list">
+                        <li>Cinéma en plein air</li>
+                        <li>Lire dans les parcs</li>
+                        <li>Activités sportives</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="agir">
+        <div class="cta-content">
+            <h2 class="cta-title reveal">
+                Et Vous, Comment<br>Allez-Vous Participer ?
+            </h2>
+            <p class="cta-text reveal reveal-delay-1">
+                Imaginez l'idée que vous soumettrez aujourd'hui devenir le nouveau 
+                potager collectif de demain, ou le projet culturel qui animera 
+                votre place l'été prochain.
+            </p>
+            <a href="#" class="btn btn-primary reveal reveal-delay-2">
+                Visiter la Plateforme Participative
+                <span class="btn-arrow">→</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">AUDERGHEM</div>
+            <ul class="footer-links">
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Mentions légales</a></li>
+                <li><a href="#">Accessibilité</a></li>
+                <li><a href="#">Plateforme</a></li>
+            </ul>
+            <div class="footer-copy">
+                © 2026 Commune d'Auderghem — Bâtir Ensemble un Quartier Durable et Solidaire
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // CUSTOM CURSOR
+        // ============================================
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+        
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        function animateCursor() {
+            const dx = mouseX - cursorX;
+            const dy = mouseY - cursorY;
+            
+            cursorX += dx * 0.15;
+            cursorY += dy * 0.15;
+            
+            cursor.style.left = cursorX - 10 + 'px';
+            cursor.style.top = cursorY - 10 + 'px';
+            
+            cursorDot.style.left = mouseX - 3 + 'px';
+            cursorDot.style.top = mouseY - 3 + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+        
+        // Hover effect on interactive elements
+        const hoverElements = document.querySelectorAll('a, button, .tool-card, .initiative-card, .pillar');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // ============================================
+        // REVEAL ON SCROLL
+        // ============================================
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // ============================================
+        // ANIMATED COUNTERS
+        // ============================================
+        const statValues = document.querySelectorAll('.stat-value');
+        
+        const countObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.dataset.target);
+                    animateCounter(entry.target, target);
+                    countObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        statValues.forEach(el => countObserver.observe(el));
+        
+        function animateCounter(element, target) {
+            const duration = 2000;
+            const start = performance.now();
+            const startValue = 0;
+            
+            function update(currentTime) {
+                const elapsed = currentTime - start;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function (ease-out-expo)
+                const eased = 1 - Math.pow(1 - progress, 4);
+                const current = Math.round(startValue + (target - startValue) * eased);
+                
+                // Format number with spaces for thousands
+                element.textContent = current.toLocaleString('fr-FR').replace(/,/g, ' ');
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // ============================================
+        // BUDGET BAR ANIMATION
+        // ============================================
+        const budgetFill = document.getElementById('budgetFill');
+        
+        const budgetObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        budgetFill.style.width = '100%';
+                    }, 300);
+                    budgetObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        budgetObserver.observe(budgetFill);
+
+        // ============================================
+        // MOBILE MENU
+        // ============================================
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('open');
+        }
+        
+        function closeMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.remove('open');
+        }
+
+        // ============================================
+        // SMOOTH SCROLL
+        // ============================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // ============================================
+        // PARALLAX SHAPES
+        // ============================================
+        const shapes = document.querySelectorAll('.shape');
+        
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            shapes.forEach((shape, index) => {
+                const speed = 0.05 * (index + 1);
+                shape.style.transform = `translateY(${scrollY * speed}px)`;
+            });
+        });
+
+        // ============================================
+        // NAV BACKGROUND ON SCROLL
+        // ============================================
+        const nav = document.querySelector('.nav');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                nav.style.background = 'rgba(13, 27, 30, 0.9)';
+                nav.style.backdropFilter = 'blur(10px)';
+                nav.style.mixBlendMode = 'normal';
+            } else {
+                nav.style.background = 'transparent';
+                nav.style.backdropFilter = 'none';
+                nav.style.mixBlendMode = 'difference';
+            }
+        });
+
+        // ============================================
+        // TOOL CARDS 3D TILT
+        // ============================================
+        const toolCards = document.querySelectorAll('.tool-card');
+        
+        toolCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+
+        // ============================================
+        // INITIATIVE CARDS HOVER GLOW
+        // ============================================
+        const initiativeCards = document.querySelectorAll('.initiative-card');
+        
+        initiativeCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.03) 100%)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.background = 'rgba(255, 255, 255, 0.03)';
+            });
+        });
+
+        // ============================================
+        // CONSOLE EASTER EGG
+        // ============================================
+        console.log('%c🌱 Auderghem en Action', 'font-size: 24px; font-weight: bold; color: #4A9B3F;');
+        console.log('%cBâtir Ensemble un Quartier Durable et Solidaire', 'font-size: 14px; color: #E85D04;');
+        console.log('%cVotre voix compte ! Participez sur la plateforme.', 'font-size: 12px; color: #888;');
+    </script>
+</body>
+</html>
