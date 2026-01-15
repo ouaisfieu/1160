@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARIZONA // DETECTIVE OS</title>
+    <style>
+        :root {
+            --primary: #0f0;
+            --dim: #003300;
+            --bg: #000;
+            --glass: rgba(0, 20, 0, 0.9);
+            --alert: #f00;
+            --font-main: 'Courier New', Courier, monospace;
+        }
+
+        /* --- MATRIX CORE STYLES --- */
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--primary);
+            font-family: var(--font-main);
+            overflow: hidden;
+            height: 100vh;
+            display: grid;
+            grid-template-rows: 40px 1fr 30px;
+        }
+
+        canvas#matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Scanline Effect */
+        body::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 1000;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        /* --- LAYOUT --- */
+        header {
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            background: var(--glass);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        #main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 10px;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        .panel {
+            border: 1px solid var(--primary);
+            background: var(--glass);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 10px var(--dim);
+            position: relative;
+        }
+
+        .panel-header {
+            background: var(--primary);
+            color: var(--bg);
+            padding: 5px 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--dim); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); }
+
+        /* --- WIDGETS --- */
+        /* Character Sheet */
+        .char-stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed var(--dim);
+        }
+        .xp-bar-container {
+            height: 10px;
+            border: 1px solid var(--primary);
+            margin-top: 5px;
+        }
+        .xp-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        /* Data Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+        }
+        th { text-align: left; border-bottom: 2px solid var(--primary); padding: 5px; cursor: pointer;}
+        td { border-bottom: 1px solid var(--dim); padding: 5px; vertical-align: top;}
+        tr:hover { background: var(--dim); cursor: crosshair; }
+        
+        /* Forms & Inputs */
+        input, textarea, select {
+            background: black;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px;
+            width: 95%;
+            font-family: var(--font-main);
+            margin-bottom: 10px;
+        }
+        input:focus, textarea:focus { outline: none; box-shadow: 0 0 5px var(--primary); }
+        
+        button {
+            background: var(--dim);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: var(--font-main);
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        button:hover { background: var(--primary); color: var(--bg); }
+        button.btn-danger { border-color: var(--alert); color: var(--alert); }
+        button.btn-danger:hover { background: var(--alert); color: white; }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--primary);
+            background: var(--glass);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-size: 0.8em;
+        }
+
+        /* Utility classes */
+        .hidden { display: none !important; }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+        
+        .tag {
+            display: inline-block;
+            padding: 2px 5px;
+            border: 1px solid var(--primary);
+            font-size: 0.7em;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-rain"></canvas>
+
+    <header>
+        <div>SYSTEM: <span id="sys-status">ONLINE</span></div>
+        <div id="clock">00:00:00</div>
+        <div>USR: <span id="user-display">GUEST</span></div>
+    </header>
+
+    <div id="main-grid">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="panel" style="flex: 1;">
+                <div class="panel-header">
+                    <span>Identité</span>
+                    <span id="level-display">LVL 1</span>
+                </div>
+                <div class="panel-content">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Detective" id="avatar" style="width: 80px; border: 2px solid var(--primary); border-radius: 5px; padding: 2px;">
+                    </div>
+                    <div class="char-stat"><span>Nom de code:</span> <input type="text" id="username-input" value="Neo_Analyst" style="width: 50%; border: none; background: transparent; text-align: right; padding: 0;"></div>
+                    <div class="char-stat"><span>Classe:</span> <span>Data Detective</span></div>
+                    <div class="char-stat"><span>Focus:</span> <span>Politique BE</span></div>
+                    
+                    <div style="margin-top: 20px;">
+                        <div>PROGRESSION <span id="xp-text">0/100</span></div>
+                        <div class="xp-bar-container"><div id="xp-fill" class="xp-bar"></div></div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <h4>STATS SESSION</h4>
+                        <ul style="padding-left: 20px; font-size: 0.9em;">
+                            <li>Requêtes SQL: <span id="stat-queries">0</span></li>
+                            <li>Données éditées: <span id="stat-edits">0</span></li>
+                            <li>Temps connecté: <span id="session-timer">00:00</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel" style="height: 200px;">
+                <div class="panel-header">Boîte Noire (Notes)</div>
+                <div class="panel-content">
+                    <textarea id="scratchpad" style="width: 90%; height: 80%; resize: none;" placeholder="// Taper notes cryptées ici..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span>Terminal d'Investigation</span>
+                <div>
+                    <button onclick="app.exportData()">EXPORT</button>
+                    <button onclick="document.getElementById('file-input').click()">IMPORT</button>
+                    <input type="file" id="file-input" class="hidden" onchange="app.importData(this)">
+                </div>
+            </div>
+            
+            <div style="padding: 10px; border-bottom: 1px solid var(--primary);">
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="search-bar" placeholder="Rechercher preuve (ex: Arizona, ECP)..." onkeyup="app.filterData()">
+                    <button onclick="app.showAddModal()">+ AJOUTER</button>
+                </div>
+                <div style="margin-top: 5px; font-size: 0.8em; color: #0a0;">
+                    FILTRES ACTIFS: <span id="active-filters">AUCUN</span> | ENREGISTREMENTS: <span id="record-count">0</span>
+                </div>
+            </div>
+
+            <div class="panel-content" id="data-container">
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th width="30%">QUESTION / SUJET</th>
+                            <th>RÉPONSE / ANALYSE</th>
+                            <th width="10%">ACT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="panel" style="flex: 2;">
+                <div class="panel-header">Analyse Détaillée</div>
+                <div class="panel-content" id="detail-view">
+                    <div style="text-align: center; color: var(--dim); margin-top: 50px;">
+                        // SÉLECTIONNER UNE LIGNE POUR ANALYSE
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel" style="flex: 1;">
+                <div class="panel-header">Config Système</div>
+                <div class="panel-content">
+                    <label>Thème Couleur:</label>
+                    <select onchange="app.setTheme(this.value)">
+                        <option value="green">Matrix Green</option>
+                        <option value="amber">Retro Amber</option>
+                        <option value="cyan">Cyber Blue</option>
+                    </select>
+                    <hr style="border-color: var(--dim);">
+                    <button class="btn-danger" onclick="app.resetData()" style="width: 100%">RÉINITIALISER DB</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <span class="blink">_</span>&nbsp;CONSOLE PRÊTE. GOUVERNEMENT: ARIZONA. MODE: ÉCONOMIE CONTRIBUTIVE.
+    </footer>
+
+    <div id="editor-modal" class="panel hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 400px; z-index: 2000; box-shadow: 0 0 50px #000;">
+        <div class="panel-header">
+            <span>Éditeur de Données</span>
+            <button onclick="app.closeModal()">X</button>
+        </div>
+        <div class="panel-content">
+            <input type="hidden" id="edit-id">
+            <label>Question / Concept</label>
+            <textarea id="edit-q" style="height: 60px;"></textarea>
+            <label>Réponse / Détail</label>
+            <textarea id="edit-a" style="height: 150px;"></textarea>
+            <button onclick="app.saveEntry()" style="width: 100%; margin-top: 10px;">SAUVEGARDER DANS LE MAINAP</button>
+        </div>
+    </div>
+
+    <script>
+        // --- MATRIX RAIN EFFECT ---
+        const canvas = document.getElementById('matrix-rain');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const matrixChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%";
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+        
+        for(let x = 0; x < columns; x++) drops[x] = 1;
+        
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary'); 
+            ctx.font = fontSize + "px arial";
+            
+            for(let i = 0; i < drops.length; i++) {
+                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33);
+
+        // --- APPLICATION LOGIC ---
+        
+        // Initial Data from your CSV context
+        const INITIAL_DATA = [
+            {q: "Qu'est-ce que l'Économie Contributive Provisionnée (ECP) ?", a: "Un modèle économique permettant de valoriser les compétences des citoyens précaires sans leur faire perdre leurs droits sociaux."},
+            {q: "But de l'ECP face au système social ?", a: "Répondre au « piège institutionnel » qui décourage l'activité des personnes précarisées."},
+            {q: "Coalition Gouvernement Arizona", a: "N-VA, MR, Les Engagés, Vooruit et CD&V."},
+            {q: "Premier ministre pressenti (Arizona)", a: "Bart De Wever."},
+            {q: "Objectif taux d'emploi 2029", a: "80%."},
+            {q: "Montant assainissement budgétaire 2029", a: "18 milliards d'euros."},
+            {q: "Mécanisme ECP séparation revenu", a: "Le provisionnement différé sépare l'acte de contribution de la perception immédiate."},
+            {q: "Où est bloquée la valeur ECP ?", a: "Dans un Fonds de Contribution Citoyenne."},
+            {q: "Ruling fiscal ECP", a: "Demande de décision anticipée auprès du SPF Finances pour sécurité juridique."},
+            {q: "Dette Belgique 2038 sans réforme", a: "130% du PIB."},
+            {q: "Procédure européenne juin 2024", a: "Procédure de déficits excessifs."},
+            {q: "Réforme 'sac à dos des congés familiaux'", a: "Réforme de Les Engagés pour créer un crédit de jours de congé par enfant."},
+            {q: "Norme énergétique (Arizona)", a: "Réduire la facture d'électricité des entreprises belges exposées."}
+        ];
+
+        const app = {
+            data: [],
+            user: {
+                name: "Neo_Analyst",
+                xp: 0,
+                level: 1,
+                stats: { queries: 0, edits: 0 }
+            },
+            
+            init: function() {
+                // Load data from LocalStorage or use Initial
+                const storedData = localStorage.getItem('detectiveData');
+                if (storedData) {
+                    this.data = JSON.parse(storedData);
+                } else {
+                    this.data = INITIAL_DATA.map((item, index) => ({ id: index, ...item }));
+                }
+
+                // Load User
+                const storedUser = localStorage.getItem('detectiveUser');
+                if (storedUser) this.user = JSON.parse(storedUser);
+                
+                // Load Notes
+                document.getElementById('scratchpad').value = localStorage.getItem('detectiveNotes') || "";
+
+                // Start Clock
+                setInterval(() => {
+                    document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+                }, 1000);
+
+                // Start Session Timer
+                let seconds = 0;
+                setInterval(() => {
+                    seconds++;
+                    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+                    const s = (seconds % 60).toString().padStart(2, '0');
+                    document.getElementById('session-timer').innerText = `${m}:${s}`;
+                }, 1000);
+
+                // Bind User Input
+                document.getElementById('username-input').value = this.user.name;
+                document.getElementById('username-input').addEventListener('change', (e) => {
+                    this.user.name = e.target.value;
+                    this.saveUser();
+                });
+                
+                // Bind Notes Save
+                document.getElementById('scratchpad').addEventListener('input', (e) => {
+                    localStorage.setItem('detectiveNotes', e.target.value);
+                });
+
+                this.updateUI();
+                this.renderTable(this.data);
+            },
+
+            // --- DATA HANDLING ---
+            renderTable: function(dataSet) {
+                const tbody = document.getElementById('table-body');
+                tbody.innerHTML = '';
+                document.getElementById('record-count').innerText = dataSet.length;
+
+                dataSet.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight:bold; color: #fff;">${row.q.substring(0, 50)}${row.q.length > 50 ? '...' : ''}</td>
+                        <td style="color: var(--primary); opacity: 0.8;">${row.a.substring(0, 60)}${row.a.length > 60 ? '...' : ''}</td>
+                        <td>
+                            <button onclick="event.stopPropagation(); app.editEntry(${row.id})">EDIT</button>
+                        </td>
+                    `;
+                    tr.onclick = () => this.showDetail(row);
+                    tbody.appendChild(tr);
+                });
+            },
+
+            filterData: function() {
+                const query = document.getElementById('search-bar').value.toLowerCase();
+                this.user.stats.queries++;
+                this.gainXP(1);
+                this.updateUI(); // Update stats display
+
+                const filtered = this.data.filter(item => 
+                    item.q.toLowerCase().includes(query) || 
+                    item.a.toLowerCase().includes(query)
+                );
+                
+                document.getElementById('active-filters').innerText = query === '' ? 'AUCUN' : `"${query.toUpperCase()}"`;
+                this.renderTable(filtered);
+            },
+
+            showDetail: function(row) {
+                const container = document.getElementById('detail-view');
+                // Regex to highlight numbers and keywords
+                let formattedA = row.a.replace(/(\d+%?|€)/g, '<span style="color:white; font-weight:bold;">$1</span>');
+                
+                container.innerHTML = `
+                    <h3 style="color:white; border-bottom: 1px dashed var(--primary)">DOSSIER #${row.id}</h3>
+                    <div style="margin-bottom: 20px;">
+                        <span class="tag">CONFIDENTIEL</span>
+                        <span class="tag">ARIZONA</span>
+                    </div>
+                    <h4 style="color: var(--dim); background: var(--primary); color:black; padding: 2px;">SUJET</h4>
+                    <p style="font-size: 1.1em;">${row.q}</p>
+                    
+                    <h4 style="color: var(--dim); background: var(--primary); color:black; padding: 2px; margin-top:20px;">ANALYSE</h4>
+                    <p style="font-family: sans-serif; line-height: 1.5;">${formattedA}</p>
+                    
+                    <div style="margin-top: 30px; border-top: 1px dotted var(--primary); padding-top: 10px; font-size: 0.8em; opacity: 0.7;">
+                        HASH: ${Math.random().toString(36).substring(7).toUpperCase()} <br>
+                        DERNIÈRE MODIF: ${new Date().toLocaleDateString()}
+                    </div>
+                    
+                    <button class="btn-danger" style="margin-top: 20px;" onclick="app.deleteEntry(${row.id})">ARCHIVER (SUPPRIMER)</button>
+                `;
+            },
+
+            // --- EDITING & MODALS ---
+            showAddModal: function() {
+                document.getElementById('edit-id').value = '';
+                document.getElementById('edit-q').value = '';
+                document.getElementById('edit-a').value = '';
+                document.getElementById('editor-modal').classList.remove('hidden');
+            },
+
+            editEntry: function(id) {
+                const entry = this.data.find(d => d.id === id);
+                if (!entry) return;
+                document.getElementById('edit-id').value = entry.id;
+                document.getElementById('edit-q').value = entry.q;
+                document.getElementById('edit-a').value = entry.a;
+                document.getElementById('editor-modal').classList.remove('hidden');
+            },
+
+            saveEntry: function() {
+                const id = document.getElementById('edit-id').value;
+                const q = document.getElementById('edit-q').value;
+                const a = document.getElementById('edit-a').value;
+
+                if (id) {
+                    // Update
+                    const index = this.data.findIndex(d => d.id == id);
+                    if (index > -1) {
+                        this.data[index].q = q;
+                        this.data[index].a = a;
+                    }
+                } else {
+                    // Create
+                    const newId = this.data.length > 0 ? Math.max(...this.data.map(d => d.id)) + 1 : 1;
+                    this.data.push({ id: newId, q: q, a: a });
+                    this.gainXP(50);
+                }
+
+                this.user.stats.edits++;
+                this.saveData();
+                this.closeModal();
+                this.filterData(); // Refresh view
+                this.gainXP(10);
+            },
+
+            deleteEntry: function(id) {
+                if(confirm("Confirmer la suppression définitive de cette donnée ?")) {
+                    this.data = this.data.filter(d => d.id !== id);
+                    this.saveData();
+                    this.renderTable(this.data);
+                    document.getElementById('detail-view').innerHTML = '<div style="text-align: center; margin-top: 50px;">// DONNÉE SUPPRIMÉE</div>';
+                }
+            },
+
+            closeModal: function() {
+                document.getElementById('editor-modal').classList.add('hidden');
+            },
+
+            // --- SYSTEM FUNCTIONS ---
+            saveData: function() {
+                localStorage.setItem('detectiveData', JSON.stringify(this.data));
+            },
+
+            saveUser: function() {
+                localStorage.setItem('detectiveUser', JSON.stringify(this.user));
+                this.updateUI();
+            },
+
+            resetData: function() {
+                if(confirm("WARNING: REINITIALISER TOUT LE SYSTÈME ?")) {
+                    localStorage.removeItem('detectiveData');
+                    location.reload();
+                }
+            },
+
+            exportData: function() {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.data));
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", "arizona_investigation.json");
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            },
+
+            importData: function(input) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const json = JSON.parse(e.target.result);
+                        if(Array.isArray(json)) {
+                            app.data = json;
+                            app.saveData();
+                            app.renderTable(app.data);
+                            alert("IMPORT RÉUSSI. BASE DE DONNÉES MISE À JOUR.");
+                        } else {
+                            alert("Format invalide.");
+                        }
+                    } catch(ex) {
+                        alert("Erreur de lecture du fichier.");
+                    }
+                };
+                reader.readAsText(file);
+            },
+
+            // --- RPG MECHANICS ---
+            gainXP: function(amount) {
+                this.user.xp += amount;
+                if (this.user.xp >= 100) {
+                    this.user.level++;
+                    this.user.xp = 0; // Reset for next level (simple logic)
+                    alert(`LEVEL UP! VOUS ÊTES MAINTENANT NIVEAU ${this.user.level}`);
+                }
+                this.saveUser();
+            },
+
+            updateUI: function() {
+                document.getElementById('user-display').innerText = this.user.name.toUpperCase();
+                document.getElementById('level-display').innerText = "LVL " + this.user.level;
+                document.getElementById('xp-text').innerText = `${this.user.xp}/100`;
+                document.getElementById('xp-fill').style.width = `${this.user.xp}%`;
+                
+                document.getElementById('stat-queries').innerText = this.user.stats.queries;
+                document.getElementById('stat-edits').innerText = this.user.stats.edits;
+            },
+
+            setTheme: function(theme) {
+                const r = document.querySelector(':root');
+                if (theme === 'green') {
+                    r.style.setProperty('--primary', '#0f0');
+                    r.style.setProperty('--dim', '#003300');
+                    r.style.setProperty('--alert', '#f00');
+                } else if (theme === 'amber') {
+                    r.style.setProperty('--primary', '#ffb000');
+                    r.style.setProperty('--dim', '#442200');
+                    r.style.setProperty('--alert', '#ff4400');
+                } else if (theme === 'cyan') {
+                    r.style.setProperty('--primary', '#0ff');
+                    r.style.setProperty('--dim', '#003344');
+                    r.style.setProperty('--alert', '#ff0055');
+                }
+                // Redraw matrix to update color
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary');
+            }
+        };
+
+        // Boot the system
+        app.init();
+    </script>
+</body>
+</html>
