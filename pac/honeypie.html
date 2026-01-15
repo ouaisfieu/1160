@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synthèse des Thèmes Clés — Document d'Information</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #f8f6f3;
+            --color-bg-alt: #eae6df;
+            --color-text: #1a1a1a;
+            --color-text-muted: #5a5a5a;
+            --color-accent: #c45c26;
+            --color-accent-dark: #9e4a1f;
+            --color-section-1: #2d4a3e;
+            --color-section-2: #4a3d2d;
+            --color-section-3: #2d3a4a;
+            --color-section-4: #4a2d3d;
+            --color-white: #ffffff;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'Source Sans 3', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 2rem;
+            --spacing-lg: 4rem;
+            --spacing-xl: 6rem;
+            --max-width: 1200px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-size: 18px;
+            line-height: 1.7;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            overflow-x: hidden;
+        }
+
+        /* Grain texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(248, 246, 243, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .nav.hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--color-text);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-md);
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: var(--spacing-xl) var(--spacing-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            right: -20%;
+            width: 70%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--color-section-1) 0%, var(--color-section-2) 50%, var(--color-section-3) 100%);
+            opacity: 0.08;
+            transform: skewX(-15deg);
+        }
+
+        .hero-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-label {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--color-accent);
+            margin-bottom: var(--spacing-sm);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: var(--spacing-md);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.2s forwards;
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--color-accent);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: var(--color-text-muted);
+            max-width: 600px;
+            margin-bottom: var(--spacing-lg);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.4s forwards;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.6s forwards;
+        }
+
+        .hero-meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-meta-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-text-muted);
+            margin-bottom: 4px;
+        }
+
+        .hero-meta-value {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: var(--spacing-md);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xs);
+            opacity: 0;
+            animation: fadeIn 1s ease 1s forwards;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--color-text-muted);
+        }
+
+        .scroll-indicator .line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--color-accent), transparent);
+            animation: scrollPulse 2s ease infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { transform: scaleY(1); opacity: 1; }
+            50% { transform: scaleY(0.5); opacity: 0.5; }
+        }
+
+        /* Section styles */
+        .section {
+            padding: var(--spacing-xl) var(--spacing-md);
+            position: relative;
+        }
+
+        .section-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .section-number {
+            font-family: var(--font-display);
+            font-size: 5rem;
+            font-weight: 700;
+            line-height: 1;
+            opacity: 0.1;
+            margin-bottom: -2rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--color-text-muted);
+            max-width: 600px;
+        }
+
+        /* Executive Summary */
+        .summary {
+            background: var(--color-bg-alt);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .summary-card {
+            background: var(--color-white);
+            padding: var(--spacing-md);
+            border-radius: 4px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .summary-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-sm);
+            font-size: 1.5rem;
+        }
+
+        .summary-card:nth-child(1) .summary-card-icon { background: rgba(45, 74, 62, 0.1); }
+        .summary-card:nth-child(2) .summary-card-icon { background: rgba(74, 61, 45, 0.1); }
+        .summary-card:nth-child(3) .summary-card-icon { background: rgba(45, 58, 74, 0.1); }
+        .summary-card:nth-child(4) .summary-card-icon { background: rgba(74, 45, 61, 0.1); }
+
+        .summary-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .summary-card p {
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+        }
+
+        /* Company Section */
+        .company {
+            background: var(--color-section-1);
+            color: var(--color-white);
+        }
+
+        .company .section-number { color: rgba(255,255,255,0.1); }
+        .company .section-subtitle { color: rgba(255,255,255,0.7); }
+
+        .financial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .financial-card {
+            background: rgba(255,255,255,0.1);
+            padding: var(--spacing-md);
+            border-radius: 4px;
+            backdrop-filter: blur(10px);
+        }
+
+        .financial-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.7;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .financial-value {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .financial-change {
+            font-size: 0.9rem;
+            color: #7dcea0;
+            margin-top: 4px;
+        }
+
+        .financial-change.negative {
+            color: #e57373;
+        }
+
+        /* Sector tabs */
+        .sector-tabs {
+            display: flex;
+            gap: var(--spacing-xs);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-md);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: var(--spacing-sm);
+        }
+
+        .sector-tab {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.8);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .sector-tab:hover,
+        .sector-tab.active {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.5);
+            color: var(--color-white);
+        }
+
+        .sector-content {
+            display: none;
+        }
+
+        .sector-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .sector-content h4 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .sector-content p {
+            opacity: 0.9;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .sector-list {
+            list-style: none;
+            margin: var(--spacing-sm) 0;
+        }
+
+        .sector-list li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: var(--spacing-xs);
+            opacity: 0.9;
+        }
+
+        .sector-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent);
+        }
+
+        /* Product table */
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-md) 0;
+            font-size: 0.9rem;
+        }
+
+        .product-table th,
+        .product-table td {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .product-table th {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.7;
+        }
+
+        /* Data Section */
+        .data {
+            background: var(--color-section-2);
+            color: var(--color-white);
+        }
+
+        .data .section-number { color: rgba(255,255,255,0.1); }
+        .data .section-subtitle { color: rgba(255,255,255,0.7); }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .data-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .data-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .data-card-subtitle {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .data-card p {
+            opacity: 0.85;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .data-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .data-feature-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(196, 92, 38, 0.2);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .data-feature h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .data-feature p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Dev Section */
+        .dev {
+            background: var(--color-section-3);
+            color: var(--color-white);
+        }
+
+        .dev .section-number { color: rgba(255,255,255,0.1); }
+        .dev .section-subtitle { color: rgba(255,255,255,0.7); }
+
+        .dev-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .lighthouse-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+        }
+
+        .lighthouse-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .audit-list {
+            list-style: none;
+        }
+
+        .audit-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-xs) 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+        }
+
+        .audit-weight {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            background: var(--color-accent);
+            padding: 2px 8px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .maintenance-types {
+            display: grid;
+            gap: var(--spacing-sm);
+        }
+
+        .maintenance-type {
+            background: rgba(255,255,255,0.05);
+            padding: var(--spacing-sm);
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .maintenance-type-name {
+            font-weight: 500;
+        }
+
+        .maintenance-type-percent {
+            font-family: var(--font-mono);
+            color: var(--color-accent);
+        }
+
+        .cost-example {
+            background: rgba(255,255,255,0.1);
+            padding: var(--spacing-sm);
+            border-radius: 4px;
+            margin-top: var(--spacing-sm);
+        }
+
+        .cost-example-title {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .cost-example-value {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+        }
+
+        /* Public Data Section */
+        .public-data {
+            background: var(--color-section-4);
+            color: var(--color-white);
+        }
+
+        .public-data .section-number { color: rgba(255,255,255,0.1); }
+        .public-data .section-subtitle { color: rgba(255,255,255,0.7); }
+
+        .metadata-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 700px;
+        }
+
+        .metadata-header {
+            background: rgba(255,255,255,0.1);
+            padding: var(--spacing-md);
+        }
+
+        .metadata-header h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .metadata-license {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .metadata-body {
+            padding: var(--spacing-md);
+        }
+
+        .metadata-row {
+            display: flex;
+            padding: var(--spacing-xs) 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .metadata-row:last-child {
+            border-bottom: none;
+        }
+
+        .metadata-label {
+            width: 180px;
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.7;
+        }
+
+        .metadata-value {
+            flex: 1;
+        }
+
+        .format-tags {
+            display: flex;
+            gap: var(--spacing-xs);
+            flex-wrap: wrap;
+        }
+
+        .format-tag {
+            background: rgba(255,255,255,0.15);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        /* Source Section */
+        .source {
+            background: var(--color-bg);
+            text-align: center;
+        }
+
+        .source-box {
+            background: var(--color-white);
+            max-width: 700px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            box-shadow: 0 4px 40px rgba(0,0,0,0.1);
+        }
+
+        .source-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--spacing-md);
+            background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .source-box h2 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .source-box p {
+            color: var(--color-text-muted);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .source-filename {
+            font-family: var(--font-mono);
+            background: var(--color-bg-alt);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: var(--spacing-md);
+            word-break: break-all;
+        }
+
+        .source-instructions {
+            text-align: left;
+            background: var(--color-bg-alt);
+            padding: var(--spacing-md);
+            border-radius: 4px;
+            margin-top: var(--spacing-md);
+        }
+
+        .source-instructions h4 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .source-instructions ol {
+            margin-left: var(--spacing-md);
+            color: var(--color-text-muted);
+        }
+
+        .source-instructions li {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-text);
+            color: var(--color-white);
+            padding: var(--spacing-lg) var(--spacing-md);
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-meta {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+
+            .section {
+                padding: var(--spacing-lg) var(--spacing-sm);
+            }
+
+            .financial-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .data-grid,
+            .dev-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metadata-row {
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+
+            .metadata-label {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">Synthèse Thématique</a>
+            <ul class="nav-links">
+                <li><a href="#summary">Résumé</a></li>
+                <li><a href="#company">Entreprise</a></li>
+                <li><a href="#data">Données</a></li>
+                <li><a href="#dev">Développement</a></li>
+                <li><a href="#public">Open Data</a></li>
+                <li><a href="#source">Source</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <span class="hero-label">Document d'Information</span>
+            <h1 class="hero-title">Synthèse des<br><em>Thèmes Clés</em></h1>
+            <p class="hero-subtitle">Une analyse approfondie couvrant la performance d'entreprise, la gestion des données, le développement logiciel et les initiatives de données ouvertes.</p>
+            <div class="hero-meta">
+                <div class="hero-meta-item">
+                    <span class="hero-meta-label">Sections</span>
+                    <span class="hero-meta-value">4 Thèmes Majeurs</span>
+                </div>
+                <div class="hero-meta-item">
+                    <span class="hero-meta-label">Cas d'étude</span>
+                    <span class="hero-meta-value">Carson Cumberbatch PLC</span>
+                </div>
+                <div class="hero-meta-item">
+                    <span class="hero-meta-label">Technologies</span>
+                    <span class="hero-meta-value">CKAN, GTFS, Lighthouse</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Défiler</span>
+            <div class="line"></div>
+        </div>
+    </header>
+
+    <!-- Executive Summary -->
+    <section class="section summary" id="summary">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Résumé Exécutif</h2>
+                <p class="section-subtitle">Les quatre piliers d'analyse de ce document de synthèse</p>
+            </div>
+            <div class="summary-grid">
+                <div class="summary-card animate-on-scroll">
+                    <div class="summary-card-icon">📊</div>
+                    <h3>Performance d'Entreprise</h3>
+                    <p>Analyse de Carson Cumberbatch PLC : croissance financière robuste (+34% de valeur conservée), diversification dans l'huile de palme, les boissons et l'immobilier.</p>
+                </div>
+                <div class="summary-card animate-on-scroll">
+                    <div class="summary-card-icon">🔗</div>
+                    <h3>Gestion des Données</h3>
+                    <p>CKAN DataStore pour l'accessibilité des données structurées via API. GTFS Realtime pour l'information en temps réel des transports publics.</p>
+                </div>
+                <div class="summary-card animate-on-scroll">
+                    <div class="summary-card-icon">💻</div>
+                    <h3>Développement Logiciel</h3>
+                    <p>Lighthouse pour l'accessibilité web. Analyse ScienceSoft : la maintenance représente jusqu'à 90% du coût total de possession.</p>
+                </div>
+                <div class="summary-card animate-on-scroll">
+                    <div class="summary-card-icon">🌐</div>
+                    <h3>Données Ouvertes</h3>
+                    <p>Initiative Bruxelles Mobilité : transparence et réutilisation des données publiques géographiques sous licence CC0.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Company Section -->
+    <section class="section company" id="company">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">01</div>
+                <h2 class="section-title">Carson Cumberbatch PLC</h2>
+                <p class="section-subtitle">Rapport annuel 2024/25 — Un groupe diversifié affichant une croissance financière solide</p>
+            </div>
+
+            <div class="financial-grid animate-on-scroll">
+                <div class="financial-card">
+                    <div class="financial-label">Valeur économique conservée</div>
+                    <div class="financial-value">44 493</div>
+                    <div class="financial-change">+34% vs 2023/24</div>
+                </div>
+                <div class="financial-card">
+                    <div class="financial-label">Emploi total</div>
+                    <div class="financial-value">16 719</div>
+                    <div class="financial-change">+2% vs 2023/24</div>
+                </div>
+                <div class="financial-card">
+                    <div class="financial-label">Flux de trésorerie nets</div>
+                    <div class="financial-value">51 612</div>
+                    <div class="financial-change">Rs. Mn</div>
+                </div>
+                <div class="financial-card">
+                    <div class="financial-label">Capitalisation boursière</div>
+                    <div class="financial-value">89 356</div>
+                    <div class="financial-change">Rs. Mn</div>
+                </div>
+            </div>
+
+            <div class="sector-tabs animate-on-scroll">
+                <button class="sector-tab active" data-sector="palm">Huile de Palme</button>
+                <button class="sector-tab" data-sector="beverages">Boissons</button>
+                <button class="sector-tab" data-sector="leisure">Loisirs</button>
+                <button class="sector-tab" data-sector="real-estate">Immobilier</button>
+                <button class="sector-tab" data-sector="governance">Gouvernance</button>
+                <button class="sector-tab" data-sector="rse">RSE</button>
+            </div>
+
+            <div class="sector-content active" id="sector-palm">
+                <h4>Secteur de l'Huile de Palme et des Graisses</h4>
+                <p>Hausse significative des prix CPO : 4 397 MYR (+15% en glissement annuel). Traçabilité à 100% au niveau des plantations pour toutes les usines.</p>
+                <ul class="sector-list">
+                    <li><strong>Expansion :</strong> Nouvelle usine de traitement au Kalimantan occidental, 2 000 ha replantés</li>
+                    <li><strong>Finance :</strong> Réduction de la dette brute de 12,9 milliards de roupies (-57% coûts financiers)</li>
+                    <li><strong>Traçabilité :</strong> 60% plantations propres, 31% fournisseurs tiers, 9% petits exploitants</li>
+                </ul>
+            </div>
+
+            <div class="sector-content" id="sector-beverages">
+                <h4>Lion Brewery Ceylon PLC</h4>
+                <p>Note "AAA(lka)" confirmée par Fitch Ratings. Revenus passés de 60 à 125 milliards de roupies (2022-2025).</p>
+                <p><strong>Stratégie :</strong> Expansion vers 17 destinations d'exportation (Afrique, Moyen-Orient, Asie du Sud)</p>
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Type</th>
+                            <th>Alcool</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Coffee Stout</td><td>Stout</td><td>6,8%</td></tr>
+                        <tr><td>Ambalavi Mango</td><td>Bière aromatisée</td><td>5,0%</td></tr>
+                        <tr><td>Pure Ceylon Tea Beer</td><td>Bière aromatisée</td><td>5,5%</td></tr>
+                        <tr><td>Thambapanni Red</td><td>Ale</td><td>7,0%</td></tr>
+                        <tr><td>Ella Valley White</td><td>Bière de blé</td><td>5,5%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="sector-content" id="sector-leisure">
+                <h4>Secteur des Loisirs</h4>
+                <p>Reprise en cours avec un taux d'occupation de 63% au Pegasus Reef, proche des niveaux pré-pandémiques.</p>
+                <ul class="sector-list">
+                    <li><strong>Cession stratégique :</strong> Vente de l'investissement dans l'hôtel Giritale</li>
+                    <li><strong>Défis :</strong> Pression sur la rentabilité due aux coûts et à la concurrence</li>
+                    <li><strong>Investissements :</strong> Rénovation continue des propriétés pour la compétitivité</li>
+                </ul>
+            </div>
+
+            <div class="sector-content" id="sector-real-estate">
+                <h4>Secteur Immobilier</h4>
+                <p>Performance robuste malgré une reprise économique modérée. Taux d'occupation passé de 80% à 85%.</p>
+                <ul class="sector-list">
+                    <li>Gestion d'actifs prudente</li>
+                    <li>Bien positionné pour les opportunités émergentes</li>
+                    <li>Navigation prudente de l'absorption des nouvelles offres</li>
+                </ul>
+            </div>
+
+            <div class="sector-content" id="sector-governance">
+                <h4>Gouvernance d'Entreprise</h4>
+                <p>Conformité stricte avec les règles de la CSE et la loi sur les sociétés (Companies Act, No. 07 of 2007).</p>
+                <ul class="sector-list">
+                    <li><strong>Conseil :</strong> Évaluation annuelle, rotation des administrateurs tous les 3 ans</li>
+                    <li><strong>Comités :</strong> Audit, Nominations, Transactions entre Parties Liées (RPTRC)</li>
+                    <li><strong>Risques :</strong> Volatilité des matières premières, risque de réputation</li>
+                    <li><strong>Auditeurs :</strong> KPMG, Chartered Accountants</li>
+                </ul>
+            </div>
+
+            <div class="sector-content" id="sector-rse">
+                <h4>Responsabilité Sociale et Environnementale</h4>
+                <p>Engagement fort envers le développement communautaire et la transition bas-carbone.</p>
+                <ul class="sector-list">
+                    <li><strong>Biodiversité :</strong> 18,6 ha reboisés, 228,82 ha nettoyés, 10 156 plants produits</li>
+                    <li><strong>Formation :</strong> Programmes techniques, leadership, sécurité informatique</li>
+                    <li><strong>Santé :</strong> 93% du personnel avec bilans annuels, 16 cliniques (116 000 personnes)</li>
+                    <li><strong>Digital RH :</strong> Déploiement de "Lion Lead" basé sur SAP Success Factors</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Section -->
+    <section class="section data" id="data">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">02</div>
+                <h2 class="section-title">Gestion des Données & API</h2>
+                <p class="section-subtitle">L'importance croissante des interfaces de programmation pour l'accessibilité des données</p>
+            </div>
+
+            <div class="data-grid">
+                <div class="data-card animate-on-scroll">
+                    <h3>CKAN DataStore</h3>
+                    <p class="data-card-subtitle">Données Structurées Accessibles</p>
+                    <p>Plateforme permettant de stocker des données structurées et de les rendre accessibles via une interface web JSON. Basé sur ElasticSearch.</p>
+                    
+                    <div class="data-feature">
+                        <div class="data-feature-icon">⚡</div>
+                        <div>
+                            <h4>API Automatique</h4>
+                            <p>Création d'API en quelques secondes, sans développement dédié</p>
+                        </div>
+                    </div>
+                    <div class="data-feature">
+                        <div class="data-feature-icon">📱</div>
+                        <div>
+                            <h4>Développement d'Applications</h4>
+                            <p>Facilite les mashups en se concentrant sur les données</p>
+                        </div>
+                    </div>
+                    <div class="data-feature">
+                        <div class="data-feature-icon">🔍</div>
+                        <div>
+                            <h4>Exploration Interactive</h4>
+                            <p>Filtrage, recherche et graphiques via Recline intégré</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-card animate-on-scroll">
+                    <h3>GTFS Realtime 2.0</h3>
+                    <p class="data-card-subtitle">Transports Publics en Temps Réel</p>
+                    <p>Spécification permettant aux agences de transport de fournir des informations en temps réel sur les perturbations, positions et horaires.</p>
+                    
+                    <div class="data-feature">
+                        <div class="data-feature-icon">🚌</div>
+                        <div>
+                            <h4>TripUpdate</h4>
+                            <p>Retards, avances, arrêts sautés (SKIPPED), trajets annulés (CANCELED)</p>
+                        </div>
+                    </div>
+                    <div class="data-feature">
+                        <div class="data-feature-icon">📍</div>
+                        <div>
+                            <h4>VehiclePosition</h4>
+                            <p>Latitude, longitude, vitesse, statut par rapport aux arrêts</p>
+                        </div>
+                    </div>
+                    <div class="data-feature">
+                        <div class="data-feature-icon">⚠️</div>
+                        <div>
+                            <h4>Alert</h4>
+                            <p>Incidents, accidents, travaux — cause, effet et sévérité</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Development Section -->
+    <section class="section dev" id="dev">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">03</div>
+                <h2 class="section-title">Développement Logiciel</h2>
+                <p class="section-subtitle">Accessibilité web et optimisation des coûts de maintenance</p>
+            </div>
+
+            <div class="dev-grid">
+                <div class="lighthouse-card animate-on-scroll">
+                    <h3>Lighthouse — Accessibilité Web</h3>
+                    <p style="opacity: 0.85; margin-bottom: var(--spacing-sm);">Score basé sur une moyenne pondérée d'audits binaires. Les audits manuels ne comptent pas.</p>
+                    
+                    <h4 style="font-size: 1rem; margin: var(--spacing-sm) 0; opacity: 0.7;">Audits à fort impact (poids 10)</h4>
+                    <ul class="audit-list">
+                        <li class="audit-item">
+                            <span class="audit-weight">10</span>
+                            <span>Les attributs [aria-*] doivent correspondre à leurs rôles</span>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-weight">10</span>
+                            <span>aria-hidden="true" absent sur &lt;body&gt;</span>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-weight">10</span>
+                            <span>Boutons avec nom accessible</span>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-weight">10</span>
+                            <span>Images avec attributs alt</span>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-weight">10</span>
+                            <span>Formulaires avec étiquettes associées</span>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-weight">10</span>
+                            <span>user-scalable="no" non utilisé</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="lighthouse-card animate-on-scroll">
+                    <h3>Maintenance Logicielle</h3>
+                    <p style="opacity: 0.85; margin-bottom: var(--spacing-sm);">Peut représenter jusqu'à <strong>90% du TCO</strong> d'un logiciel selon ScienceSoft.</p>
+                    
+                    <div class="maintenance-types">
+                        <div class="maintenance-type">
+                            <span class="maintenance-type-name">Corrective (bugs)</span>
+                            <span class="maintenance-type-percent">20-25%</span>
+                        </div>
+                        <div class="maintenance-type">
+                            <span class="maintenance-type-name">Adaptative (environnement)</span>
+                            <span class="maintenance-type-percent">15-20%</span>
+                        </div>
+                        <div class="maintenance-type">
+                            <span class="maintenance-type-name">Préventive (refactoring)</span>
+                            <span class="maintenance-type-percent">10-15%</span>
+                        </div>
+                        <div class="maintenance-type">
+                            <span class="maintenance-type-name">Perfective (fonctionnalités)</span>
+                            <span class="maintenance-type-percent">25-30%</span>
+                        </div>
+                    </div>
+
+                    <div class="cost-example">
+                        <div class="cost-example-title">App entreprise (~500 utilisateurs)</div>
+                        <div class="cost-example-value">5 000 – 15 000 $/mois</div>
+                    </div>
+                    <div class="cost-example">
+                        <div class="cost-example-title">App client (100k-1M utilisateurs)</div>
+                        <div class="cost-example-value">30 000 – 50 000 $/mois</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Public Data Section -->
+    <section class="section public-data" id="public">
+        <div class="section-inner">
+            <div class="section-header animate-on-scroll">
+                <div class="section-number">04</div>
+                <h2 class="section-title">Données Publiques</h2>
+                <p class="section-subtitle">Initiative Bruxelles Mobilité — Secteurs Statistiques</p>
+            </div>
+
+            <div class="metadata-card animate-on-scroll">
+                <div class="metadata-header">
+                    <h3>Secteurs Statistiques</h3>
+                    <span class="metadata-license">CC0 — Domaine Public</span>
+                </div>
+                <div class="metadata-body">
+                    <div class="metadata-row">
+                        <span class="metadata-label">Description</span>
+                        <span class="metadata-value">Couche de données géographiques représentant les secteurs statistiques de la région de Bruxelles (Urbis ADM)</span>
+                    </div>
+                    <div class="metadata-row">
+                        <span class="metadata-label">Formats</span>
+                        <div class="metadata-value">
+                            <div class="format-tags">
+                                <span class="format-tag">JSON</span>
+                                <span class="format-tag">GeoPackage</span>
+                                <span class="format-tag">CSV</span>
+                                <span class="format-tag">SHP</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metadata-row">
+                        <span class="metadata-label">Projections</span>
+                        <div class="metadata-value">
+                            <div class="format-tags">
+                                <span class="format-tag">Lambert72</span>
+                                <span class="format-tag">WGS 84</span>
+                                <span class="format-tag">Lambert2008</span>
+                                <span class="format-tag">Pseudo-Mercator</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metadata-row">
+                        <span class="metadata-label">Services Web</span>
+                        <span class="metadata-value">WMS (visualisation) • WFS (données brutes)</span>
+                    </div>
+                    <div class="metadata-row">
+                        <span class="metadata-label">Mise à jour</span>
+                        <span class="metadata-value">Créé le 1er janvier 2022 — Dernière MAJ le 21 juin 2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Source Section -->
+    <section class="section source" id="source">
+        <div class="section-inner">
+            <div class="source-box animate-on-scroll">
+                <div class="source-icon">📄</div>
+                <h2>Document Source Original</h2>
+                <p>Ce site web présente les informations extraites du document de synthèse suivant :</p>
+                
+                <div class="source-filename">Document d'information _ Synthèse des Thèmes Clés.docx</div>
+                
+                <div class="source-instructions">
+                    <h4>Comment trouver le document source ?</h4>
+                    <ol>
+                        <li>Le document original est un fichier <strong>Microsoft Word (.docx)</strong></li>
+                        <li>Il a été uploadé dans cette conversation Claude comme pièce jointe</li>
+                        <li>Le fichier se trouve dans le répertoire : <code>/mnt/user-data/uploads/</code></li>
+                        <li>Nom exact : <code>Document_d_information___Synthèse_des_Thèmes_Clés.docx</code></li>
+                        <li>Pour obtenir le document original, demandez à Claude de le télécharger ou consultez vos fichiers uploadés</li>
+                    </ol>
+                </div>
+
+                <p style="margin-top: var(--spacing-md); font-size: 0.9rem; color: var(--color-text-muted);">
+                    Ce document synthétise des informations provenant de sources diverses incluant le rapport annuel de Carson Cumberbatch PLC, la documentation CKAN DataStore, la spécification GTFS Realtime, Google Lighthouse, ScienceSoft, et le catalogue de données de Bruxelles Mobilité.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Site généré à partir du document « Synthèse des Thèmes Clés » — Tous les contenus proviennent de l'annexe originale</p>
+    </footer>
+
+    <script>
+        // Navigation hide on scroll
+        let lastScrollY = window.scrollY;
+        const nav = document.getElementById('nav');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > lastScrollY && window.scrollY > 100) {
+                nav.classList.add('hidden');
+            } else {
+                nav.classList.remove('hidden');
+            }
+            lastScrollY = window.scrollY;
+        });
+
+        // Sector tabs
+        const sectorTabs = document.querySelectorAll('.sector-tab');
+        const sectorContents = document.querySelectorAll('.sector-content');
+
+        sectorTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const sector = tab.dataset.sector;
+                
+                sectorTabs.forEach(t => t.classList.remove('active'));
+                sectorContents.forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(`sector-${sector}`).classList.add('active');
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
