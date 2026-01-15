@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARIZONA // DETECTIVE OS v2.0</title>
+    <style>
+        :root {
+            --primary: #0f0;
+            --dim: #003300;
+            --bg: #000;
+            --glass: rgba(0, 20, 0, 0.95);
+            --alert: #f00;
+            --gold: #ffb700;
+            --font-main: 'Courier New', Courier, monospace;
+        }
+
+        /* --- CORE STYLES --- */
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--primary);
+            font-family: var(--font-main);
+            overflow: hidden;
+            height: 100vh;
+            display: grid;
+            grid-template-rows: 40px 1fr 30px;
+            user-select: none;
+        }
+
+        canvas#matrix-rain {
+            position: fixed;
+            top: 0; left: 0; z-index: -1; opacity: 0.2;
+        }
+
+        /* Scanline */
+        body::after {
+            content: " "; display: block; position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 900; background-size: 100% 2px, 3px 100%; pointer-events: none;
+        }
+
+        /* --- LAYOUT --- */
+        header {
+            border-bottom: 2px solid var(--primary);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; background: var(--glass);
+            text-transform: uppercase; letter-spacing: 2px; font-weight: bold; z-index: 10;
+        }
+
+        #main-grid {
+            display: grid; grid-template-columns: 320px 1fr 350px;
+            gap: 10px; padding: 10px; overflow: hidden; z-index: 10;
+        }
+
+        .panel {
+            border: 1px solid var(--primary); background: var(--glass);
+            display: flex; flex-direction: column;
+            box-shadow: 0 0 15px var(--dim); position: relative;
+        }
+
+        .panel-header {
+            background: var(--primary); color: var(--bg);
+            padding: 5px 10px; font-weight: bold; text-transform: uppercase;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .panel-content { flex: 1; overflow-y: auto; padding: 10px; position: relative;}
+
+        /* --- WIDGETS --- */
+        .char-stat { display: flex; justify-content: space-between; margin-bottom: 5px; border-bottom: 1px dashed var(--dim); padding-bottom:2px;}
+        
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 1px solid var(--primary); }
+        .tab { 
+            flex: 1; text-align: center; padding: 8px; cursor: pointer; 
+            background: var(--dim); color: var(--primary); border-right: 1px solid var(--primary);
+            transition: 0.3s;
+        }
+        .tab.active { background: var(--primary); color: var(--bg); font-weight: bold; }
+        .tab:hover:not(.active) { background: #005500; }
+
+        /* Store Grid */
+        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; padding: 10px;}
+        .store-item { 
+            border: 1px solid var(--primary); padding: 10px; 
+            transition: 0.2s; position: relative; overflow: hidden;
+            background: rgba(0,0,0,0.8);
+        }
+        .store-item:hover { transform: scale(1.02); box-shadow: 0 0 15px var(--primary); border-color: #fff;}
+        .store-item h4 { margin: 0 0 5px 0; color: #fff; border-bottom: 1px solid var(--dim);}
+        .store-price { color: var(--gold); font-weight: bold; float: right;}
+        
+        .drop-zone {
+            border: 2px dashed var(--primary); padding: 20px; text-align: center;
+            margin: 10px; color: var(--primary); cursor: pointer;
+            transition: 0.3s;
+        }
+        .drop-zone:hover, .drop-zone.dragover { background: var(--dim); color: #fff; border-color: #fff; }
+
+        /* Table & Forms */
+        table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+        th { text-align: left; border-bottom: 2px solid var(--primary); padding: 5px; position: sticky; top: 0; background: #002200;}
+        td { border-bottom: 1px solid var(--dim); padding: 6px; vertical-align: top;}
+        tr:hover { background: var(--dim); cursor: pointer; color: #fff;}
+        
+        input, textarea, select {
+            background: #001100; color: var(--primary); border: 1px solid var(--primary);
+            padding: 8px; width: 95%; font-family: var(--font-main); margin-bottom: 10px;
+        }
+        input:focus, textarea:focus { outline: none; box-shadow: 0 0 8px var(--primary); }
+        
+        button {
+            background: #002200; color: var(--primary); border: 1px solid var(--primary);
+            padding: 6px 12px; cursor: pointer; font-family: var(--font-main);
+            text-transform: uppercase; transition: all 0.2s; font-size: 0.8em; margin-right: 5px;
+        }
+        button:hover { background: var(--primary); color: var(--bg); }
+        button.btn-buy { border-color: var(--gold); color: var(--gold); width: 100%; margin-top:10px;}
+        button.btn-buy:hover { background: var(--gold); color: #000; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px;}
+        ::-webkit-scrollbar-track { background: #001100; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); }
+
+        /* Utility */
+        .hidden { display: none !important; }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+        .currency { color: var(--gold); }
+        .tag { display: inline-block; padding: 2px 4px; border: 1px solid var(--primary); font-size: 0.7em; margin-right: 3px; }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--primary); background: var(--glass);
+            display: flex; align-items: center; padding: 0 10px; font-size: 0.8em; justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-rain"></canvas>
+
+    <header>
+        <div><span class="blink">►</span> ARIZONA OS <span style="font-size:0.6em; opacity:0.7;">v2.1.4</span></div>
+        <div id="clock">00:00:00</div>
+        <div>NET: <span style="color:var(--gold)">ENCRYPTED</span></div>
+    </header>
+
+    <div id="main-grid">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="panel" style="flex: 1;">
+                <div class="panel-header">AGENT_ID</div>
+                <div class="panel-content">
+                    <div style="text-align: center; margin-bottom: 15px; position: relative;">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Shadow" id="avatar" style="width: 80px; border: 2px solid var(--primary); background:#000;">
+                        <div style="font-size: 0.7em; margin-top:5px;">OPERATIVE</div>
+                    </div>
+                    
+                    <div class="char-stat"><span>NOM:</span> <input type="text" id="username-input" value="Ghost_User" style="width: 50%; border: none; background: transparent; text-align: right; padding: 0; color: #fff;"></div>
+                    <div class="char-stat"><span>RANG:</span> <span id="rank-display">Novice</span></div>
+                    <div class="char-stat"><span>CREDITS:</span> <span id="credits-display" class="currency">0 ¢</span></div>
+                    
+                    <div style="margin-top: 20px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.8em;"><span>EXP</span><span id="xp-text">0/100</span></div>
+                        <div style="height: 6px; background:#002200; border:1px solid var(--primary); margin-top:2px;">
+                            <div id="xp-fill" style="height:100%; background:var(--primary); width:0%; transition: width 0.5s;"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; font-size: 0.8em;">
+                        <h4 style="border-bottom:1px solid var(--dim)">METRIQUES</h4>
+                        <div>REQUÊTES: <span id="stat-queries">0</span></div>
+                        <div>ÉDITIONS: <span id="stat-edits">0</span></div>
+                        <div>DECKS: <span id="stat-decks">1</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel" style="height: 250px;">
+                <div class="panel-header">CRYPTOPAD</div>
+                <div class="panel-content" style="padding:0;">
+                    <textarea id="scratchpad" style="width: 100%; height: 100%; resize: none; border:none; background: transparent; padding:10px; box-sizing: border-box;" placeholder="// Notes chiffrées..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="tabs">
+                <div class="tab active" onclick="app.switchTab('terminal')">TERMINAL D'ENQUÊTE</div>
+                <div class="tab" onclick="app.switchTab('store')">DATA MARKET (STORE)</div>
+            </div>
+            
+            <div id="view-terminal" style="display: flex; flex-direction: column; height: 100%;">
+                <div style="padding: 10px; border-bottom: 1px solid var(--dim); display:flex; gap:10px;">
+                    <input type="text" id="search-bar" placeholder="Recherche (ex: ECP, Dette)..." onkeyup="app.filterData()" style="flex:1; margin-bottom:0;">
+                    <button onclick="app.showAddModal()">+ NEW</button>
+                    <button onclick="app.exportData()">SAVE</button>
+                </div>
+                <div style="padding: 5px 10px; font-size: 0.75em; color: #0a0; display:flex; justify-content:space-between;">
+                    <span>STATUS: <span id="record-count">0</span> FICHIERS</span>
+                    <span id="active-deck-name">DECK: DEFAULT</span>
+                </div>
+                <div class="panel-content" style="padding:0;">
+                    <table id="data-table">
+                        <thead>
+                            <tr>
+                                <th width="35%">SUJET</th>
+                                <th>DATA</th>
+                                <th width="50px">CMD</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-store" class="hidden panel-content">
+                <div class="drop-zone" id="drop-zone">
+                    <h3>▼ IMPORT LOCAL DECK</h3>
+                    <p>Glisser-déposer un fichier .JSON ou .CSV ici depuis votre dossier dédié</p>
+                    <input type="file" id="file-input" class="hidden" onchange="app.handleFileSelect(this)">
+                </div>
+
+                <h4 style="margin-top:20px; border-bottom:1px solid var(--primary); padding-bottom:5px;">AVAILABLE INTEL PACKS</h4>
+                <div class="store-grid" id="store-grid">
+                    </div>
+            </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="panel" style="flex: 2;">
+                <div class="panel-header">ANALYSEUR</div>
+                <div class="panel-content" id="detail-view">
+                    <div style="text-align: center; color: var(--dim); margin-top: 50%; transform: translateY(-50%);">
+                        [ EN ATTENTE DE CIBLE ]
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel" style="flex: 1;">
+                <div class="panel-header">SYSTEME</div>
+                <div class="panel-content">
+                    <label>Thème:</label>
+                    <select onchange="app.setTheme(this.value)" style="margin-bottom:15px;">
+                        <option value="green">Matrix Green</option>
+                        <option value="amber">Deus Ex Gold</option>
+                        <option value="cyan">Cyberpunk Blue</option>
+                        <option value="red">Sith Red</option>
+                    </select>
+                    <button class="btn-danger" onclick="app.resetSystem()" style="width: 100%; border-color: var(--alert); color:var(--alert);">FORMAT C:</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <span>USR: <span id="footer-user">GUEST</span></span>
+        <span>MEM: <span id="mem-usage">14%</span></span>
+        <span><span class="blink">_</span> CONNECTED</span>
+    </footer>
+
+    <div id="editor-modal" class="hidden" style="position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 2000; display:flex; align-items:center; justify-content:center;">
+        <div class="panel" style="width: 600px; height: 500px; background: #000; box-shadow: 0 0 30px var(--primary);">
+            <div class="panel-header">
+                <span>ÉDITION PREUVE</span>
+                <button onclick="app.closeModal()" style="border:none; background:transparent;">X</button>
+            </div>
+            <div class="panel-content">
+                <input type="hidden" id="edit-id">
+                <label>Question / Sujet (Index)</label>
+                <textarea id="edit-q" style="height: 80px;"></textarea>
+                <label>Réponse / Détails (Contenu)</label>
+                <textarea id="edit-a" style="height: 200px;"></textarea>
+                <button onclick="app.saveEntry()" style="width: 100%; margin-top: 10px; padding:15px; font-weight:bold;">ENREGISTRER</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- MATRIX RAIN ENGINE ---
+        const canvas = document.getElementById('matrix-rain');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$£€%";
+        const fontSize = 12;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+        
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary');
+            ctx.font = fontSize + "px monospace";
+            for(let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 40);
+
+        // --- APP DATA & LOGIC ---
+        const INITIAL_DECK = [
+            {id: 1, q: "Coalition Arizona", a: "Alliance N-VA, MR, Les Engagés, Vooruit, CD&V."},
+            {id: 2, q: "Économie Contributive Provisionnée (ECP)", a: "Modèle valorisant les compétences hors-emploi via un fonds citoyen."},
+            {id: 3, q: "Déficit Belgique 2024", a: "Procédure de déficits excessifs enclenchée par l'UE."},
+            {id: 4, q: "Objectif Emploi 2029", a: "80% de taux d'emploi visé par le gouv."},
+            {id: 5, q: "Ruling Fiscal", a: "Mécanisme de sécurité juridique pour l'ECP auprès du SPF Finances."}
+        ];
+
+        // Simulated Remote Decks for the Store
+        const MARKET_DECKS = [
+            { id: 'fiscal_war', name: "FISCAL WARFARE", desc: "Données sur l'évasion fiscale et montages offshore.", price: 100, count: 45, levelReq: 2 },
+            { id: 'social_crisis', name: "SOCIAL CRISIS", desc: "Stats CPAS, chômage et précarité urbaine.", price: 50, count: 32, levelReq: 1 },
+            { id: 'ue_regs', name: "BRUSSELS BUREAUCRACY", desc: "Directives UE et impact budgétaire fédéral.", price: 150, count: 60, levelReq: 3 },
+            { id: 'secret_ops', name: "ARIZONA BLACK OPS", desc: "[REDACTED] Protocoles de négociation secrète.", price: 500, count: 12, levelReq: 5 }
+        ];
+
+        const app = {
+            data: [],
+            user: { name: "Ghost_User", xp: 0, level: 1, credits: 0, stats: { queries: 0, edits: 0 } },
+            currentDeckName: "BASE",
+            
+            init: function() {
+                // Load State
+                const sData = localStorage.getItem('det_data');
+                this.data = sData ? JSON.parse(sData) : JSON.parse(JSON.stringify(INITIAL_DECK));
+                
+                const sUser = localStorage.getItem('det_user');
+                if(sUser) this.user = JSON.parse(sUser);
+                
+                document.getElementById('scratchpad').value = localStorage.getItem('det_notes') || "";
+                
+                // Event Listeners
+                this.setupDragDrop();
+                document.getElementById('username-input').addEventListener('input', (e) => { this.user.name = e.target.value; this.saveUser(); });
+                document.getElementById('scratchpad').addEventListener('input', (e) => localStorage.setItem('det_notes', e.target.value));
+
+                // Clock & Updates
+                setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString(), 1000);
+                setInterval(() => document.getElementById('mem-usage').innerText = Math.floor(Math.random() * 20 + 10) + "%", 2000);
+
+                this.renderStore();
+                this.updateUI();
+                this.renderTable(this.data);
+            },
+
+            // --- CORE FUNCTIONALITY ---
+            renderTable: function(dataSet) {
+                const tbody = document.getElementById('table-body');
+                tbody.innerHTML = '';
+                document.getElementById('record-count').innerText = dataSet.length;
+                document.getElementById('active-deck-name').innerText = "DECK: " + this.currentDeckName;
+
+                dataSet.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight:bold;">${row.q.substring(0, 40)}</td>
+                        <td style="opacity: 0.7;">${row.a.substring(0, 50)}...</td>
+                        <td><button onclick="event.stopPropagation(); app.editEntry(${row.id})">CMD</button></td>
+                    `;
+                    tr.onclick = () => this.showDetail(row);
+                    tbody.appendChild(tr);
+                });
+            },
+
+            showDetail: function(row) {
+                const view = document.getElementById('detail-view');
+                view.innerHTML = `
+                    <h3 style="color:#fff; border-bottom:1px dashed var(--primary)">DOSSIER ID: ${row.id}</h3>
+                    <div style="margin-bottom:15px"><span class="tag">DECRYPTED</span> <span class="tag">LVL ${this.user.level}</span></div>
+                    
+                    <label style="color:var(--dim); background:var(--primary); padding:2px; color:#000; font-weight:bold;">REQUÊTE / SUJET</label>
+                    <div style="margin: 10px 0 20px 0; font-size:1.1em;">${row.q}</div>
+                    
+                    <label style="color:var(--dim); background:var(--primary); padding:2px; color:#000; font-weight:bold;">DONNÉES BRUTES</label>
+                    <div style="margin-top:10px; line-height:1.4; white-space: pre-wrap;">${row.a.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:var(--gold)">$1</a>')}</div>
+
+                    <div style="margin-top:40px; border-top:1px dotted var(--primary); padding-top:10px; display:flex; gap:5px;">
+                        <button class="btn-danger" onclick="app.deleteEntry(${row.id})">SUPPRIMER</button>
+                        <button onclick="app.editEntry(${row.id})">ÉDITER</button>
+                    </div>
+                `;
+            },
+
+            filterData: function() {
+                const q = document.getElementById('search-bar').value.toLowerCase();
+                if(q.length > 2) {
+                    this.user.stats.queries++;
+                    if(this.user.stats.queries % 5 === 0) this.addCredits(1); // Earn credits by searching
+                }
+                const filtered = this.data.filter(i => i.q.toLowerCase().includes(q) || i.a.toLowerCase().includes(q));
+                this.renderTable(filtered);
+                this.updateUI();
+            },
+
+            // --- STORE & DECKS ---
+            switchTab: function(tabName) {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab')[tabName === 'terminal' ? 0 : 1].classList.add('active');
+                
+                document.getElementById('view-terminal').classList.toggle('hidden', tabName !== 'terminal');
+                document.getElementById('view-store').classList.toggle('hidden', tabName !== 'store');
+            },
+
+            renderStore: function() {
+                const grid = document.getElementById('store-grid');
+                grid.innerHTML = '';
+                MARKET_DECKS.forEach(deck => {
+                    const canBuy = this.user.credits >= deck.price;
+                    const canUse = this.user.level >= deck.levelReq;
+                    const btnClass = canBuy && canUse ? 'btn-buy' : '';
+                    const btnText = !canUse ? `REQ LVL ${deck.levelReq}` : (!canBuy ? 'NO CREDITS' : 'ACHETER & INSTALLER');
+                    const disabled = (!canBuy || !canUse) ? 'disabled' : '';
+
+                    grid.innerHTML += `
+                        <div class="store-item" style="${!canUse ? 'opacity:0.5' : ''}">
+                            <h4>${deck.name}</h4>
+                            <div style="font-size:0.8em; color:#aaa; height:40px;">${deck.desc}</div>
+                            <div style="margin-top:10px; font-size:0.8em;">
+                                <span class="tag">${deck.count} CARDS</span>
+                                <span class="store-price">${deck.price} ¢</span>
+                            </div>
+                            <button class="${btnClass}" ${disabled} onclick="app.buyDeck('${deck.id}')">${btnText}</button>
+                        </div>
+                    `;
+                });
+            },
+
+            buyDeck: function(deckId) {
+                const deck = MARKET_DECKS.find(d => d.id === deckId);
+                if(this.user.credits >= deck.price) {
+                    this.user.credits -= deck.price;
+                    alert(`INSTALLATION DU MODULE: ${deck.name}...`);
+                    // Simulation of data injection
+                    const newCards = Array.from({length: deck.count}, (_, i) => ({
+                        id: Date.now() + i,
+                        q: `${deck.name} - Data Point #${i+1}`,
+                        a: `Donnée classifiée issue du pack ${deck.name}. Analyse requise.`
+                    }));
+                    this.data = [...this.data, ...newCards];
+                    this.currentDeckName = deck.name;
+                    this.saveData();
+                    this.saveUser();
+                    this.renderTable(this.data);
+                    this.switchTab('terminal');
+                }
+            },
+
+            // --- FILE HANDLING (DROP ZONE) ---
+            setupDragDrop: function() {
+                const dz = document.getElementById('drop-zone');
+                dz.addEventListener('click', () => document.getElementById('file-input').click());
+                
+                dz.addEventListener('dragover', (e) => {
+                    e.preventDefault(); dz.classList.add('dragover');
+                });
+                dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+                dz.addEventListener('drop', (e) => {
+                    e.preventDefault(); dz.classList.remove('dragover');
+                    if(e.dataTransfer.files.length) this.importFile(e.dataTransfer.files[0]);
+                });
+            },
+
+            handleFileSelect: function(input) {
+                if(input.files.length) this.importFile(input.files[0]);
+            },
+
+            importFile: function(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        // Support JSON or simple CSV split
+                        let newData = [];
+                        if(file.name.endsWith('.json')) {
+                            newData = JSON.parse(e.target.result);
+                        } else if (file.name.endsWith('.csv')) {
+                            const lines = e.target.result.split('\n');
+                            newData = lines.map((line, idx) => {
+                                const parts = line.split(','); // Very basic CSV parser
+                                return { id: Date.now()+idx, q: parts[0] || "???", a: parts.slice(1).join(',') || "..." };
+                            });
+                        }
+                        
+                        // Merge or Replace? Let's Merge.
+                        if(confirm(`Fichier détecté : ${file.name}. \nAJOUTER ces données à la base existante ?`)) {
+                            // Ensure ID uniqueness
+                            const cleanData = newData.map((d, i) => ({
+                                id: d.id || (Date.now() + i),
+                                q: d.q || d.question || "Unknown",
+                                a: d.a || d.answer || "Unknown"
+                            }));
+                            this.data = [...this.data, ...cleanData];
+                            this.currentDeckName = file.name.toUpperCase();
+                            this.saveData();
+                            this.renderTable(this.data);
+                            this.switchTab('terminal');
+                            this.addCredits(50); // Bonus for importing
+                        }
+                    } catch(err) {
+                        alert("ERREUR CRITIQUE: FICHIER CORROMPU.");
+                    }
+                };
+                reader.readAsText(file);
+            },
+
+            exportData: function() {
+                const str = JSON.stringify(this.data, null, 2);
+                const blob = new Blob([str], {type: "application/json"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `arizona_investigation_${Date.now()}.json`;
+                a.click();
+            },
+
+            // --- EDIT & RPG ---
+            showAddModal: function() {
+                document.getElementById('edit-id').value = '';
+                document.getElementById('edit-q').value = '';
+                document.getElementById('edit-a').value = '';
+                document.getElementById('editor-modal').classList.remove('hidden');
+            },
+            editEntry: function(id) {
+                const d = this.data.find(x => x.id === id);
+                document.getElementById('edit-id').value = d.id;
+                document.getElementById('edit-q').value = d.q;
+                document.getElementById('edit-a').value = d.a;
+                document.getElementById('editor-modal').classList.remove('hidden');
+            },
+            saveEntry: function() {
+                const id = document.getElementById('edit-id').value;
+                const q = document.getElementById('edit-q').value;
+                const a = document.getElementById('edit-a').value;
+                
+                if(id) {
+                    const idx = this.data.findIndex(x => x.id == id);
+                    if(idx > -1) { this.data[idx].q = q; this.data[idx].a = a; }
+                } else {
+                    this.data.push({ id: Date.now(), q, a });
+                    this.addCredits(10);
+                }
+                this.user.stats.edits++;
+                this.addXP(20);
+                this.saveData();
+                this.closeModal();
+                this.filterData();
+            },
+            deleteEntry: function(id) {
+                if(confirm('CONFIRMER SUPPRESSION ?')) {
+                    this.data = this.data.filter(x => x.id !== id);
+                    this.saveData();
+                    this.renderTable(this.data);
+                    document.getElementById('detail-view').innerHTML = "";
+                }
+            },
+            closeModal: () => document.getElementById('editor-modal').classList.add('hidden'),
+
+            // --- SYSTEM ---
+            addXP: function(amount) {
+                this.user.xp += amount;
+                if(this.user.xp >= 100) {
+                    this.user.level++;
+                    this.user.xp = 0;
+                    this.user.credits += 100; // Level up bonus
+                    alert(`LEVEL UP! RANG: ${this.user.level}. +100 CREDITS.`);
+                }
+                this.saveUser();
+            },
+            addCredits: function(amount) {
+                this.user.credits += amount;
+                this.saveUser();
+            },
+            saveData: function() { localStorage.setItem('det_data', JSON.stringify(this.data)); },
+            saveUser: function() { 
+                localStorage.setItem('det_user', JSON.stringify(this.user)); 
+                this.updateUI();
+            },
+            updateUI: function() {
+                document.getElementById('username-input').value = this.user.name;
+                document.getElementById('rank-display').innerText = this.user.level;
+                document.getElementById('credits-display').innerText = this.user.credits + " ¢";
+                document.getElementById('xp-fill').style.width = this.user.xp + "%";
+                document.getElementById('xp-text').innerText = this.user.xp + "/100";
+                document.getElementById('footer-user').innerText = this.user.name.toUpperCase();
+                document.getElementById('stat-queries').innerText = this.user.stats.queries;
+                document.getElementById('stat-edits').innerText = this.user.stats.edits;
+            },
+            setTheme: function(theme) {
+                const r = document.querySelector(':root');
+                const themes = {
+                    green: {p: '#0f0', d: '#003300', a: '#f00', g: '#ffb700'},
+                    amber: {p: '#ffb000', d: '#442200', a: '#ff4400', g: '#fff'},
+                    cyan: {p: '#0ff', d: '#003344', a: '#ff0055', g: '#ffff00'},
+                    red: {p: '#f00', d: '#330000', a: '#fff', g: '#ffcc00'}
+                };
+                const t = themes[theme];
+                r.style.setProperty('--primary', t.p);
+                r.style.setProperty('--dim', t.d);
+                r.style.setProperty('--alert', t.a);
+                r.style.setProperty('--gold', t.g);
+            },
+            resetSystem: function() {
+                if(confirm('DANGER: EFFACEMENT TOTAL ?')) {
+                    localStorage.clear();
+                    location.reload();
+                }
+            }
+        };
+
+        app.init();
+    </script>
+</body>
+</html>
