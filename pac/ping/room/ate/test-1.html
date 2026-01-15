@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Présence et Action Culturelles - Mouvement écosocialiste d'Éducation permanente et populaire">
+    <title>Accueil - PAC | Présence et Action Culturelles</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===============================================
+           CSS Variables & Reset
+           =============================================== */
+        :root {
+            --pac-red: #C41E3A;
+            --pac-red-dark: #9B1B30;
+            --pac-red-light: #E8425A;
+            --pac-orange: #E65100;
+            --pac-yellow: #FFB300;
+            --black: #1A1A1A;
+            --gray-900: #2D2D2D;
+            --gray-700: #4A4A4A;
+            --gray-500: #6B6B6B;
+            --gray-300: #A0A0A0;
+            --gray-100: #F5F5F5;
+            --white: #FFFFFF;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'DM Sans', -apple-system, sans-serif;
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            --space-4xl: 6rem;
+            --container-max: 1280px;
+            --header-height: 80px;
+            --transition-fast: 150ms ease;
+            --transition-base: 250ms ease;
+            --transition-slow: 400ms ease;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; color: var(--gray-900); background: var(--white); overflow-x: hidden; }
+        img { max-width: 100%; height: auto; display: block; }
+        a { color: inherit; text-decoration: none; }
+        ul, ol { list-style: none; }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; }
+        
+        .container { width: 100%; max-width: var(--container-max); margin: 0 auto; padding: 0 var(--space-lg); }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+        
+        /* ===============================================
+           Header & Navigation
+           =============================================== */
+        .header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: var(--white); box-shadow: var(--shadow-sm); transition: var(--transition-base); }
+        .header.scrolled { box-shadow: var(--shadow-md); }
+        
+        .top-bar { background: var(--pac-red); color: var(--white); font-size: 0.875rem; padding: var(--space-sm) 0; }
+        .top-bar-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm); }
+        .top-bar-links { display: flex; gap: var(--space-lg); flex-wrap: wrap; }
+        .top-bar-links a { opacity: 0.9; transition: var(--transition-fast); }
+        .top-bar-links a:hover { opacity: 1; text-decoration: underline; }
+        .top-bar-contact { display: flex; align-items: center; gap: var(--space-md); }
+        
+        .main-nav { padding: var(--space-md) 0; }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        
+        .logo { display: flex; align-items: center; gap: var(--space-md); }
+        .logo-text { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--pac-red); line-height: 1.2; }
+        .logo-subtitle { font-family: var(--font-body); font-size: 0.7rem; font-weight: 400; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+        
+        .nav-menu { display: flex; align-items: center; gap: var(--space-xs); }
+        .nav-item { position: relative; }
+        .nav-link { display: flex; align-items: center; gap: var(--space-xs); padding: var(--space-sm) var(--space-md); font-weight: 500; color: var(--gray-700); border-radius: 6px; transition: var(--transition-fast); }
+        .nav-link:hover, .nav-link.active { color: var(--pac-red); background: rgba(196, 30, 58, 0.05); }
+        .nav-link svg { width: 12px; height: 12px; transition: var(--transition-fast); }
+        .nav-item:hover .nav-link svg { transform: rotate(180deg); }
+        
+        .dropdown { position: absolute; top: 100%; left: 0; min-width: 260px; background: var(--white); border-radius: 8px; box-shadow: var(--shadow-lg); padding: var(--space-sm); opacity: 0; visibility: hidden; transform: translateY(10px); transition: var(--transition-base); z-index: 100; }
+        .nav-item:hover .dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-link { display: block; padding: var(--space-sm) var(--space-md); color: var(--gray-700); border-radius: 6px; transition: var(--transition-fast); }
+        .dropdown-link:hover { color: var(--pac-red); background: var(--gray-100); }
+        
+        .menu-toggle { display: none; flex-direction: column; gap: 5px; padding: var(--space-sm); }
+        .menu-toggle span { width: 24px; height: 2px; background: var(--gray-700); border-radius: 2px; transition: var(--transition-base); }
+        .menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+        
+        .search-btn { padding: var(--space-sm); color: var(--gray-500); transition: var(--transition-fast); }
+        .search-btn:hover { color: var(--pac-red); }
+        .search-btn svg { width: 20px; height: 20px; }
+        
+        /* ===============================================
+           Hero Section
+           =============================================== */
+        .hero { margin-top: calc(var(--header-height) + 40px); position: relative; overflow: hidden; }
+        .hero-slider { position: relative; }
+        .hero-slide { position: relative; aspect-ratio: 21/9; min-height: 400px; max-height: 600px; overflow: hidden; display: none; }
+        .hero-slide.active { display: block; animation: fadeIn 0.6s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .hero-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(26, 26, 26, 0.8) 0%, rgba(26, 26, 26, 0.4) 50%, transparent 100%); }
+        .hero-content { position: absolute; inset: 0; display: flex; align-items: center; }
+        .hero-text { max-width: 600px; color: var(--white); }
+        .hero-tag { display: inline-block; background: var(--pac-red); color: var(--white); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; padding: var(--space-xs) var(--space-md); border-radius: 4px; margin-bottom: var(--space-md); }
+        .hero-title { font-family: var(--font-display); font-size: clamp(1.75rem, 4vw, 3rem); font-weight: 700; line-height: 1.2; margin-bottom: var(--space-md); }
+        .hero-desc { font-size: 1.125rem; opacity: 0.9; margin-bottom: var(--space-xl); line-height: 1.7; }
+        .hero-btn { display: inline-flex; align-items: center; gap: var(--space-sm); background: var(--white); color: var(--pac-red); font-weight: 600; padding: var(--space-md) var(--space-xl); border-radius: 8px; transition: var(--transition-base); }
+        .hero-btn:hover { background: var(--pac-red); color: var(--white); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .hero-btn svg { width: 16px; height: 16px; transition: var(--transition-fast); }
+        .hero-btn:hover svg { transform: translateX(4px); }
+        
+        .slider-controls { position: absolute; bottom: var(--space-xl); right: var(--space-xl); display: flex; gap: var(--space-sm); }
+        .slider-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); transition: var(--transition-fast); cursor: pointer; }
+        .slider-dot.active, .slider-dot:hover { background: var(--white); }
+        
+        /* ===============================================
+           Section Styles
+           =============================================== */
+        .section { padding: var(--space-4xl) 0; }
+        .section-header { margin-bottom: var(--space-2xl); }
+        .section-title { font-family: var(--font-display); font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 700; color: var(--black); position: relative; display: inline-block; }
+        .section-title::after { content: ''; position: absolute; bottom: -8px; left: 0; width: 60px; height: 4px; background: var(--pac-red); border-radius: 2px; }
+        .section-title span { color: var(--pac-red); }
+        
+        /* ===============================================
+           Events / Activités
+           =============================================== */
+        .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: var(--space-xl); }
+        .event-card { background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-md); transition: var(--transition-base); display: flex; flex-direction: column; }
+        .event-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); }
+        .event-date { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--pac-red); color: var(--white); padding: var(--space-md); min-width: 80px; }
+        .event-date-day { font-family: var(--font-display); font-size: 2rem; font-weight: 700; line-height: 1; }
+        .event-date-month { font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .event-header { display: flex; }
+        .event-meta { flex: 1; padding: var(--space-md); display: flex; flex-direction: column; justify-content: center; }
+        .event-title { font-family: var(--font-display); font-size: 1.125rem; font-weight: 600; color: var(--black); margin-bottom: var(--space-xs); line-height: 1.3; }
+        .event-time { display: flex; align-items: center; gap: var(--space-xs); font-size: 0.875rem; color: var(--gray-500); }
+        .event-time svg { width: 14px; height: 14px; }
+        .event-body { padding: 0 var(--space-md) var(--space-md); flex: 1; display: flex; flex-direction: column; }
+        .event-desc { font-size: 0.9375rem; color: var(--gray-700); line-height: 1.6; flex: 1; }
+        .event-footer { display: flex; justify-content: space-between; align-items: center; padding: var(--space-md); border-top: 1px solid var(--gray-100); margin-top: var(--space-md); }
+        .event-location { display: flex; align-items: center; gap: var(--space-xs); font-size: 0.875rem; color: var(--gray-500); }
+        .event-location svg { width: 14px; height: 14px; color: var(--pac-red); }
+        .event-tags { display: flex; gap: var(--space-xs); }
+        .event-tag { font-size: 0.75rem; font-weight: 500; padding: var(--space-xs) var(--space-sm); background: var(--gray-100); color: var(--gray-700); border-radius: 4px; }
+        .event-tag.formation { background: rgba(230, 81, 0, 0.1); color: var(--pac-orange); }
+        .event-tag.animation { background: rgba(196, 30, 58, 0.1); color: var(--pac-red); }
+        .event-tag.projection { background: rgba(255, 179, 0, 0.15); color: #B37B00; }
+        
+        .view-all { text-align: center; margin-top: var(--space-2xl); }
+        .btn { display: inline-flex; align-items: center; gap: var(--space-sm); padding: var(--space-md) var(--space-xl); font-weight: 600; border-radius: 8px; transition: var(--transition-base); }
+        .btn-primary { background: var(--pac-red); color: var(--white); }
+        .btn-primary:hover { background: var(--pac-red-dark); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .btn-outline { border: 2px solid var(--pac-red); color: var(--pac-red); }
+        .btn-outline:hover { background: var(--pac-red); color: var(--white); }
+        
+        /* ===============================================
+           Campaigns Section
+           =============================================== */
+        .campaigns { background: var(--gray-100); }
+        .campaigns-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--space-xl); }
+        .campaign-card { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 16/9; cursor: pointer; }
+        .campaign-card img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition-slow); }
+        .campaign-card:hover img { transform: scale(1.05); }
+        .campaign-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26, 26, 26, 0.9) 0%, rgba(26, 26, 26, 0.3) 50%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: var(--space-xl); color: var(--white); }
+        .campaign-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; margin-bottom: var(--space-sm); }
+        .campaign-desc { font-size: 0.9375rem; opacity: 0.9; }
+        
+        /* ===============================================
+           Podcasts Section
+           =============================================== */
+        .podcasts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-xl); }
+        .podcast-card { background: linear-gradient(135deg, var(--pac-red) 0%, var(--pac-red-dark) 100%); border-radius: 16px; padding: var(--space-2xl); color: var(--white); display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition-base); }
+        .podcast-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); }
+        .podcast-card.alt { background: linear-gradient(135deg, var(--gray-900) 0%, var(--black) 100%); }
+        .podcast-icon { width: 60px; height: 60px; margin-bottom: var(--space-lg); }
+        .podcast-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; margin-bottom: var(--space-sm); }
+        .podcast-desc { opacity: 0.9; margin-bottom: var(--space-lg); }
+        .podcast-btn { background: rgba(255, 255, 255, 0.2); color: var(--white); padding: var(--space-sm) var(--space-lg); border-radius: 6px; font-weight: 500; transition: var(--transition-fast); }
+        .podcast-btn:hover { background: var(--white); color: var(--pac-red); }
+        .podcast-card.alt .podcast-btn:hover { color: var(--black); }
+        
+        /* ===============================================
+           Régionales Section
+           =============================================== */
+        .regionales-intro { max-width: 700px; margin-bottom: var(--space-2xl); color: var(--gray-700); font-size: 1.125rem; }
+        .regionales-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-md); }
+        .regionale-link { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-md) var(--space-lg); background: var(--white); border: 2px solid var(--gray-100); border-radius: 8px; font-weight: 500; color: var(--gray-700); transition: var(--transition-fast); }
+        .regionale-link:hover { border-color: var(--pac-red); color: var(--pac-red); background: rgba(196, 30, 58, 0.02); }
+        .regionale-link svg { width: 16px; height: 16px; color: var(--pac-red); }
+        
+        /* ===============================================
+           Expositions Section
+           =============================================== */
+        .expos { background: var(--gray-900); color: var(--white); }
+        .expos .section-title { color: var(--white); }
+        .expos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-xl); }
+        .expo-card { background: rgba(255, 255, 255, 0.05); border-radius: 12px; overflow: hidden; transition: var(--transition-base); }
+        .expo-card:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-4px); }
+        .expo-img { aspect-ratio: 4/3; overflow: hidden; }
+        .expo-img img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition-slow); }
+        .expo-card:hover .expo-img img { transform: scale(1.05); }
+        .expo-content { padding: var(--space-lg); }
+        .expo-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin-bottom: var(--space-sm); }
+        .expo-desc { font-size: 0.9375rem; color: var(--gray-300); line-height: 1.6; }
+        
+        /* ===============================================
+           Actualités Section
+           =============================================== */
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-xl); }
+        .news-card { background: var(--white); border-radius: 12px; padding: var(--space-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--gray-100); transition: var(--transition-base); }
+        .news-card:hover { box-shadow: var(--shadow-md); border-color: var(--pac-red); }
+        .news-date { font-size: 0.875rem; color: var(--gray-500); margin-bottom: var(--space-sm); }
+        .news-title { font-family: var(--font-display); font-size: 1.125rem; font-weight: 600; color: var(--black); line-height: 1.4; margin-bottom: var(--space-md); }
+        .news-link { display: inline-flex; align-items: center; gap: var(--space-xs); color: var(--pac-red); font-weight: 500; font-size: 0.875rem; transition: var(--transition-fast); }
+        .news-link:hover { gap: var(--space-sm); }
+        .news-link svg { width: 14px; height: 14px; }
+        
+        /* ===============================================
+           Newsletter CTA
+           =============================================== */
+        .newsletter-cta { background: linear-gradient(135deg, var(--pac-red) 0%, var(--pac-red-dark) 100%); padding: var(--space-3xl) 0; }
+        .newsletter-content { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2xl); flex-wrap: wrap; }
+        .newsletter-text { color: var(--white); }
+        .newsletter-title { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; margin-bottom: var(--space-sm); }
+        .newsletter-desc { opacity: 0.9; }
+        .newsletter-btn { background: var(--white); color: var(--pac-red); font-weight: 600; padding: var(--space-md) var(--space-2xl); border-radius: 8px; transition: var(--transition-base); white-space: nowrap; }
+        .newsletter-btn:hover { background: var(--black); color: var(--white); transform: translateY(-2px); }
+        
+        /* ===============================================
+           Footer
+           =============================================== */
+        .footer { background: var(--black); color: var(--white); padding: var(--space-4xl) 0 var(--space-xl); }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-2xl); margin-bottom: var(--space-3xl); }
+        .footer-brand { max-width: 350px; }
+        .footer-logo { display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-lg); }
+        .footer-logo-text { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; }
+        .footer-desc { color: var(--gray-300); margin-bottom: var(--space-lg); line-height: 1.7; }
+        .footer-contact-item { display: flex; align-items: flex-start; gap: var(--space-sm); color: var(--gray-300); margin-bottom: var(--space-sm); }
+        .footer-contact-item svg { width: 16px; height: 16px; margin-top: 4px; color: var(--pac-red); flex-shrink: 0; }
+        .footer-contact-item a { color: var(--gray-300); transition: var(--transition-fast); }
+        .footer-contact-item a:hover { color: var(--white); }
+        .footer-title { font-weight: 600; font-size: 1rem; margin-bottom: var(--space-lg); color: var(--white); }
+        .footer-links { display: flex; flex-direction: column; gap: var(--space-sm); }
+        .footer-link { color: var(--gray-300); transition: var(--transition-fast); }
+        .footer-link:hover { color: var(--white); padding-left: var(--space-xs); }
+        .footer-partners { display: flex; flex-wrap: wrap; gap: var(--space-lg); align-items: center; padding: var(--space-xl) 0; border-top: 1px solid rgba(255, 255, 255, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: var(--space-xl); }
+        .footer-partner { height: 40px; opacity: 0.6; filter: grayscale(100%) brightness(2); transition: var(--transition-fast); }
+        .footer-partner:hover { opacity: 1; }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md); color: var(--gray-500); font-size: 0.875rem; }
+        .footer-legal { display: flex; gap: var(--space-lg); }
+        .footer-legal a { transition: var(--transition-fast); }
+        .footer-legal a:hover { color: var(--white); }
+        
+        /* ===============================================
+           Search Modal
+           =============================================== */
+        .search-modal { position: fixed; inset: 0; background: rgba(26, 26, 26, 0.95); z-index: 2000; display: flex; align-items: flex-start; justify-content: center; padding-top: 20vh; opacity: 0; visibility: hidden; transition: var(--transition-base); }
+        .search-modal.active { opacity: 1; visibility: visible; }
+        .search-container { width: 100%; max-width: 600px; padding: 0 var(--space-lg); }
+        .search-input-wrapper { position: relative; }
+        .search-input { width: 100%; padding: var(--space-lg) var(--space-xl); padding-left: calc(var(--space-xl) + 24px); font-size: 1.25rem; font-family: inherit; border: none; border-radius: 12px; background: var(--white); color: var(--black); }
+        .search-input:focus { outline: none; box-shadow: 0 0 0 4px rgba(196, 30, 58, 0.3); }
+        .search-icon { position: absolute; left: var(--space-lg); top: 50%; transform: translateY(-50%); width: 24px; height: 24px; color: var(--gray-500); }
+        .search-close { position: absolute; top: var(--space-xl); right: var(--space-xl); color: var(--white); padding: var(--space-sm); transition: var(--transition-fast); }
+        .search-close:hover { color: var(--pac-red); }
+        .search-close svg { width: 32px; height: 32px; }
+        .search-hint { text-align: center; color: var(--gray-300); margin-top: var(--space-md); font-size: 0.875rem; }
+        
+        /* ===============================================
+           Responsive
+           =============================================== */
+        @media (max-width: 1024px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .campaigns-grid { grid-template-columns: 1fr; }
+        }
+        
+        @media (max-width: 768px) {
+            .top-bar-links { display: none; }
+            .nav-menu { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: var(--white); flex-direction: column; align-items: stretch; padding: var(--space-xl); gap: 0; transform: translateX(100%); transition: var(--transition-base); overflow-y: auto; }
+            .nav-menu.active { transform: translateX(0); }
+            .nav-link { padding: var(--space-md); border-bottom: 1px solid var(--gray-100); }
+            .dropdown { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; padding-left: var(--space-lg); display: none; }
+            .nav-item.open .dropdown { display: block; }
+            .menu-toggle { display: flex; }
+            .hero-slide { aspect-ratio: 4/3; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .newsletter-content { flex-direction: column; text-align: center; }
+            .events-grid { grid-template-columns: 1fr; }
+            .regionales-grid { grid-template-columns: 1fr 1fr; }
+        }
+        
+        @media (max-width: 480px) {
+            .regionales-grid { grid-template-columns: 1fr; }
+            .slider-controls { right: var(--space-md); bottom: var(--space-md); }
+            .campaigns-grid { grid-template-columns: 1fr; }
+            .campaigns-grid .campaign-card { aspect-ratio: 4/3; }
+        }
+        
+        /* ===============================================
+           Animations
+           =============================================== */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-on-scroll { opacity: 0; transform: translateY(30px); }
+        .animate-on-scroll.visible { animation: slideUp 0.6s ease forwards; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="top-bar">
+            <div class="container top-bar-content">
+                <nav class="top-bar-links" aria-label="Liens secondaires">
+                    <a href="#qui-sommes-nous">Qui sommes nous ?</a>
+                    <a href="#equipe">Équipes</a>
+                    <a href="#" target="_blank" rel="noopener">Shop</a>
+                    <a href="#presse">Communiqués de presse</a>
+                    <a href="#newsletter">Newsletter</a>
+                    <a href="#location">Location de salle</a>
+                    <a href="#emploi">Postuler</a>
+                </nav>
+                <div class="top-bar-contact">
+                    <a href="tel:+3225457911">02/545 79 11</a>
+                    <a href="mailto:info@pac-g.be">info@pac-g.be</a>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="main-nav" aria-label="Navigation principale">
+            <div class="container nav-content">
+                <a href="#" class="logo" aria-label="Retour à l'accueil">
+                    <div class="logo-text">PAC<span class="logo-subtitle">Mouvement écosocialiste</span></div>
+                </a>
+                
+                <ul class="nav-menu" id="nav-menu">
+                    <li class="nav-item"><a href="#" class="nav-link active">Accueil</a></li>
+                    <li class="nav-item"><a href="#regionales" class="nav-link">Régionales</a></li>
+                    <li class="nav-item"><a href="#actualites" class="nav-link">Actu</a></li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Formations <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+                        <ul class="dropdown">
+                            <li><a href="#" class="dropdown-link">Agir face aux paroles excluantes</a></li>
+                            <li><a href="#" class="dropdown-link">Animer un atelier d'arpentage</a></li>
+                            <li><a href="#" class="dropdown-link">Devenir Écrivain·e public·que</a></li>
+                            <li><a href="#" class="dropdown-link">Devenir animateur·trice : Dire pour Agir</a></li>
+                            <li><a href="#" class="dropdown-link">Écologie depuis les marges</a></li>
+                            <li><a href="#" class="dropdown-link">Formation PEPS</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Publications <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+                        <ul class="dropdown">
+                            <li><a href="#" class="dropdown-link">Cahiers de l'Éducation permanente</a></li>
+                            <li><a href="#" class="dropdown-link">Cahiers en ligne</a></li>
+                            <li><a href="#" class="dropdown-link">Agir par la Culture</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Analyses <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+                        <ul class="dropdown">
+                            <li><a href="#" class="dropdown-link">2025</a></li>
+                            <li><a href="#" class="dropdown-link">2024</a></li>
+                            <li><a href="#" class="dropdown-link">2023</a></li>
+                            <li><a href="#" class="dropdown-link">2022</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Outils <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+                        <ul class="dropdown">
+                            <li><a href="#" class="dropdown-link">Les Jours Heureux – Podcasts</a></li>
+                            <li><a href="#" class="dropdown-link">Jeu d'animation Communa</a></li>
+                            <li><a href="#" class="dropdown-link">Jeu d'animation Merci l'impôt ?</a></li>
+                            <li><a href="#" class="dropdown-link">Le téléphone portable – Jeu de la ficelle</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="#expositions" class="nav-link">Expos</a></li>
+                    <li class="nav-item"><a href="#campagnes" class="nav-link">Campagnes</a></li>
+                    <li class="nav-item"><a href="#calendrier" class="nav-link">Calendrier</a></li>
+                </ul>
+                
+                <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                    <button class="search-btn" id="search-btn" aria-label="Rechercher">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </button>
+                    <button class="menu-toggle" id="menu-toggle" aria-label="Menu" aria-expanded="false">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Search Modal -->
+    <div class="search-modal" id="search-modal" role="dialog" aria-modal="true" aria-label="Recherche">
+        <button class="search-close" id="search-close" aria-label="Fermer la recherche">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="search" class="search-input" placeholder="Rechercher une activité, une formation..." id="search-input" autocomplete="off">
+            </div>
+            <p class="search-hint">Appuyez sur Échap pour fermer • Ctrl+K pour rechercher</p>
+        </div>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" aria-label="Actualités en vedette">
+            <div class="hero-slider" id="hero-slider">
+                <div class="hero-slide active">
+                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1920&q=80" alt="Le corps en jeu - Sport, genre et pouvoir">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content container">
+                        <div class="hero-text">
+                            <span class="hero-tag">Événement</span>
+                            <h1 class="hero-title">Le corps en jeu : Sport, genre et pouvoir</h1>
+                            <p class="hero-desc">Une journée de réflexion et d'échanges sur les enjeux de genre dans le sport, les stéréotypes et les luttes pour l'égalité.</p>
+                            <a href="#" class="hero-btn">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=1920&q=80" alt="La dignité pour qui ?">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content container">
+                        <div class="hero-text">
+                            <span class="hero-tag">Campagne</span>
+                            <h1 class="hero-title">La dignité pour qui ?</h1>
+                            <p class="hero-desc">Une campagne pour interroger nos conceptions de la dignité et leur application dans notre société contemporaine.</p>
+                            <a href="#" class="hero-btn">En savoir plus <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-controls">
+                <button class="slider-dot active" data-slide="0" aria-label="Diapositive 1"></button>
+                <button class="slider-dot" data-slide="1" aria-label="Diapositive 2"></button>
+            </div>
+        </section>
+        
+        <!-- Activités Section -->
+        <section class="section" id="activites">
+            <div class="container">
+                <header class="section-header animate-on-scroll">
+                    <h2 class="section-title">Prochaines activités <span>du mouvement</span></h2>
+                </header>
+                
+                <div class="events-grid">
+                    <article class="event-card animate-on-scroll">
+                        <div class="event-header">
+                            <div class="event-date"><span class="event-date-day">25</span><span class="event-date-month">Sep</span></div>
+                            <div class="event-meta">
+                                <h3 class="event-title">Formation à l'animation d'ateliers d'expression</h3>
+                                <div class="event-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 9h00 - 17h00</div>
+                            </div>
+                        </div>
+                        <div class="event-body">
+                            <p class="event-desc">Pensée comme un laboratoire collectif d'expérimentation, cette formation offre aux participant·es un espace pour explorer différentes pratiques d'expression : écriture, collage, photographie et déambulation.</p>
+                        </div>
+                        <footer class="event-footer">
+                            <div class="event-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> PAC Liège</div>
+                            <div class="event-tags"><span class="event-tag formation">Formation</span></div>
+                        </footer>
+                    </article>
+                    
+                    <article class="event-card animate-on-scroll">
+                        <div class="event-header">
+                            <div class="event-date"><span class="event-date-day">15</span><span class="event-date-month">Jan</span></div>
+                            <div class="event-meta">
+                                <h3 class="event-title">Cycle d'Arpentage de livres féministes</h3>
+                                <div class="event-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 19h00</div>
+                            </div>
+                        </div>
+                        <div class="event-body">
+                            <p class="event-desc">Un cycle de lectures collectives pour découvrir et analyser ensemble des ouvrages féministes majeurs. Méthode d'arpentage : chaque participant·e lit une partie, puis partage avec le groupe.</p>
+                        </div>
+                        <footer class="event-footer">
+                            <div class="event-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Bibliothèque de Verviers</div>
+                            <div class="event-tags"><span class="event-tag animation">Animation</span></div>
+                        </footer>
+                    </article>
+                    
+                    <article class="event-card animate-on-scroll">
+                        <div class="event-header">
+                            <div class="event-date"><span class="event-date-day">15</span><span class="event-date-month">Jan</span></div>
+                            <div class="event-meta">
+                                <h3 class="event-title">Ciné-club • Amal, un esprit libre</h3>
+                                <div class="event-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 21h00</div>
+                            </div>
+                        </div>
+                        <div class="event-body">
+                            <p class="event-desc">Projection du film de Jawad Rhalib suivie d'un débat. Amal, professeure de français, tente de libérer ses élèves de l'emprise de l'extrémisme religieux dans une banlieue bruxelloise.</p>
+                        </div>
+                        <footer class="event-footer">
+                            <div class="event-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Le Monty, Genappe</div>
+                            <div class="event-tags"><span class="event-tag projection">Projection</span></div>
+                        </footer>
+                    </article>
+                    
+                    <article class="event-card animate-on-scroll">
+                        <div class="event-header">
+                            <div class="event-date"><span class="event-date-day">17</span><span class="event-date-month">Jan</span></div>
+                            <div class="event-meta">
+                                <h3 class="event-title">Arpentage : Abolition. Féminisme. Tout de suite</h3>
+                                <div class="event-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 11h00 (Petit déj' inclus)</div>
+                            </div>
+                        </div>
+                        <div class="event-body">
+                            <p class="event-desc">Lecture collective de l'ouvrage d'Angela Davis et ses co-autrices. Une réflexion sur l'abolition des prisons et la justice transformative depuis une perspective féministe.</p>
+                        </div>
+                        <footer class="event-footer">
+                            <div class="event-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Bar chez Juliette, Namur</div>
+                            <div class="event-tags"><span class="event-tag animation">Animation</span></div>
+                        </footer>
+                    </article>
+                    
+                    <article class="event-card animate-on-scroll">
+                        <div class="event-header">
+                            <div class="event-date"><span class="event-date-day">21</span><span class="event-date-month">Jan</span></div>
+                            <div class="event-meta">
+                                <h3 class="event-title">Autodéfense financière pour femmes</h3>
+                                <div class="event-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 20h45</div>
+                            </div>
+                        </div>
+                        <div class="event-body">
+                            <p class="event-desc">Ateliers mensuels pour comprendre et maîtriser les questions financières. Épargne, budget, droits sociaux : des outils concrets pour l'autonomie économique des femmes.</p>
+                        </div>
+                        <footer class="event-footer">
+                            <div class="event-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Bibliothèque de Jodoigne</div>
+                            <div class="event-tags"><span class="event-tag animation">Animation</span></div>
+                        </footer>
+                    </article>
+                    
+                    <article class="event-card animate-on-scroll">
+                        <div class="event-header">
+                            <div class="event-date"><span class="event-date-day">22</span><span class="event-date-month">Jan</span></div>
+                            <div class="event-meta">
+                                <h3 class="event-title">L'Amour sous Algorithme</h3>
+                                <div class="event-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 18h30</div>
+                            </div>
+                        </div>
+                        <div class="event-body">
+                            <p class="event-desc">Apéro arpentage suivi d'un spectacle. Comment les applications de rencontre transforment-elles nos relations amoureuses ? Une soirée entre réflexion et création artistique.</p>
+                        </div>
+                        <footer class="event-footer">
+                            <div class="event-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Maison culturelle de Quaregnon</div>
+                            <div class="event-tags"><span class="event-tag animation">Animation</span></div>
+                        </footer>
+                    </article>
+                </div>
+                
+                <div class="view-all">
+                    <a href="#calendrier" class="btn btn-outline">Voir tout le calendrier <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Campagnes Section -->
+        <section class="section campaigns" id="campagnes">
+            <div class="container">
+                <header class="section-header animate-on-scroll">
+                    <h2 class="section-title">Nos campagnes <span>de sensibilisation</span></h2>
+                </header>
+                
+                <div class="campaigns-grid">
+                    <a href="#" class="campaign-card animate-on-scroll">
+                        <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=800&q=80" alt="Campagne Sécurité Sociale">
+                        <div class="campaign-overlay">
+                            <h3 class="campaign-title">La Sécurité Sociale, c'est notre affaire</h3>
+                            <p class="campaign-desc">Comprendre et défendre notre système de protection sociale collective.</p>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="campaign-card animate-on-scroll">
+                        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&q=80" alt="Stop statut cohabitant">
+                        <div class="campaign-overlay">
+                            <h3 class="campaign-title">Stop au statut cohabitant</h3>
+                            <p class="campaign-desc">Pour l'individualisation des droits sociaux et la fin des discriminations.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Podcasts Section -->
+        <section class="section" id="podcasts">
+            <div class="container">
+                <header class="section-header animate-on-scroll">
+                    <h2 class="section-title">Nos <span>podcasts</span></h2>
+                </header>
+                
+                <div class="podcasts-grid">
+                    <a href="#" class="podcast-card animate-on-scroll">
+                        <svg class="podcast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                        <h3 class="podcast-title">Les Jours Heureux</h3>
+                        <p class="podcast-desc">Rencontres et réflexions pour imaginer un avenir plus juste et solidaire.</p>
+                        <span class="podcast-btn">Écouter</span>
+                    </a>
+                    
+                    <a href="#" class="podcast-card alt animate-on-scroll">
+                        <svg class="podcast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                        <h3 class="podcast-title">Radio des Solidarités</h3>
+                        <p class="podcast-desc">Des voix qui portent les luttes sociales et les initiatives citoyennes.</p>
+                        <span class="podcast-btn">Écouter</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Régionales Section -->
+        <section class="section" id="regionales" style="background: var(--gray-100);">
+            <div class="container">
+                <header class="section-header animate-on-scroll">
+                    <h2 class="section-title">Les <span>Régionales</span></h2>
+                </header>
+                
+                <p class="regionales-intro animate-on-scroll">Avec ses onze régionales et près de 200 sections locales, PAC est le plus grand mouvement d'Éducation permanente de la Fédération Wallonie-Bruxelles. Trouvez celle près de chez vous.</p>
+                
+                <div class="regionales-grid">
+                    <a href="#" class="regionale-link animate-on-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Brabançonne</a>
+                    <a href="#" class="regionale-link animate-on-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Bruxelles</a>
+                    <a href="#" class="regionale-link animate-on-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Centre</a>
+                    <a href="#" class="regionale-link animate-on-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Charleroi</a>
+                    <a href="#" class="regionale-link animate-on-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Dinant-Philippeville</a>
+                    <a href="#" class="regionale-link animate-on-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Huy-Waremme</a>
+                    <a href="#" class="regionale-link animate-on-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Liège</a>
+                    <a href="#" class="regionale-link animate-on-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Mons-Borinage</a>
+                    <a href="#" class="regionale-link animate-on-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Namur</a>
+                    <a href="#" class="regionale-link animate-on-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Verviers</a>
+                    <a href="#" class="regionale-link animate-on-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Wallonie Picarde</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Expositions Section -->
+        <section class="section expos" id="expositions">
+            <div class="container">
+                <header class="section-header animate-on-scroll">
+                    <h2 class="section-title">Nos <span>expositions</span></h2>
+                </header>
+                
+                <div class="expos-grid">
+                    <article class="expo-card animate-on-scroll">
+                        <div class="expo-img"><img src="https://images.unsplash.com/photo-1569074187119-c87815b476da?w=600&q=80" alt="Femmes en Palestine"></div>
+                        <div class="expo-content">
+                            <h3 class="expo-title">Femmes en Palestine</h3>
+                            <p class="expo-desc">Portraits de femmes palestiniennes en première ligne du conflit, à travers les photographies de Véronique Vercheval.</p>
+                        </div>
+                    </article>
+                    
+                    <article class="expo-card animate-on-scroll">
+                        <div class="expo-img"><img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80" alt="Temps de travail"></div>
+                        <div class="expo-content">
+                            <h3 class="expo-title">Temps de travail. Mesures et démesures</h3>
+                            <p class="expo-desc">Une exposition didactique et interactive sur l'articulation entre temps de travail et temps de vie.</p>
+                        </div>
+                    </article>
+                    
+                    <article class="expo-card animate-on-scroll">
+                        <div class="expo-img"><img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=600&q=80" alt="Vies en transit"></div>
+                        <div class="expo-content">
+                            <h3 class="expo-title">Vies en transit</h3>
+                            <p class="expo-desc">Du Parc Maximilien à la Jungle de Calais : regards sur les vies en transit et les récits de solidarité.</p>
+                        </div>
+                    </article>
+                    
+                    <article class="expo-card animate-on-scroll">
+                        <div class="expo-img"><img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&q=80" alt="Bread & Roses"></div>
+                        <div class="expo-content">
+                            <h3 class="expo-title">Bread & Roses</h3>
+                            <p class="expo-desc">Une autre histoire du mouvement syndical à travers les affiches sociales depuis le 19ème siècle.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Actualités Section -->
+        <section class="section" id="actualites">
+            <div class="container">
+                <header class="section-header animate-on-scroll">
+                    <h2 class="section-title">Actualité <span>du mouvement</span></h2>
+                </header>
+                
+                <div class="news-grid">
+                    <article class="news-card animate-on-scroll">
+                        <p class="news-date">10 janvier 2025</p>
+                        <h3 class="news-title">Présentation des ateliers d'écriture "Litanie pour les mort·es de la rue" chez Radio Panik</h3>
+                        <a href="#" class="news-link">Lire la suite <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                    </article>
+                    
+                    <article class="news-card animate-on-scroll">
+                        <p class="news-date">8 janvier 2025</p>
+                        <h3 class="news-title">Carte blanche : Israël à l'Eurovision — La RTBF cautionne le blanchiment du génocide à Gaza</h3>
+                        <a href="#" class="news-link">Lire la suite <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                    </article>
+                    
+                    <article class="news-card animate-on-scroll">
+                        <p class="news-date">5 janvier 2025</p>
+                        <h3 class="news-title">Carte blanche : Dissoudre une association sur décision du gouvernement ?</h3>
+                        <a href="#" class="news-link">Lire la suite <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                    </article>
+                    
+                    <article class="news-card animate-on-scroll">
+                        <p class="news-date">20 décembre 2024</p>
+                        <h3 class="news-title">Nouvelle codirection à Présence et Action Culturelles</h3>
+                        <a href="#" class="news-link">Lire la suite <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                    </article>
+                </div>
+                
+                <div class="view-all">
+                    <a href="#" class="btn btn-outline">Toutes les actualités <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Newsletter CTA -->
+        <section class="newsletter-cta">
+            <div class="container">
+                <div class="newsletter-content">
+                    <div class="newsletter-text">
+                        <h2 class="newsletter-title">Restez informé·e</h2>
+                        <p class="newsletter-desc">Recevez notre newsletter mensuelle avec les dernières actualités et événements.</p>
+                    </div>
+                    <a href="#newsletter" class="newsletter-btn">S'inscrire à la newsletter</a>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo"><span class="footer-logo-text">PAC</span></div>
+                    <p class="footer-desc">Présence et Action Culturelles est un mouvement écosocialiste d'Éducation permanente et populaire, reconnu par le Ministère de la Culture de la Fédération Wallonie-Bruxelles.</p>
+                    <div class="footer-contact-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <span>Rue Lambert Crickx 5<br>1070 Bruxelles</span>
+                    </div>
+                    <div class="footer-contact-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        <a href="tel:+3225457911">02/545 79 11</a>
+                    </div>
+                    <div class="footer-contact-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        <a href="mailto:info@pac-g.be">info@pac-g.be</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="footer-title">Le mouvement</h4>
+                    <nav class="footer-links">
+                        <a href="#" class="footer-link">Qui sommes nous ?</a>
+                        <a href="#" class="footer-link">Équipes</a>
+                        <a href="#" class="footer-link">Charte graphique</a>
+                        <a href="#" class="footer-link">Postuler</a>
+                        <a href="#" class="footer-link">Contact</a>
+                    </nav>
+                </div>
+                
+                <div>
+                    <h4 class="footer-title">Ressources</h4>
+                    <nav class="footer-links">
+                        <a href="#" class="footer-link">Formations</a>
+                        <a href="#" class="footer-link">Publications</a>
+                        <a href="#" class="footer-link">Analyses</a>
+                        <a href="#" class="footer-link">Expositions</a>
+                        <a href="#" class="footer-link">Outils pédagogiques</a>
+                    </nav>
+                </div>
+                
+                <div>
+                    <h4 class="footer-title">Services</h4>
+                    <nav class="footer-links">
+                        <a href="#" class="footer-link">Shop</a>
+                        <a href="#" class="footer-link">Newsletter</a>
+                        <a href="#" class="footer-link">Location de salle</a>
+                        <a href="#" class="footer-link">Contact presse</a>
+                        <a href="#" class="footer-link">Calendrier</a>
+                    </nav>
+                </div>
+            </div>
+            
+            <div class="footer-partners">
+                <span style="color: var(--gray-500); font-size: 0.875rem;">Avec le soutien de :</span>
+                <img src="https://via.placeholder.com/100x40/333/666?text=Wallonie" alt="Wallonie" class="footer-partner">
+                <img src="https://via.placeholder.com/100x40/333/666?text=FWB" alt="Fédération Wallonie-Bruxelles" class="footer-partner">
+                <img src="https://via.placeholder.com/100x40/333/666?text=Loterie" alt="Loterie Nationale" class="footer-partner">
+                <img src="https://via.placeholder.com/100x40/333/666?text=COCOF" alt="COCOF" class="footer-partner">
+                <img src="https://via.placeholder.com/100x40/333/666?text=Bruxelles" alt="Région Bruxelles-Capitale" class="footer-partner">
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2025 Présence et Action Culturelles. Tous droits réservés.</p>
+                <nav class="footer-legal">
+                    <a href="#">À propos</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Mentions légales</a>
+                </nav>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            menuToggle.setAttribute('aria-expanded', menuToggle.classList.contains('active'));
+        });
+        
+        // Mobile dropdown toggle
+        document.querySelectorAll('.nav-item').forEach(item => {
+            const link = item.querySelector('.nav-link');
+            const dropdown = item.querySelector('.dropdown');
+            if (dropdown && window.innerWidth <= 768) {
+                link.addEventListener('click', (e) => { e.preventDefault(); item.classList.toggle('open'); });
+            }
+        });
+        
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+        
+        // Hero Slider
+        const slides = document.querySelectorAll('.hero-slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        let currentSlide = 0;
+        let slideInterval;
+        
+        function showSlide(index) {
+            slides.forEach((slide, i) => { slide.classList.remove('active'); dots[i].classList.remove('active'); });
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+            currentSlide = index;
+        }
+        
+        function nextSlide() { showSlide((currentSlide + 1) % slides.length); }
+        function startSlider() { slideInterval = setInterval(nextSlide, 6000); }
+        function stopSlider() { clearInterval(slideInterval); }
+        
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => { stopSlider(); showSlide(index); startSlider(); });
+        });
+        startSlider();
+        
+        // Search Modal
+        const searchBtn = document.getElementById('search-btn');
+        const searchModal = document.getElementById('search-modal');
+        const searchClose = document.getElementById('search-close');
+        const searchInput = document.getElementById('search-input');
+        
+        function openSearch() { searchModal.classList.add('active'); setTimeout(() => searchInput.focus(), 100); document.body.style.overflow = 'hidden'; }
+        function closeSearch() { searchModal.classList.remove('active'); searchInput.value = ''; document.body.style.overflow = ''; }
+        
+        searchBtn.addEventListener('click', openSearch);
+        searchClose.addEventListener('click', closeSearch);
+        searchModal.addEventListener('click', (e) => { if (e.target === searchModal) closeSearch(); });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && searchModal.classList.contains('active')) closeSearch();
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); searchModal.classList.contains('active') ? closeSearch() : openSearch(); }
+        });
+        
+        // Scroll Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), index * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href === '#' || href === '#search') return;
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - header.offsetHeight;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                    if (navMenu.classList.contains('active')) { menuToggle.classList.remove('active'); navMenu.classList.remove('active'); }
+                }
+            });
+        });
+        
+        console.log('%c🔴 PAC - Présence et Action Culturelles', 'font-size: 24px; font-weight: bold; color: #C41E3A;');
+        console.log('%cClone réalisé pour le fan club ❤️', 'font-size: 12px; color: #999;');
+    </script>
+</body>
+</html>
