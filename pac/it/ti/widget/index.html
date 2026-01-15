@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Signalement PAC-G</title>
+    <style>
+        /*
+         * WIDGET DE SIGNALEMENT PAC-G
+         * À intégrer sur n'importe quelle page WordPress
+         * 
+         * INSTALLATION :
+         * 1. Copiez tout ce code dans un fichier widget-signalement.html
+         * 2. Uploadez-le sur votre serveur
+         * 3. Ajoutez cette ligne dans le footer de votre thème WordPress :
+         *    <iframe src="/chemin/vers/widget-signalement.html" style="position:fixed;bottom:0;right:0;width:80px;height:80px;border:none;z-index:9999;"></iframe>
+         */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: transparent;
+        }
+        
+        /* Bouton flottant */
+        .signal-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2D5A4A 0%, #3D7A62 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 20px rgba(45, 90, 74, 0.4);
+            transition: all 0.3s ease;
+            z-index: 10000;
+        }
+        
+        .signal-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(45, 90, 74, 0.5);
+        }
+        
+        .signal-button.open {
+            transform: rotate(45deg);
+        }
+        
+        /* Panneau de signalement */
+        .signal-panel {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 340px;
+            max-height: 500px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s ease;
+            z-index: 9999;
+            overflow: hidden;
+        }
+        
+        .signal-panel.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        
+        .panel-header {
+            background: linear-gradient(135deg, #2D5A4A 0%, #3D7A62 100%);
+            color: white;
+            padding: 16px 20px;
+        }
+        
+        .panel-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .panel-header p {
+            font-size: 0.8rem;
+            opacity: 0.85;
+        }
+        
+        .panel-body {
+            padding: 20px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        
+        .form-select,
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        
+        .form-select:focus,
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #2D5A4A;
+            box-shadow: 0 0 0 3px rgba(45, 90, 74, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #2D5A4A;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .submit-btn:hover {
+            background: #3D7A62;
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        /* Message de succès */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .success-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+        
+        .success-message h4 {
+            color: #2D5A4A;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .success-message p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Info box */
+        .info-box {
+            background: #E8F5E9;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 0.8rem;
+            color: #2D5A4A;
+        }
+        
+        .info-box strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        /* Hide form when success */
+        .form-content.hidden {
+            display: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 400px) {
+            .signal-panel {
+                width: calc(100vw - 40px);
+                right: 20px;
+                left: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Bouton flottant -->
+    <button class="signal-button" id="signalButton" title="Signaler un problème">
+        💬
+    </button>
+
+    <!-- Panneau de signalement -->
+    <div class="signal-panel" id="signalPanel">
+        <div class="panel-header">
+            <h3>🌿 Signaler un problème</h3>
+            <p>Aidez-nous à garder le site en forme !</p>
+        </div>
+        
+        <div class="panel-body">
+            <!-- Formulaire -->
+            <div class="form-content" id="formContent">
+                <div class="info-box">
+                    <strong>Pas besoin d'être technique !</strong>
+                    Décrivez simplement ce que vous avez vu.
+                </div>
+                
+                <form id="signalForm">
+                    <div class="form-group">
+                        <label class="form-label">Type de problème</label>
+                        <select class="form-select" id="signalType" required>
+                            <option value="">-- Choisissez --</option>
+                            <option value="lien-mort">🔗 Lien qui ne fonctionne pas</option>
+                            <option value="coquille">✏️ Faute d'orthographe</option>
+                            <option value="contenu">📝 Contenu à mettre à jour</option>
+                            <option value="autre">❓ Autre problème</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Où avez-vous vu ça ?</label>
+                        <input type="text" class="form-input" id="signalPage" 
+                               placeholder="Ex: Page Cahier 38, section PDF" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" id="signalDescription" 
+                                  placeholder="Décrivez ce que vous avez observé..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Votre nom (optionnel)</label>
+                        <input type="text" class="form-input" id="signalName" 
+                               placeholder="Pour qu'on puisse vous remercier">
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        📨 Envoyer le signalement
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Message de succès -->
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">🌱</div>
+                <h4>Merci pour votre contribution !</h4>
+                <p>Votre signalement a été enregistré. Thomas le traitera dès que possible.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Éléments DOM
+        const button = document.getElementById('signalButton');
+        const panel = document.getElementById('signalPanel');
+        const form = document.getElementById('signalForm');
+        const formContent = document.getElementById('formContent');
+        const successMessage = document.getElementById('successMessage');
+        
+        // Toggle panel
+        button.addEventListener('click', function() {
+            const isOpen = panel.classList.contains('open');
+            
+            if (isOpen) {
+                panel.classList.remove('open');
+                button.classList.remove('open');
+                button.textContent = '💬';
+            } else {
+                panel.classList.add('open');
+                button.classList.add('open');
+                button.textContent = '✕';
+                
+                // Reset to form if showing success
+                if (successMessage.classList.contains('show')) {
+                    setTimeout(() => {
+                        successMessage.classList.remove('show');
+                        formContent.classList.remove('hidden');
+                        form.reset();
+                    }, 300);
+                }
+            }
+        });
+        
+        // Soumettre le formulaire
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const data = {
+                type: document.getElementById('signalType').value,
+                page: document.getElementById('signalPage').value,
+                description: document.getElementById('signalDescription').value,
+                name: document.getElementById('signalName').value || 'Anonyme',
+                url: window.parent ? window.parent.location.href : window.location.href,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Simuler l'envoi (en production, envoyer à un endpoint)
+            console.log('Signal envoyé:', data);
+            
+            // Option 1: Stocker en localStorage (simple)
+            let signals = JSON.parse(localStorage.getItem('pac-signals') || '[]');
+            signals.push(data);
+            localStorage.setItem('pac-signals', JSON.stringify(signals));
+            
+            // Option 2: Envoyer par email via un service (Formspree, etc.)
+            // fetch('https://formspree.io/f/VOTRE_ID', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(data)
+            // });
+            
+            // Option 3: Envoyer à WordPress REST API
+            // fetch('/wp-json/pac/v1/signals', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(data)
+            // });
+            
+            // Afficher le succès
+            formContent.classList.add('hidden');
+            successMessage.classList.add('show');
+            
+            // Fermer après 3 secondes
+            setTimeout(() => {
+                panel.classList.remove('open');
+                button.classList.remove('open');
+                button.textContent = '💬';
+                
+                // Reset après fermeture
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                    formContent.classList.remove('hidden');
+                    form.reset();
+                }, 300);
+            }, 3000);
+        });
+        
+        // Fermer si clic en dehors
+        document.addEventListener('click', function(e) {
+            if (!panel.contains(e.target) && !button.contains(e.target)) {
+                panel.classList.remove('open');
+                button.classList.remove('open');
+                button.textContent = '💬';
+            }
+        });
+        
+        // Auto-remplir l'URL courante si disponible
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const currentUrl = window.parent ? window.parent.location.href : window.location.href;
+                // Vous pourriez pré-remplir le champ "page" avec l'URL
+            } catch(e) {
+                // Cross-origin, ignorer
+            }
+        });
+    </script>
+
+</body>
+</html>
