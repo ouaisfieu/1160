@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Signalement PAC-G (Joomla)</title>
+    <!--
+    ╔═══════════════════════════════════════════════════════════════╗
+    ║  WIDGET DE SIGNALEMENT PAC-G - VERSION JOOMLA                ║
+    ╠═══════════════════════════════════════════════════════════════╣
+    ║                                                               ║
+    ║  INSTALLATION EN 3 ÉTAPES :                                  ║
+    ║                                                               ║
+    ║  1. Créez un compte gratuit sur https://formspree.io        ║
+    ║     → Créez un nouveau formulaire                            ║
+    ║     → Copiez l'ID (ex: xyzabcde)                            ║
+    ║     → Remplacez VOTRE_FORMSPREE_ID ci-dessous               ║
+    ║                                                               ║
+    ║  2. Uploadez ce fichier sur votre serveur Joomla            ║
+    ║     → Dans /templates/VOTRE_TEMPLATE/html/ par exemple      ║
+    ║     → Ou à la racine /widget-signalement.html               ║
+    ║                                                               ║
+    ║  3. Ajoutez dans votre template (index.php avant </body>):  ║
+    ║                                                               ║
+    ║     <script src="/widget-signalement.html"></script>         ║
+    ║     OU                                                        ║
+    ║     Créez un module "HTML personnalisé" avec ce code         ║
+    ║                                                               ║
+    ╚═══════════════════════════════════════════════════════════════╝
+    -->
+    <style>
+        /* Reset pour éviter conflits avec Joomla */
+        .pac-widget-container * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        /* Bouton flottant */
+        .pac-signal-btn {
+            position: fixed !important;
+            bottom: 24px !important;
+            right: 24px !important;
+            width: 60px !important;
+            height: 60px !important;
+            border-radius: 50% !important;
+            background: linear-gradient(135deg, #2D5A4A 0%, #3D7A62 100%) !important;
+            color: white !important;
+            border: none !important;
+            cursor: pointer !important;
+            font-size: 1.6rem !important;
+            box-shadow: 0 4px 20px rgba(45, 90, 74, 0.4) !important;
+            transition: all 0.3s ease !important;
+            z-index: 999999 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .pac-signal-btn:hover {
+            transform: scale(1.1) !important;
+            box-shadow: 0 6px 30px rgba(45, 90, 74, 0.5) !important;
+        }
+        
+        .pac-signal-btn.pac-open {
+            transform: rotate(45deg) !important;
+            background: #1a3d32 !important;
+        }
+        
+        /* Panneau */
+        .pac-signal-panel {
+            position: fixed !important;
+            bottom: 100px !important;
+            right: 24px !important;
+            width: 360px !important;
+            max-width: calc(100vw - 48px) !important;
+            background: white !important;
+            border-radius: 16px !important;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2) !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(20px) scale(0.95) !important;
+            transition: all 0.3s ease !important;
+            z-index: 999998 !important;
+            overflow: hidden !important;
+        }
+        
+        .pac-signal-panel.pac-open {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) scale(1) !important;
+        }
+        
+        .pac-panel-header {
+            background: linear-gradient(135deg, #2D5A4A 0%, #3D7A62 100%) !important;
+            color: white !important;
+            padding: 18px 20px !important;
+        }
+        
+        .pac-panel-header h3 {
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+            margin-bottom: 4px !important;
+            color: white !important;
+        }
+        
+        .pac-panel-header p {
+            font-size: 0.85rem !important;
+            opacity: 0.9 !important;
+            color: white !important;
+        }
+        
+        .pac-panel-body {
+            padding: 20px !important;
+            max-height: 400px !important;
+            overflow-y: auto !important;
+        }
+        
+        .pac-form-group {
+            margin-bottom: 16px !important;
+        }
+        
+        .pac-form-label {
+            display: block !important;
+            font-size: 0.85rem !important;
+            font-weight: 600 !important;
+            color: #333 !important;
+            margin-bottom: 6px !important;
+        }
+        
+        .pac-form-select,
+        .pac-form-input,
+        .pac-form-textarea {
+            width: 100% !important;
+            padding: 12px 14px !important;
+            border: 1px solid #ddd !important;
+            border-radius: 8px !important;
+            font-size: 0.95rem !important;
+            transition: all 0.2s ease !important;
+            background: white !important;
+            color: #333 !important;
+        }
+        
+        .pac-form-select:focus,
+        .pac-form-input:focus,
+        .pac-form-textarea:focus {
+            outline: none !important;
+            border-color: #2D5A4A !important;
+            box-shadow: 0 0 0 3px rgba(45, 90, 74, 0.15) !important;
+        }
+        
+        .pac-form-textarea {
+            min-height: 90px !important;
+            resize: vertical !important;
+        }
+        
+        .pac-submit-btn {
+            width: 100% !important;
+            padding: 14px !important;
+            background: #2D5A4A !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-size: 1rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        .pac-submit-btn:hover {
+            background: #3D7A62 !important;
+        }
+        
+        .pac-submit-btn:disabled {
+            background: #ccc !important;
+            cursor: not-allowed !important;
+        }
+        
+        .pac-info-box {
+            background: #E8F5E9 !important;
+            border-radius: 8px !important;
+            padding: 12px !important;
+            margin-bottom: 16px !important;
+            font-size: 0.85rem !important;
+            color: #2D5A4A !important;
+            line-height: 1.5 !important;
+        }
+        
+        .pac-info-box strong {
+            display: block !important;
+            margin-bottom: 4px !important;
+        }
+        
+        .pac-success {
+            display: none;
+            text-align: center !important;
+            padding: 30px 20px !important;
+        }
+        
+        .pac-success.pac-show {
+            display: block !important;
+        }
+        
+        .pac-success-icon {
+            font-size: 3.5rem !important;
+            margin-bottom: 12px !important;
+        }
+        
+        .pac-success h4 {
+            color: #2D5A4A !important;
+            font-size: 1.15rem !important;
+            margin-bottom: 8px !important;
+        }
+        
+        .pac-success p {
+            color: #666 !important;
+            font-size: 0.9rem !important;
+        }
+        
+        .pac-form-content.pac-hidden {
+            display: none !important;
+        }
+        
+        /* Animation de chargement */
+        .pac-loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: pac-spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes pac-spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 420px) {
+            .pac-signal-panel {
+                width: calc(100vw - 32px) !important;
+                right: 16px !important;
+                left: 16px !important;
+                bottom: 90px !important;
+            }
+            
+            .pac-signal-btn {
+                bottom: 16px !important;
+                right: 16px !important;
+                width: 54px !important;
+                height: 54px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="pac-widget-container">
+    <!-- Bouton -->
+    <button class="pac-signal-btn" id="pacSignalBtn" title="Signaler un problème sur cette page">
+        💬
+    </button>
+
+    <!-- Panneau -->
+    <div class="pac-signal-panel" id="pacSignalPanel">
+        <div class="pac-panel-header">
+            <h3>🌿 Signaler un problème</h3>
+            <p>Aidez-nous à garder le site en forme !</p>
+        </div>
+        
+        <div class="pac-panel-body">
+            <!-- Formulaire -->
+            <div class="pac-form-content" id="pacFormContent">
+                <div class="pac-info-box">
+                    <strong>🌱 Pas besoin d'être technique !</strong>
+                    Décrivez simplement ce que vous avez vu. Thomas s'occupe du reste.
+                </div>
+                
+                <!--
+                ╔═══════════════════════════════════════════════════════════╗
+                ║  IMPORTANT : Remplacez VOTRE_FORMSPREE_ID par votre ID   ║
+                ║  Créez un compte gratuit sur https://formspree.io        ║
+                ╚═══════════════════════════════════════════════════════════╝
+                -->
+                <form id="pacSignalForm" action="https://formspree.io/f/VOTRE_FORMSPREE_ID" method="POST">
+                    
+                    <!-- Champ caché : URL de la page -->
+                    <input type="hidden" name="_page_url" id="pacPageUrl">
+                    <input type="hidden" name="_subject" value="🌿 Nouveau signalement PAC-G">
+                    
+                    <div class="pac-form-group">
+                        <label class="pac-form-label">Type de problème *</label>
+                        <select class="pac-form-select" name="type" required>
+                            <option value="">-- Choisissez --</option>
+                            <option value="🔗 Lien cassé">🔗 Lien qui ne fonctionne pas</option>
+                            <option value="✏️ Faute">✏️ Faute d'orthographe</option>
+                            <option value="📝 Contenu périmé">📝 Contenu à mettre à jour</option>
+                            <option value="❓ Autre">❓ Autre problème</option>
+                        </select>
+                    </div>
+                    
+                    <div class="pac-form-group">
+                        <label class="pac-form-label">Où exactement ? *</label>
+                        <input type="text" class="pac-form-input" name="location" 
+                               placeholder="Ex: Section 'Télécharger le PDF'" required>
+                    </div>
+                    
+                    <div class="pac-form-group">
+                        <label class="pac-form-label">Description *</label>
+                        <textarea class="pac-form-textarea" name="description" 
+                                  placeholder="Décrivez ce que vous avez observé..." required></textarea>
+                    </div>
+                    
+                    <div class="pac-form-group">
+                        <label class="pac-form-label">Votre nom (optionnel)</label>
+                        <input type="text" class="pac-form-input" name="name" 
+                               placeholder="Pour qu'on puisse vous remercier 😊">
+                    </div>
+                    
+                    <button type="submit" class="pac-submit-btn" id="pacSubmitBtn">
+                        📨 Envoyer le signalement
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Succès -->
+            <div class="pac-success" id="pacSuccess">
+                <div class="pac-success-icon">🌱</div>
+                <h4>Merci pour votre aide !</h4>
+                <p>Votre signalement a été envoyé à Thomas. Il le traitera dès que possible.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    
+    // Éléments
+    const btn = document.getElementById('pacSignalBtn');
+    const panel = document.getElementById('pacSignalPanel');
+    const form = document.getElementById('pacSignalForm');
+    const formContent = document.getElementById('pacFormContent');
+    const success = document.getElementById('pacSuccess');
+    const submitBtn = document.getElementById('pacSubmitBtn');
+    const pageUrlInput = document.getElementById('pacPageUrl');
+    
+    // Récupérer l'URL de la page parente (si iframe) ou courante
+    function getPageUrl() {
+        try {
+            return window.parent.location.href;
+        } catch(e) {
+            return window.location.href;
+        }
+    }
+    
+    // Initialiser l'URL
+    pageUrlInput.value = getPageUrl();
+    
+    // Toggle panneau
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = panel.classList.contains('pac-open');
+        
+        if (isOpen) {
+            closePanel();
+        } else {
+            openPanel();
+        }
+    });
+    
+    function openPanel() {
+        panel.classList.add('pac-open');
+        btn.classList.add('pac-open');
+        btn.innerHTML = '✕';
+        // Mettre à jour l'URL au cas où navigation AJAX
+        pageUrlInput.value = getPageUrl();
+    }
+    
+    function closePanel() {
+        panel.classList.remove('pac-open');
+        btn.classList.remove('pac-open');
+        btn.innerHTML = '💬';
+    }
+    
+    function resetForm() {
+        form.reset();
+        success.classList.remove('pac-show');
+        formContent.classList.remove('pac-hidden');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '📨 Envoyer le signalement';
+        pageUrlInput.value = getPageUrl();
+    }
+    
+    // Soumission du formulaire
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // État de chargement
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="pac-loading"></span> Envoi...';
+        
+        // Préparer les données
+        const formData = new FormData(form);
+        
+        // Envoyer à Formspree
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Succès
+                formContent.classList.add('pac-hidden');
+                success.classList.add('pac-show');
+                
+                // Fermer après 4 secondes
+                setTimeout(function() {
+                    closePanel();
+                    setTimeout(resetForm, 400);
+                }, 4000);
+            } else {
+                throw new Error('Erreur serveur');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Oups ! Une erreur est survenue. Réessayez ou contactez directement Thomas.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '📨 Envoyer le signalement';
+        });
+    });
+    
+    // Fermer si clic en dehors
+    document.addEventListener('click', function(e) {
+        if (panel.classList.contains('pac-open') && 
+            !panel.contains(e.target) && 
+            !btn.contains(e.target)) {
+            closePanel();
+        }
+    });
+    
+    // Fermer avec Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && panel.classList.contains('pac-open')) {
+            closePanel();
+        }
+    });
+    
+})();
+</script>
+
+</body>
+</html>
