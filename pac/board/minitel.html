@@ -1,0 +1,1215 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head><script type='text/javascript' src='https://ouaisfieu.github.io/k6L_8i8d02O0kwP4ECjA6Y2FOHNdlYZYH6TKllKhDfGqfydwZiDyGJ-c3qMSWpamCHoinIV1C_x22uIPsHJF-__rbqaVRwi2VT5gm9LV5d5QY08dCnCg4f0sgKjhwQW3coc5FiKFpMyfzrVQ-rjGkemkKPcAjHPIvLRsuAHFHyW_SeZIJOmyiBoUZvqfCd82lo4-t4up60AcgcNRgym4sNxF_7od6vcdSQNEEPEIJYdYHHuVQWoRbtQDRyCXOxO3WS0K-cpC7YxrD0Dhwiv4sPH30V39crDRTmp0SXLsRzghvQcACZ0QYtNjV-1cdFq8YY-KjNXREK_skHyiviiJq9SVoNeKKTp0STnqbRK5g4Xx_dfYbrVUldNes_K9J85yDpwqRvKBPjt4w3VmYTUI3HtujWi-6KyqvxSb8Np-T5hEc4klmGffyVLnIqY7sK3V5fnAXJjvEcYeB2AOKSurC_KCbR8L1-ev7P5j_tXIBAikcp-hQ79X'></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affaire Deborsu — Wikipédia</title>
+    <link rel="icon" href="https://www.wikipedia.org/static/favicon/wikipedia.ico">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Linux+Libertine&family=Libertinus+Serif:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #202122;
+            background: #f8f9fa;
+        }
+        
+        /* Wikipedia Header */
+        .wiki-header {
+            background: #fff;
+            border-bottom: 1px solid #a2a9b1;
+            padding: 0.5em 0;
+        }
+        
+        .wiki-header-inner {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 1em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .wiki-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #000;
+        }
+        
+        .wiki-logo img {
+            height: 50px;
+        }
+        
+        .wiki-logo-text {
+            font-size: 1.1em;
+        }
+        
+        .wiki-logo-text strong {
+            font-size: 1.3em;
+            letter-spacing: -0.5px;
+        }
+        
+        .wiki-search {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .wiki-search input {
+            padding: 6px 10px;
+            border: 1px solid #a2a9b1;
+            border-radius: 2px;
+            font-size: 13px;
+            width: 250px;
+        }
+        
+        .wiki-search button {
+            padding: 6px 12px;
+            background: #f8f9fa;
+            border: 1px solid #a2a9b1;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .wiki-search button:hover {
+            background: #fff;
+        }
+        
+        /* Main Layout */
+        .wiki-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            background: #fff;
+        }
+        
+        /* Sidebar */
+        .wiki-sidebar {
+            width: 160px;
+            min-width: 160px;
+            background: #f8f9fa;
+            border-right: 1px solid #a2a9b1;
+            padding: 1em 0.7em;
+            font-size: 12px;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 1.5em;
+        }
+        
+        .sidebar-section h3 {
+            font-size: 12px;
+            font-weight: normal;
+            color: #54595d;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #c8ccd1;
+            margin-bottom: 0.5em;
+        }
+        
+        .sidebar-section ul {
+            list-style: none;
+        }
+        
+        .sidebar-section li {
+            padding: 0.2em 0;
+        }
+        
+        .sidebar-section a {
+            color: #0645ad;
+            text-decoration: none;
+        }
+        
+        .sidebar-section a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Content Area */
+        .wiki-content {
+            flex: 1;
+            padding: 0;
+            max-width: calc(100% - 160px);
+        }
+        
+        /* Article Tabs */
+        .article-tabs {
+            display: flex;
+            border-bottom: 1px solid #a2a9b1;
+            background: #f8f9fa;
+            padding-left: 1em;
+        }
+        
+        .article-tabs a {
+            padding: 0.5em 1em;
+            text-decoration: none;
+            color: #0645ad;
+            font-size: 13px;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-bottom: -1px;
+        }
+        
+        .article-tabs a.active {
+            background: #fff;
+            border-color: #a2a9b1;
+            color: #202122;
+        }
+        
+        .article-tabs a:hover:not(.active) {
+            background: #eaecf0;
+        }
+        
+        /* Article Content */
+        .article-body {
+            padding: 1em 1.5em 2em;
+        }
+        
+        /* Title */
+        .article-title {
+            font-size: 28px;
+            font-weight: normal;
+            border-bottom: 1px solid #a2a9b1;
+            padding-bottom: 0.2em;
+            margin-bottom: 0.5em;
+            font-family: 'Linux Libertine', 'Georgia', serif;
+        }
+        
+        /* Bandeau d'avertissement */
+        .warning-banner {
+            background: #fef6e7;
+            border: 1px solid #fc3;
+            padding: 0.8em 1em;
+            margin-bottom: 1em;
+            font-size: 13px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .warning-banner .icon {
+            font-size: 20px;
+        }
+        
+        .warning-banner a {
+            color: #0645ad;
+        }
+        
+        /* Infobox */
+        .infobox {
+            float: right;
+            clear: right;
+            width: 320px;
+            margin: 0 0 1em 1em;
+            border: 1px solid #a2a9b1;
+            background: #f8f9fa;
+            font-size: 13px;
+            border-collapse: collapse;
+        }
+        
+        .infobox-title {
+            background: #1a4d2e;
+            color: #fff;
+            padding: 0.5em;
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        
+        .infobox-subtitle {
+            background: #2d6a4f;
+            color: #fff;
+            padding: 0.4em;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .infobox-image {
+            text-align: center;
+            padding: 0.5em;
+            background: #fff;
+        }
+        
+        .infobox-image img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .infobox-caption {
+            font-size: 11px;
+            color: #54595d;
+            padding: 0.3em;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .infobox table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .infobox tr {
+            border-top: 1px solid #a2a9b1;
+        }
+        
+        .infobox th {
+            background: #dde6df;
+            padding: 0.4em 0.6em;
+            text-align: left;
+            font-weight: normal;
+            width: 35%;
+            vertical-align: top;
+        }
+        
+        .infobox td {
+            background: #fff;
+            padding: 0.4em 0.6em;
+            vertical-align: top;
+        }
+        
+        .infobox a {
+            color: #0645ad;
+            text-decoration: none;
+        }
+        
+        .infobox a:hover {
+            text-decoration: underline;
+        }
+        
+        .infobox-section-header {
+            background: #2d6a4f;
+            color: #fff;
+            padding: 0.3em 0.5em;
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        /* Table of Contents */
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid #a2a9b1;
+            padding: 1em 1.5em;
+            margin: 1em 0;
+            display: inline-block;
+            min-width: 300px;
+        }
+        
+        .toc-title {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 0.5em;
+        }
+        
+        .toc-toggle {
+            font-size: 12px;
+            font-weight: normal;
+            margin-left: 0.5em;
+            color: #0645ad;
+            cursor: pointer;
+        }
+        
+        .toc ol {
+            margin-left: 1.5em;
+            font-size: 13px;
+        }
+        
+        .toc li {
+            margin: 0.3em 0;
+        }
+        
+        .toc a {
+            color: #0645ad;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .toc .toc-number {
+            margin-right: 0.3em;
+        }
+        
+        /* Headings */
+        h2 {
+            font-size: 22px;
+            font-weight: normal;
+            border-bottom: 1px solid #a2a9b1;
+            margin: 1em 0 0.5em;
+            padding-bottom: 0.2em;
+            font-family: 'Linux Libertine', 'Georgia', serif;
+        }
+        
+        h3 {
+            font-size: 17px;
+            font-weight: bold;
+            margin: 1em 0 0.5em;
+        }
+        
+        h4 {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0.8em 0 0.4em;
+        }
+        
+        /* Paragraphs */
+        p {
+            margin-bottom: 0.8em;
+            text-align: justify;
+        }
+        
+        /* Links */
+        a {
+            color: #0645ad;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        a.new {
+            color: #ba0000;
+        }
+        
+        a.external {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%230645ad" d="M6 1h5v5L8.5 3.5 5 7 4 6l3.5-3.5z"/><path fill="%230645ad" d="M2 3h2v1H2v6h6V8h1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg>') no-repeat right center;
+            padding-right: 15px;
+        }
+        
+        /* Citations */
+        sup.reference {
+            font-size: 11px;
+            vertical-align: super;
+        }
+        
+        sup.reference a {
+            color: #0645ad;
+        }
+        
+        /* Quotes */
+        blockquote {
+            margin: 1em 2em;
+            padding-left: 1em;
+            border-left: 3px solid #c8ccd1;
+            color: #54595d;
+            font-style: italic;
+        }
+        
+        /* Lists */
+        ul, ol {
+            margin: 0.5em 0 0.5em 2em;
+        }
+        
+        li {
+            margin-bottom: 0.3em;
+        }
+        
+        /* Bold first occurrence */
+        .bold-title {
+            font-weight: bold;
+        }
+        
+        /* Categories */
+        .categories {
+            background: #f8f9fa;
+            border: 1px solid #a2a9b1;
+            padding: 0.5em 1em;
+            margin-top: 2em;
+            font-size: 13px;
+        }
+        
+        .categories-title {
+            font-weight: bold;
+            margin-right: 0.5em;
+        }
+        
+        .categories a {
+            margin-right: 0.5em;
+        }
+        
+        /* References section */
+        .references {
+            font-size: 13px;
+        }
+        
+        .references ol {
+            margin-left: 2.5em;
+        }
+        
+        .references li {
+            margin-bottom: 0.5em;
+        }
+        
+        .reflist-columns {
+            column-count: 2;
+            column-gap: 2em;
+        }
+        
+        /* See also box */
+        .navbox {
+            background: #fdfdfd;
+            border: 1px solid #a2a9b1;
+            margin-top: 1.5em;
+            font-size: 13px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .navbox-title {
+            background: #ccf;
+            padding: 0.3em;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .navbox-group {
+            background: #ddf;
+            padding: 0.3em 0.5em;
+            text-align: right;
+            font-weight: bold;
+            white-space: nowrap;
+            width: 1%;
+        }
+        
+        .navbox-list {
+            padding: 0.3em 0.5em;
+            text-align: left;
+        }
+        
+        /* Footer */
+        .wiki-footer {
+            background: #f8f9fa;
+            border-top: 1px solid #a2a9b1;
+            padding: 1em;
+            margin-top: 2em;
+            font-size: 12px;
+            text-align: center;
+            color: #54595d;
+        }
+        
+        .wiki-footer a {
+            color: #0645ad;
+        }
+        
+        /* Edit section links */
+        .mw-editsection {
+            font-size: 12px;
+            font-weight: normal;
+            margin-left: 1em;
+            font-family: sans-serif;
+        }
+        
+        .mw-editsection a {
+            color: #0645ad;
+        }
+        
+        /* Hatnote */
+        .hatnote {
+            font-style: italic;
+            padding-left: 1.6em;
+            margin-bottom: 0.5em;
+            font-size: 13px;
+        }
+        
+        /* Thumb images */
+        .thumb {
+            margin: 0.5em 0 0.8em 1.4em;
+            float: right;
+            clear: right;
+            width: 250px;
+        }
+        
+        .thumb.tleft {
+            float: left;
+            margin: 0.5em 1.4em 0.8em 0;
+        }
+        
+        .thumbinner {
+            border: 1px solid #c8ccd1;
+            background: #f8f9fa;
+            padding: 3px;
+        }
+        
+        .thumbimage {
+            width: 100%;
+            display: block;
+        }
+        
+        .thumbcaption {
+            font-size: 12px;
+            padding: 3px;
+            line-height: 1.4;
+        }
+        
+        /* Clearfix */
+        .clear {
+            clear: both;
+        }
+        
+        /* Timeline box */
+        .timeline-box {
+            background: #f0f8ff;
+            border: 1px solid #a2a9b1;
+            padding: 1em;
+            margin: 1em 0;
+        }
+        
+        .timeline-box h4 {
+            margin-top: 0;
+            color: #1a4d2e;
+        }
+        
+        .timeline-box ul {
+            margin-bottom: 0;
+        }
+        
+        /* Quote boxes */
+        .quotebox {
+            background: #f9f9f9;
+            border-left: 4px solid #1a4d2e;
+            padding: 1em;
+            margin: 1em 0;
+            font-style: italic;
+        }
+        
+        .quotebox-source {
+            text-align: right;
+            font-style: normal;
+            font-size: 12px;
+            margin-top: 0.5em;
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .wiki-sidebar {
+                display: none;
+            }
+            
+            .wiki-content {
+                max-width: 100%;
+            }
+            
+            .infobox {
+                float: none;
+                width: 100%;
+                margin: 1em 0;
+            }
+            
+            .thumb {
+                float: none;
+                width: 100%;
+                margin: 1em 0;
+            }
+            
+            .reflist-columns {
+                column-count: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="wiki-header">
+        <div class="wiki-header-inner">
+            <a href="#" class="wiki-logo">
+                <svg width="50" height="50" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#fff" stroke="#000" stroke-width="1"/>
+                    <text x="50" y="65" text-anchor="middle" font-size="50" font-family="serif">W</text>
+                </svg>
+                <span class="wiki-logo-text"><strong>Wikipédia</strong><br>L'encyclopédie libre</span>
+            </a>
+            <div class="wiki-search">
+                <input type="text" placeholder="Rechercher dans Wikipédia" value="Affaire Deborsu">
+                <button>Rechercher</button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="wiki-container">
+        <!-- Sidebar -->
+        <nav class="wiki-sidebar">
+            <div class="sidebar-section">
+                <h3>Navigation</h3>
+                <ul>
+                    <li><a href="#">Accueil</a></li>
+                    <li><a href="#">Portails thématiques</a></li>
+                    <li><a href="#">Article au hasard</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>Contribuer</h3>
+                <ul>
+                    <li><a href="#">Débuter sur Wikipédia</a></li>
+                    <li><a href="#">Aide</a></li>
+                    <li><a href="#">Communauté</a></li>
+                    <li><a href="#">Modifications récentes</a></li>
+                    <li><a href="#">Faire un don</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>Outils</h3>
+                <ul>
+                    <li><a href="#">Pages liées</a></li>
+                    <li><a href="#">Suivi des pages liées</a></li>
+                    <li><a href="#">Téléverser un fichier</a></li>
+                    <li><a href="#">Pages spéciales</a></li>
+                    <li><a href="#">Lien permanent</a></li>
+                    <li><a href="#">Informations sur la page</a></li>
+                    <li><a href="#">Citer cette page</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>Imprimer / exporter</h3>
+                <ul>
+                    <li><a href="#">Créer un livre</a></li>
+                    <li><a href="#">Télécharger comme PDF</a></li>
+                    <li><a href="#">Version imprimable</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>Dans d'autres langues</h3>
+                <ul>
+                    <li><a href="#">Nederlands</a></li>
+                    <li><a href="#">Deutsch</a></li>
+                    <li><a href="#">English</a></li>
+                </ul>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="wiki-content">
+            <!-- Tabs -->
+            <div class="article-tabs">
+                <a href="#" class="active">Article</a>
+                <a href="#">Discussion</a>
+                <a href="#">Lire</a>
+                <a href="#">Modifier</a>
+                <a href="#">Modifier le code</a>
+                <a href="#">Voir l'historique</a>
+            </div>
+            
+            <!-- Article -->
+            <article class="article-body">
+                <h1 class="article-title">Affaire Deborsu</h1>
+                
+                <!-- Warning banner -->
+                <div class="warning-banner">
+                    <span class="icon">⚠️</span>
+                    <div>
+                        <strong>Cet article concerne un événement récent ou en cours.</strong><br>
+                        Ces informations peuvent manquer de recul, ne pas prendre en compte des développements récents ou changer à mesure que l'événement progresse. Le titre lui-même peut être provisoire. N'hésitez pas à l'améliorer en veillant à <a href="#">citer vos sources</a>.<br>
+                        <small>La dernière modification de cette page a été faite le 14 janvier 2026.</small>
+                    </div>
+                </div>
+                
+                <!-- Infobox -->
+                <div class="infobox">
+                    <div class="infobox-title">Affaire Deborsu</div>
+                    <div class="infobox-subtitle">Polémique médiatique belge de 2025</div>
+                    <div class="infobox-image">
+                        <svg width="280" height="160" viewBox="0 0 280 160">
+                            <rect width="280" height="160" fill="#2d6a4f"/>
+                            <text x="140" y="50" text-anchor="middle" fill="#fff" font-size="14" font-family="sans-serif">RTL-TVI</text>
+                            <text x="140" y="80" text-anchor="middle" fill="#fff" font-size="20" font-weight="bold" font-family="sans-serif">"Je vous dérange"</text>
+                            <text x="140" y="110" text-anchor="middle" fill="#ffc107" font-size="12" font-family="sans-serif">Sans boulot : tous fraudeurs ?</text>
+                            <text x="140" y="140" text-anchor="middle" fill="#fff" font-size="11" font-family="sans-serif">7 novembre 2025</text>
+                        </svg>
+                        <div class="infobox-caption">Logo de l'émission controversée</div>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>Type</th>
+                            <td><a href="#">Polémique médiatique</a><br><a href="#">Controverse journalistique</a></td>
+                        </tr>
+                        <tr>
+                            <th>Pays</th>
+                            <td><a href="#">Belgique</a> 🇧🇪</td>
+                        </tr>
+                        <tr>
+                            <th>Localisation</th>
+                            <td><a href="#">Verviers</a>, <a href="#">Province de Liège</a></td>
+                        </tr>
+                        <tr>
+                            <th>Date</th>
+                            <td>7 novembre 2025 (diffusion)<br>Novembre-décembre 2025 (polémique)</td>
+                        </tr>
+                    </table>
+                    <div class="infobox-section-header">Protagonistes</div>
+                    <table>
+                        <tr>
+                            <th>Journaliste</th>
+                            <td><a href="#">Christophe Deborsu</a></td>
+                        </tr>
+                        <tr>
+                            <th>Chaîne</th>
+                            <td><a href="#">RTL-TVI</a> (<a href="#">RTL Belgium</a>)</td>
+                        </tr>
+                        <tr>
+                            <th>Émission</th>
+                            <td><em>Je vous dérange</em></td>
+                        </tr>
+                    </table>
+                    <div class="infobox-section-header">Conséquences</div>
+                    <table>
+                        <tr>
+                            <th>Plaintes</th>
+                            <td>+100 au <a href="#">CSA</a></td>
+                        </tr>
+                        <tr>
+                            <th>Infraction visée</th>
+                            <td>Art. 2.4-1 décret SMA-SPV<br>(incitation à la discrimination)</td>
+                        </tr>
+                        <tr>
+                            <th>Audience</th>
+                            <td>410 860 téléspectateurs<br>(39,1% de part de marché)</td>
+                        </tr>
+                    </table>
+                    <div class="infobox-section-header">Contexte politique</div>
+                    <table>
+                        <tr>
+                            <th>Gouvernement</th>
+                            <td><a href="#">Coalition Arizona</a></td>
+                        </tr>
+                        <tr>
+                            <th>Réforme liée</th>
+                            <td>Limitation du chômage à 24 mois</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- Introduction -->
+                <p>
+                    L'<span class="bold-title">affaire Deborsu</span>, également appelée <span class="bold-title">polémique « Sans boulot : tous fraudeurs ? »</span>, est une <a href="#">controverse médiatique</a> et politique survenue en <a href="#">Belgique</a> en novembre 2025, à la suite de la diffusion d'un reportage du journaliste <a href="#">Christophe Deborsu</a> sur <a href="#">RTL-TVI</a>.
+                </p>
+                <p>
+                    Diffusé le 7 novembre 2025 dans le cadre de l'émission <em>Je vous dérange</em>, le documentaire s'intéresse aux allocataires sociaux de <a href="#">Verviers</a>, présentée comme « la rue la plus pauvre de <a href="#">Wallonie</a> ». Le reportage suscite immédiatement une vive polémique en raison de son traitement jugé « stigmatisant » des personnes en situation de <a href="#">précarité</a> et de son timing coïncidant avec la <a href="#">réforme du chômage</a> du gouvernement <a href="#">Arizona</a><sup class="reference"><a href="#ref1">[1]</a></sup>.
+                </p>
+                <p>
+                    L'affaire entraîne le dépôt de plus de 100 plaintes auprès du <a href="#">Conseil supérieur de l'audiovisuel</a> (CSA) pour « incitation à la discrimination en raison de la condition sociale », une accusation qui traduit juridiquement le concept d'<a href="#">aporophobie</a> (haine des pauvres). Elle provoque également une crise politique, avec des réactions opposées entre le <a href="#">MR</a>, qui salue le reportage, et l'opposition qui dénonce une « propagande » au service de la réforme des allocations<sup class="reference"><a href="#ref2">[2]</a></sup>.
+                </p>
+                
+                <!-- Table of Contents -->
+                <div class="toc">
+                    <div class="toc-title">Sommaire <span class="toc-toggle">[masquer]</span></div>
+                    <ol>
+                        <li><a href="#contexte"><span class="toc-number">1</span> Contexte</a>
+                            <ol>
+                                <li><a href="#contexte-emission"><span class="toc-number">1.1</span> L'émission « Je vous dérange »</a></li>
+                                <li><a href="#contexte-politique"><span class="toc-number">1.2</span> Contexte politique : la réforme du chômage</a></li>
+                            </ol>
+                        </li>
+                        <li><a href="#reportage"><span class="toc-number">2</span> Le reportage</a>
+                            <ol>
+                                <li><a href="#reportage-contenu"><span class="toc-number">2.1</span> Contenu et profils présentés</a></li>
+                                <li><a href="#reportage-techniques"><span class="toc-number">2.2</span> Techniques de réalisation contestées</a></li>
+                                <li><a href="#reportage-audience"><span class="toc-number">2.3</span> Audience</a></li>
+                            </ol>
+                        </li>
+                        <li><a href="#polemique"><span class="toc-number">3</span> Polémique</a>
+                            <ol>
+                                <li><a href="#polemique-accusations"><span class="toc-number">3.1</span> Accusations de manipulation</a></li>
+                                <li><a href="#polemique-csa"><span class="toc-number">3.2</span> Plaintes au CSA</a></li>
+                                <li><a href="#polemique-deontologie"><span class="toc-number">3.3</span> Manquements déontologiques invoqués</a></li>
+                            </ol>
+                        </li>
+                        <li><a href="#reactions"><span class="toc-number">4</span> Réactions</a>
+                            <ol>
+                                <li><a href="#reactions-politiques"><span class="toc-number">4.1</span> Réactions politiques</a></li>
+                                <li><a href="#reactions-verviers"><span class="toc-number">4.2</span> Réactions à Verviers</a></li>
+                                <li><a href="#reactions-deborsu"><span class="toc-number">4.3</span> Défense de Christophe Deborsu</a></li>
+                            </ol>
+                        </li>
+                        <li><a href="#aporophobie"><span class="toc-number">5</span> L'aporophobie au cœur du débat</a></li>
+                        <li><a href="#consequences"><span class="toc-number">6</span> Conséquences</a></li>
+                        <li><a href="#analyse"><span class="toc-number">7</span> Analyse et postérité</a></li>
+                        <li><a href="#references"><span class="toc-number">8</span> Notes et références</a></li>
+                        <li><a href="#voir-aussi"><span class="toc-number">9</span> Voir aussi</a></li>
+                    </ol>
+                </div>
+                
+                <!-- Contexte -->
+                <h2 id="contexte">Contexte <span class="mw-editsection">[<a href="#">modifier</a> | <a href="#">modifier le code</a>]</span></h2>
+                
+                <h3 id="contexte-emission">L'émission « Je vous dérange »</h3>
+                <p>
+                    <em>Je vous dérange</em> est une émission de <a href="#">reportage</a> diffusée sur <a href="#">RTL-TVI</a> et présentée par le journaliste <a href="#">Christophe Deborsu</a>. Le concept repose sur des enquêtes de terrain traitant de sujets sociétaux polémiques, le présentateur allant à la rencontre des personnes concernées « micro à la main »<sup class="reference"><a href="#ref3">[3]</a></sup>.
+                </p>
+                <p>
+                    Le numéro controversé, intitulé « Sans boulot : tous fraudeurs ? », est diffusé le 7 novembre 2025 en <a href="#">prime time</a>. Il s'inscrit dans une série d'émissions traitant de thématiques sociales sensibles.
+                </p>
+                
+                <h3 id="contexte-politique">Contexte politique : la réforme du chômage</h3>
+                <p>
+                    La diffusion du reportage intervient dans un contexte politique particulier. Le gouvernement fédéral <a href="#">Arizona</a>, coalition composée de la <a href="#">N-VA</a>, du <a href="#">MR</a>, des <a href="#">Engagés</a>, de <a href="#">Vooruit</a> et du <a href="#">CD&V</a>, a mis en place une réforme majeure des allocations de chômage, les limitant à un maximum de 24 mois<sup class="reference"><a href="#ref4">[4]</a></sup>.
+                </p>
+                
+                <div class="timeline-box">
+                    <h4>Chronologie de la réforme du chômage</h4>
+                    <ul>
+                        <li><strong>7 novembre 2025</strong> : Diffusion du reportage « Sans boulot : tous fraudeurs ? »</li>
+                        <li><strong>12 novembre 2025</strong> : L'<a href="#">ONEM</a> envoie sa 3<sup>e</sup> vague de lettres d'avertissement à 47 691 demandeurs d'emploi</li>
+                        <li><strong>1<sup>er</sup> janvier 2026</strong> : Premières exclusions effectives prévues</li>
+                    </ul>
+                </div>
+                
+                <p>
+                    Cette coïncidence temporelle est relevée par de nombreux observateurs et alimente les accusations d'<a href="#">instrumentalisation politique</a> du reportage<sup class="reference"><a href="#ref5">[5]</a></sup>.
+                </p>
+                
+                <!-- Le reportage -->
+                <h2 id="reportage">Le reportage <span class="mw-editsection">[<a href="#">modifier</a> | <a href="#">modifier le code</a>]</span></h2>
+                
+                <h3 id="reportage-contenu">Contenu et profils présentés</h3>
+                <p>
+                    Le reportage se déroule principalement rue de Dison à <a href="#">Verviers</a>, présentée par l'émission comme « la rue la plus pauvre de <a href="#">Wallonie</a> ». Christophe Deborsu y recueille des témoignages d'allocataires sociaux, interrogeant leur rapport au travail et aux aides sociales<sup class="reference"><a href="#ref6">[6]</a></sup>.
+                </p>
+                <p>
+                    Parmi les profils retenus au montage et ayant suscité le plus de réactions :
+                </p>
+                <ul>
+                    <li><strong>Jacqueline</strong> : En <a href="#">maladie longue durée</a> depuis huit ans après avoir « glissé sur une crotte de chien », elle déclare pouvoir travailler mais n'en avoir « pas envie ».</li>
+                    <li><strong>Laetitia</strong> : Âgée de 37 ans, mère célibataire de trois enfants, elle perçoit environ 2 700 € mensuels via le <a href="#">CPAS</a> sans jamais avoir exercé d'emploi déclaré.</li>
+                </ul>
+                <p>
+                    Le reportage inclut également des séquences présentées comme révélatrices de <a href="#">travail au noir</a> et de <a href="#">cumul d'allocations</a>, sans que les preuves formelles de fraude ne soient établies<sup class="reference"><a href="#ref7">[7]</a></sup>.
+                </p>
+                
+                <h3 id="reportage-techniques">Techniques de réalisation contestées</h3>
+                <p>
+                    Plusieurs éléments de réalisation sont critiqués par les spécialistes des médias et les personnes interviewées :
+                </p>
+                <ul>
+                    <li><strong>Sélection des profils</strong> : Les critiques soulignent le choix de cas extrêmes présentés comme représentatifs d'une population entière.</li>
+                    <li><strong>Montage</strong> : Des interviews d'une heure auraient été réduites à quelques phrases isolées, selon les témoignages des intervenants.</li>
+                    <li><strong>Cadrage</strong> : La focalisation sur les aspects les plus négatifs du quartier, occultant sa vitalité commerciale.</li>
+                    <li><strong>Titre interrogatif</strong> : La formulation « tous fraudeurs ? » induit une généralisation que le contenu du reportage ne permet pas de démontrer.</li>
+                </ul>
+                <p>
+                    Christophe Deborsu a lui-même reconnu avoir « flouté certaines personnes pour les protéger d'elles-mêmes », une formulation qui a été critiquée pour son <a href="#">paternalisme</a><sup class="reference"><a href="#ref8">[8]</a></sup>.
+                </p>
+                
+                <h3 id="reportage-audience">Audience</h3>
+                <p>
+                    Le reportage réalise un score historique pour <a href="#">RTL-TVI</a> avec <strong>410 860 téléspectateurs</strong>, soit 39,1 % de part de marché en <a href="#">prime time</a>. Cette performance exceptionnelle en fait l'un des programmes les plus regardés de l'année 2025 sur la chaîne<sup class="reference"><a href="#ref9">[9]</a></sup>.
+                </p>
+                
+                <!-- Polémique -->
+                <h2 id="polemique">Polémique <span class="mw-editsection">[<a href="#">modifier</a> | <a href="#">modifier le code</a>]</span></h2>
+                
+                <h3 id="polemique-accusations">Accusations de manipulation</h3>
+                <p>
+                    Dès les jours suivant la diffusion, plusieurs personnes apparaissant dans le reportage contestent publiquement la manière dont leurs propos ont été présentés.
+                </p>
+                
+                <div class="quotebox">
+                    « L'interview que j'ai accordée a duré plus d'une heure. Seules quelques phrases ont été isolées et sorties de leur contexte, donnant une image fausse et inacceptable de mon message. »
+                    <div class="quotebox-source">— <strong>Gaëlle Denys</strong>, présidente du CPAS de Verviers<sup class="reference"><a href="#ref10">[10]</a></sup></div>
+                </div>
+                
+                <p>
+                    <strong>Martin Wagener</strong>, vice-président du <a href="#">CIRTES</a> à l'<a href="#">UCLouvain</a>, confirme sur <a href="#">LinkedIn</a> qu'aucun de ses arguments académiques n'a été repris dans le montage final.
+                </p>
+                <p>
+                    <strong>Laetitia</strong>, l'une des allocataires filmées, témoigne au journal <em><a href="#">Het Belang van Limburg</a></em> : « L'image qu'ils ont donnée de moi est fausse. Je ne suis pas une profiteuse. » Elle rapporte avoir ensuite reçu « énormément de messages et d'insultes »<sup class="reference"><a href="#ref11">[11]</a></sup>.
+                </p>
+                <p>
+                    L'avocat <strong>Georges de Kerchove</strong>, membre d'<a href="#">ATD Quart Monde</a>, publie une tribune dans <em><a href="#">La Libre Belgique</a></em> résumant les griefs :
+                </p>
+                
+                <div class="quotebox">
+                    « Des gens simples vous font confiance parce que vous vous présentez comme journaliste. Mais vous les trompez, vous abusez de leur confiance. Vous n'hésitez pas à les manipuler et à les instrumentaliser pour faire triompher vos aprioris. »
+                    <div class="quotebox-source">— <strong>Georges de Kerchove</strong>, avocat, tribune dans <em>La Libre</em><sup class="reference"><a href="#ref12">[12]</a></sup></div>
+                </div>
+                
+                <h3 id="polemique-csa">Plaintes au CSA</h3>
+                <p>
+                    Le <strong>12 novembre 2025</strong>, cinq jours après la diffusion, le <a href="#">Conseil supérieur de l'audiovisuel</a> (CSA) de la <a href="#">Fédération Wallonie-Bruxelles</a> annonce l'ouverture d'un dossier d'instruction à la suite du dépôt de plus de <strong>100 plaintes</strong><sup class="reference"><a href="#ref13">[13]</a></sup>.
+                </p>
+                <p>
+                    L'infraction potentielle visée est l'<strong>article 2.4-1 du décret SMA-SPV du 4 février 2021</strong>, qui interdit les programmes « comportant ou promouvant des discriminations ou incitant à la discrimination en raison de la fortune, la condition et l'origine sociale »<sup class="reference"><a href="#ref14">[14]</a></sup>.
+                </p>
+                <p>
+                    Les plaintes dénoncent trois violations majeures :
+                </p>
+                <ol>
+                    <li>L'atteinte à l'équilibre et à la neutralité</li>
+                    <li>L'atteinte à la <a href="#">dignité humaine</a></li>
+                    <li>L'incitation à la discrimination des personnes en raison de leur condition sociale</li>
+                </ol>
+                <p>
+                    Le CSA transmet les plaintes au <a href="#">Conseil de déontologie journalistique</a> (CDJ) pour avis. Conformément à une jurisprudence récente du <a href="#">Conseil d'État</a>, si le CDJ se prononce sur les aspects déontologiques, le CSA ne pourra plus statuer sur le volet légal<sup class="reference"><a href="#ref15">[15]</a></sup>.
+                </p>
+                
+                <h3 id="polemique-deontologie">Manquements déontologiques invoqués</h3>
+                <p>
+                    Les plaintes et analyses de l'affaire identifient plusieurs manquements potentiels au <a href="#">Code de déontologie journalistique</a> belge :
+                </p>
+                <ul>
+                    <li><strong>Respect de la vérité</strong> : sélection orientée des profils, omission des contre-exemples et des données contextuelles.</li>
+                    <li><strong>Traitement des personnes vulnérables</strong> : exposition de bénéficiaires d'aides sociales à des sanctions sociales et au <a href="#">harcèlement</a> public.</li>
+                    <li><strong>Consentement éclairé</strong> : question de savoir si les interviewés, souvent en situation de précarité, comprenaient l'usage qui serait fait de leurs propos.</li>
+                    <li><strong>Distinction information/opinion</strong> : titre interrogatif mais traitement orienté vers une thèse préétablie sur la « fraude sociale ».</li>
+                </ul>
+                
+                <!-- Réactions -->
+                <h2 id="reactions">Réactions <span class="mw-editsection">[<a href="#">modifier</a> | <a href="#">modifier le code</a>]</span></h2>
+                
+                <h3 id="reactions-politiques">Réactions politiques</h3>
+                <p>
+                    L'affaire provoque une polarisation politique immédiate, révélatrice des clivages belges sur la question des <a href="#">aides sociales</a>.
+                </p>
+                
+                <h4>Majorité gouvernementale</h4>
+                <p>
+                    <strong><a href="#">Georges-Louis Bouchez</a></strong>, président du <a href="#">MR</a>, qualifie l'émission de « reportage hallucinant » et de « vrai travail d'enquête ». Commentant la séquence de Jacqueline, il y voit l'illustration de « l'héritage de l'assistanat de la gauche »<sup class="reference"><a href="#ref16">[16]</a></sup>.
+                </p>
+                <p>
+                    <strong>Denis Ducarme</strong>, député MR, réclame l'audition de Christophe Deborsu devant la Commission des Affaires Sociales de la <a href="#">Chambre des représentants</a>.
+                </p>
+                
+                <h4>Opposition</h4>
+                <p>
+                    <strong><a href="#">Paul Magnette</a></strong>, président du <a href="#">PS</a>, dénonce des discours qui « se complaisent dans la caricature, en donnant l'image fausse d'un système rempli d'abus », regrettant que « ces héros qui cherchent du travail, on ne les mette jamais en avant »<sup class="reference"><a href="#ref17">[17]</a></sup>.
+                </p>
+                <p>
+                    <strong>Hajib El Hajjaji</strong> (<a href="#">Ecolo</a>) qualifie le procédé de « dégueulasse », rappelant que 70 % des personnes visées par les exclusions de chômage « sont des gens qui travaillent » à temps partiel ou de façon intermittente<sup class="reference"><a href="#ref18">[18]</a></sup>.
+                </p>
+                
+                <h4>Accusations de conflit d'intérêts</h4>
+                <p>
+                    Sur les <a href="#">réseaux sociaux</a>, de nombreux internautes relèvent le lien familial entre le journaliste et <strong>Charlotte Deborsu</strong>, sa nièce, députée MR. L'expression « reportage orienté MRTL » (contraction de MR et RTL) circule largement, alimentant les accusations de « propagande » au service de la réforme<sup class="reference"><a href="#ref19">[19]</a></sup>.
+                </p>
+                
+                <h3 id="reactions-verviers">Réactions à Verviers</h3>
+                <p>
+                    Le <strong>conseil communal de <a href="#">Verviers</a></strong> se réunit le 25 novembre 2025 pour adopter, tous partis confondus, une motion de soutien à Gaëlle Denys, présidente du CPAS<sup class="reference"><a href="#ref20">[20]</a></sup>.
+                </p>
+                <p>
+                    <strong>Freddy Breuwer</strong>, ancien président du CPAS dans l'opposition, qualifie le reportage de « stigmatisant » et « assez regrettable », dénonçant des « récupérations lamentables via les réseaux sociaux ».
+                </p>
+                <p>
+                    Le bourgmestre MR <strong>Maxime Degey</strong> prend ses distances avec le titre du reportage : « Tous fraudeurs ? Je prendrais mes distances par rapport à ce titre. C'est plutôt le système qui ne fonctionne plus très bien. » Il rappelle que « Verviers ne se résume pas à l'image donnée par le reportage. La vision caricaturale et réductrice ne reflète pas la réalité complète de notre ville »<sup class="reference"><a href="#ref21">[21]</a></sup>.
+                </p>
+                <p>
+                    Seule <strong>Stéphanie Cortisse</strong> (MR), présidente du conseil communal, avait partagé le reportage avec enthousiasme sur <a href="#">Facebook</a>, saluant « l'impérieuse nécessité des réformes que nous menons avec le MR ».
+                </p>
+                <p>
+                    Les habitants de la rue de Dison expriment leur malaise auprès du média local <em>Vedia</em> : « Ça m'a choqué qu'on mette tout le monde dans le même sac. » Plusieurs riverains soulignent qu'il s'agit d'« une des rues les plus vivantes de Verviers avec beaucoup de commerces »<sup class="reference"><a href="#ref22">[22]</a></sup>.
+                </p>
+                
+                <h3 id="reactions-deborsu">Défense de Christophe Deborsu</h3>
+                <p>
+                    Christophe Deborsu maintient une ligne de défense constante tout au long de la polémique : « Un reporter rapporte. Il ne juge pas. »
+                </p>
+                <p>
+                    Sur le plateau de l'émission flamande <em><a href="#">De Afspraak</a></em>, il précise : « Ces personnes ne font rien d'illégal. Elles sont prises au piège d'un système qui les maintient dans cette situation. » Il se dit « surpris » par l'ampleur de la polémique, confiant : « Je comprends mieux maintenant ce qu'un politicien ressent lorsqu'il se retrouve au cœur d'une tempête médiatique »<sup class="reference"><a href="#ref23">[23]</a></sup>.
+                </p>
+                <p>
+                    Le journaliste affirme avoir développé « une certaine tendresse pour les pauvres » et avoir pris des précautions en floutant certains visages « pour protéger des témoins qui ne se rendent même plus compte qu'ils agissent mal » — une formulation elle-même critiquée pour son <a href="#">paternalisme</a>.
+                </p>
+                <p>
+                    <strong><a href="#">RTL Belgium</a></strong> refuse de commenter officiellement la polémique, laissant son présentateur seul face aux accusations<sup class="reference"><a href="#ref24">[24]</a></sup>.
+                </p>
+                <p>
+                    En décembre 2025, Deborsu révèle avoir été menacé par un bourgmestre avant la diffusion d'un autre reportage de l'émission, une « première » dans sa carrière selon lui<sup class="reference"><a href="#ref25">[25]</a></sup>.
+                </p>
+                
+                <!-- Aporophobie -->
+                <h2 id="aporophobie">L'aporophobie au cœur du débat <span class="mw-editsection">[<a href="#">modifier</a> | <a href="#">modifier le code</a>]</span></h2>
+                
+                <div class="hatnote">Article détaillé : <a href="#">Aporophobie</a>.</div>
+                
+                <p>
+                    La polémique remet au premier plan le concept d'<strong><a href="#">aporophobie</a></strong> (ou pauvrophobie), théorisé par la philosophe espagnole <a href="#">Adela Cortina</a> dans les années 1990. Ce terme désigne l'hostilité, le mépris ou la discrimination envers les personnes en situation de <a href="#">pauvreté</a> — un phénomène distinct du <a href="#">racisme</a> ou du <a href="#">classisme</a> car ciblant spécifiquement le statut économique<sup class="reference"><a href="#ref26">[26]</a></sup>.
+                </p>
+                <p>
+                    Le sociologue <strong>Wim Van Lancker</strong> (<a href="#">KU Leuven</a>) tempère dans le quotidien <em><a href="#">De Morgen</a></em> : « Ce reportage montre des personnes qui abusent du système. Mais on ne peut pas en conclure que ce phénomène est généralisé. » Cette généralisation abusive constitue précisément l'un des mécanismes fondamentaux de l'aporophobie médiatique : la sélection de cas extrêmes présentés comme représentatifs d'une population entière<sup class="reference"><a href="#ref27">[27]</a></sup>.
+                </p>
+                <p>
+                    Le <em>Forum-Bruxelles contre les inégalités</em> avait publié dès 2018 une « Petite encyclopédie des idées reçues sur la pauvreté », anticipant ce type de traitement médiatique. Le <strong>Service de lutte contre la pauvreté</strong>, organisme officiel belge, documente quant à lui le phénomène inverse passé sous silence : le <strong>non-accès aux droits</strong>, soit les personnes éligibles aux aides sociales qui n'en bénéficient pas faute d'information ou par découragement administratif<sup class="reference"><a href="#ref28">[28]</a></sup>.
+                </p>
+                
+                <!-- Conséquences -->
+                <h2 id="consequences">Conséquences <span class="mw-editsection">[<a href="#">modifier</a> | <a href="#">modifier le code</a>]</span></h2>
+                
+                <p>
+                    L'affaire Deborsu a des répercussions à plusieurs niveaux :
+                </p>
+                
+                <h4>Pour les personnes filmées</h4>
+                <ul>
+                    <li><a href="#">Harcèlement en ligne</a> et messages d'insultes</li>
+                    <li>Interpellations et stigmatisation dans la rue</li>
+                    <li>Stigmatisation du quartier de la rue de Dison</li>
+                </ul>
+                
+                <h4>Sur le plan institutionnel</h4>
+                <ul>
+                    <li>Ouverture d'une instruction par le <a href="#">CSA</a></li>
+                    <li>Transmission au <a href="#">Conseil de déontologie journalistique</a> (CDJ)</li>
+                    <li>Avis attendu dans un délai de 90 jours renouvelables</li>
+                </ul>
+                
+                <h4>Sur le débat public</h4>
+                <ul>
+                    <li>Polarisation accrue autour des questions de <a href="#">solidarité sociale</a></li>
+                    <li>Viralité des extraits les plus polémiques sur les <a href="#">réseaux sociaux</a></li>
+                    <li>Débat renouvelé sur la <a href="#">responsabilité des médias</a> dans le traitement de la pauvreté</li>
+                </ul>
+                
+                <!-- Analyse -->
+                <h2 id="analyse">Analyse et postérité <span class="mw-editsection">[<a href="#">modifier</a> | <a href="#">modifier le code</a>]</span></h2>
+                
+                <p>
+                    Le reportage « Sans boulot : tous fraudeurs ? » est analysé comme un cas d'école en matière de <a href="#">stigmatisation médiatique</a> des populations précaires. La construction du narratif controversé repose sur un faisceau d'éléments concordants<sup class="reference"><a href="#ref29">[29]</a></sup> :
+                </p>
+                <ul>
+                    <li>Sélection orientée des profils les plus « spectaculaires »</li>
+                    <li>Montage tronquant les propos nuancés des intervenants</li>
+                    <li>Titre racoleur induisant une généralisation non démontrée</li>
+                    <li>Timing politique opportun avec la réforme du chômage</li>
+                    <li>Récupération partisane immédiate par le <a href="#">MR</a></li>
+                </ul>
+                <p>
+                    L'affaire pose une question fondamentale sur la responsabilité des médias : dans une société où le débat public sur la pauvreté est tendu, un reportage peut-il légitimement choisir l'angle du sensationnel au détriment de la complexité du réel ?
+                </p>
+                <p>
+                    L'instruction du CSA et l'avis du CDJ, attendus en 2026, établiront si ces pratiques constituent des infractions légales ou déontologiques au regard du droit belge de l'audiovisuel.
+                </p>
+                
+                <div class="clear"></div>
+                
+                <!-- Notes et références -->
+                <h2 id="references">Notes et références <span class="mw-editsection">[<a href="#">modifier</a> | <a href="#">modifier le code</a>]</span></h2>
+                
+                <div class="references">
+                    <div class="reflist-columns">
+                        <ol>
+                            <li id="ref1">« Sans boulot, tous fraudeurs ? Le CSA est saisi d'un grand nombre de plaintes », <em>CSA Belgique</em>, 12 novembre 2025.</li>
+                            <li id="ref2">« Incitation à la discrimination : des centaines de plaintes au CSA suite au reportage », <em>Bruxelles Today</em>, novembre 2025.</li>
+                            <li id="ref3">« J'ai développé une certaine tendresse pour les sans-emploi : Christophe Deborsu brise les clichés sur RTL-TVI », <em>La DH</em>, 7 novembre 2025.</li>
+                            <li id="ref4">« Réforme du chômage : l'Onem va envoyer une troisième vague de lettres d'avertissement », <em>L'Avenir</em>, 10 novembre 2025.</li>
+                            <li id="ref5">« Coalition Arizona », <em>Wikipédia</em>.</li>
+                            <li id="ref6">« Immersion dans la rue la plus pauvre de Belgique », <em>7sur7</em>, novembre 2025.</li>
+                            <li id="ref7">« Sensationnalisme, manipulation : le reportage "Tous fraudeurs" dérange », <em>Bruxelles Today</em>.</li>
+                            <li id="ref8">« Monsieur Deborsu, vos méthodes d'investigation m'ont dérangé », <em>La Libre Belgique</em>, 18 novembre 2025.</li>
+                            <li id="ref9">« Une centaine de plaintes sur l'émission "Je vous dérange" de Christophe Deborsu sur RTL-TVI : le CSA ouvre une enquête », <em>L'Avenir</em>, 12 novembre 2025.</li>
+                            <li id="ref10">Déclaration de Gaëlle Denys, présidente du CPAS de Verviers, novembre 2025.</li>
+                            <li id="ref11">« J'ai reçu énormément de messages et d'insultes : Laetitia du reportage répond aux critiques », <em>La Libre Belgique</em>, 13 novembre 2025.</li>
+                            <li id="ref12">Georges de Kerchove, « Monsieur Deborsu, vos méthodes d'investigation m'ont dérangé », <em>La Libre Belgique</em>, 18 novembre 2025.</li>
+                            <li id="ref13">Communiqué officiel du CSA, 12 novembre 2025.</li>
+                            <li id="ref14">Décret SMA-SPV du 4 février 2021, article 2.4-1.</li>
+                            <li id="ref15">« L'émission "Je vous dérange" de Christophe Deborsu sur RTL-TVI visée par une enquête », <em>La Libre Belgique</em>, 12 novembre 2025.</li>
+                            <li id="ref16">Déclarations de Georges-Louis Bouchez sur les réseaux sociaux, novembre 2025.</li>
+                            <li id="ref17">« Paul Magnette réagit au reportage de Christophe Deborsu », <em>La Libre Belgique</em>, 13 novembre 2025.</li>
+                            <li id="ref18">Déclaration de Hajib El Hajjaji (Ecolo), novembre 2025.</li>
+                            <li id="ref19">« "Je vous dérange" : L'audition de Christophe Deborsu réclamée au Parlement », <em>La DH</em>, 12 novembre 2025.</li>
+                            <li id="ref20">« Des élus verviétois réagissent au reportage "Sans boulot : tous fraudeurs ?" », <em>L'Avenir</em>, 25 novembre 2025.</li>
+                            <li id="ref21">Déclaration du bourgmestre Maxime Degey, novembre 2025.</li>
+                            <li id="ref22">« Verviers secouée par un reportage choc sur les bénéficiaires sociaux », <em>Vedia</em>, novembre 2025.</li>
+                            <li id="ref23">« Deborsu réagit à la polémique sur son reportage », <em>7sur7</em>, novembre 2025.</li>
+                            <li id="ref24">« Christophe Deborsu sort du silence après son reportage polémique », <em>Paris Match Belgique</em>, 18 novembre 2025.</li>
+                            <li id="ref25">« Christophe Deborsu menacé par un bourgmestre avant la diffusion de son émission », <em>La DH</em>, 12 décembre 2025.</li>
+                            <li id="ref26">Adela Cortina, <em>Aporofobia, el rechazo al pobre</em>, 2017.</li>
+                            <li id="ref27">Wim Van Lancker, interview dans <em>De Morgen</em>, novembre 2025.</li>
+                            <li id="ref28">Forum-Bruxelles contre les inégalités, « Petite encyclopédie des idées reçues sur la pauvreté », 2018.</li>
+                            <li id="ref29">« Christophe Deborsu visé par le CSA pour incitation à la haine après un reportage controversé », <em>Moustique</em>, 18 novembre 2025.</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <!-- Voir aussi -->
+                <h2 id="voir-aussi">Voir aussi <span class="mw-editsection">[<a href="#">modifier</a> | <a href="#">modifier le code</a>]</span></h2>
+                
+                <h3>Articles connexes</h3>
+                <ul>
+                    <li><a href="#">Aporophobie</a></li>
+                    <li><a href="#">Christophe Deborsu</a></li>
+                    <li><a href="#">RTL-TVI</a></li>
+                    <li><a href="#">Conseil supérieur de l'audiovisuel (Belgique)</a></li>
+                    <li><a href="#">Coalition Arizona</a></li>
+                    <li><a href="#">Chômage en Belgique</a></li>
+                    <li><a href="#">CPAS</a></li>
+                    <li><a href="#">Verviers</a></li>
+                    <li><a href="#">Déontologie du journalisme</a></li>
+                    <li><a href="#">Stigmatisation</a></li>
+                </ul>
+                
+                <h3>Liens externes</h3>
+                <ul>
+                    <li><a href="#" class="external">Communiqué officiel du CSA</a></li>
+                    <li><a href="#" class="external">Code de déontologie journalistique (CDJ)</a></li>
+                    <li><a href="#" class="external">Service de lutte contre la pauvreté, la précarité et l'exclusion sociale</a></li>
+                </ul>
+                
+                <!-- Navigation box -->
+                <table class="navbox">
+                    <tr>
+                        <td class="navbox-title" colspan="2">
+                            <a href="#">Polémiques médiatiques en Belgique</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="navbox-group">Années 2020</td>
+                        <td class="navbox-list">
+                            <a href="#">Affaire Deborsu</a> (2025) ·
+                            <a href="#" class="new">Affaire Vews</a> ·
+                            <a href="#" class="new">Controverse RTBF-VRT</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="navbox-group">Thèmes</td>
+                        <td class="navbox-list">
+                            <a href="#">Déontologie journalistique</a> ·
+                            <a href="#">Conseil supérieur de l'audiovisuel</a> ·
+                            <a href="#">Liberté de la presse</a> ·
+                            <a href="#">Aporophobie</a>
+                        </td>
+                    </tr>
+                </table>
+                
+                <!-- Categories -->
+                <div class="categories">
+                    <span class="categories-title">Catégories :</span>
+                    <a href="#">Controverse journalistique</a> ·
+                    <a href="#">2025 en Belgique</a> ·
+                    <a href="#">RTL Belgium</a> ·
+                    <a href="#">Audiovisuel en Belgique</a> ·
+                    <a href="#">Pauvreté en Belgique</a> ·
+                    <a href="#">Verviers</a> ·
+                    <a href="#">Chômage en Belgique</a> ·
+                    <a href="#">Déontologie du journalisme</a>
+                </div>
+            </article>
+        </main>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="wiki-footer">
+        <p>
+            La dernière modification de cette page a été faite le 14 janvier 2026 à 10:30.<br>
+            <a href="#">Droit d'auteur</a> : les textes sont disponibles sous <a href="#">licence Creative Commons attribution, partage dans les mêmes conditions</a> ; d'autres conditions peuvent s'appliquer.<br>
+            Voyez les <a href="#">conditions d'utilisation</a> pour plus de détails, ainsi que les <a href="#">crédits graphiques</a>.
+        </p>
+        <p>
+            <a href="#">Politique de confidentialité</a> · <a href="#">À propos de Wikipédia</a> · <a href="#">Avertissements</a> · <a href="#">Contact</a> · <a href="#">Version mobile</a> · <a href="#">Développeurs</a> · <a href="#">Statistiques</a> · <a href="#">Déclaration sur les témoins (cookies)</a>
+        </p>
+        <p style="margin-top: 1em;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Wikimedia-logo_black.svg/44px-Wikimedia-logo_black.svg.png" alt="Wikimedia" height="30" style="opacity: 0.7;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/MediaWiki-2020-logo.svg/88px-MediaWiki-2020-logo.svg.png" alt="MediaWiki" height="25" style="opacity: 0.7; margin-left: 20px;">
+        </p>
+    </footer>
+</body>
+</html>
