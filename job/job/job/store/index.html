@@ -1,0 +1,2046 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ DECK STORE :: Neural Knowledge Hub</title>
+    <meta name="description" content="La bibliothèque ultime de decks de flashcards. Téléchargez, apprenez, dominez.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00f5ff;
+            --neon-magenta: #ff00ff;
+            --neon-green: #00ff88;
+            --neon-orange: #ff6b00;
+            --neon-yellow: #ffff00;
+            --neon-blue: #0066ff;
+            --neon-purple: #9d00ff;
+            --neon-red: #ff0055;
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(10, 10, 20, 0.85);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-dark);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* ============ BACKGROUND EFFECTS ============ */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .grid-bg {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image: 
+                linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            transform: perspective(500px) rotateX(60deg);
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: orbFloat 15s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--neon-cyan), transparent 70%);
+            top: -200px;
+            right: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--neon-magenta), transparent 70%);
+            bottom: -150px;
+            left: -150px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--neon-purple), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -10s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.9); }
+            75% { transform: translate(20px, 30px) scale(1.05); }
+        }
+
+        /* Particles */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            animation: particleFloat 10s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1) 0px,
+                rgba(0, 0, 0, 0.1) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* ============ HEADER ============ */
+        header {
+            position: relative;
+            padding: 60px 20px 100px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .logo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .logo-hex {
+            width: 120px;
+            height: 140px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .logo-hex::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            animation: logoRotate 10s linear infinite;
+            opacity: 0.8;
+        }
+
+        .logo-hex::after {
+            content: '';
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            background: var(--bg-dark);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+
+        @keyframes logoRotate {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .logo-icon {
+            position: relative;
+            z-index: 2;
+            font-size: 3rem;
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px var(--neon-cyan)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 30px var(--neon-cyan)); }
+        }
+
+        .main-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta), var(--neon-cyan));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleShine 3s linear infinite;
+            margin-bottom: 10px;
+            text-shadow: 0 0 50px rgba(0, 245, 255, 0.5);
+        }
+
+        @keyframes titleShine {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .subtitle {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--neon-cyan);
+            letter-spacing: 0.5em;
+            opacity: 0.8;
+            animation: subtitleGlitch 5s infinite;
+        }
+
+        @keyframes subtitleGlitch {
+            0%, 90%, 100% { opacity: 0.8; transform: translateX(0); }
+            92% { opacity: 0.4; transform: translateX(-5px); }
+            94% { opacity: 1; transform: translateX(5px); }
+            96% { opacity: 0.6; transform: translateX(-3px); }
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .header-stat {
+            text-align: center;
+            padding: 20px 30px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .header-stat:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 10px 40px rgba(0, 245, 255, 0.2);
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        /* ============ SEARCH BAR ============ */
+        .search-section {
+            max-width: 800px;
+            margin: -50px auto 60px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-container {
+            position: relative;
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1), rgba(255, 0, 255, 0.1));
+            padding: 3px;
+            border-radius: 60px;
+            animation: searchGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes searchGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 245, 255, 0.3), 0 0 40px rgba(255, 0, 255, 0.1); }
+            50% { box-shadow: 0 0 30px rgba(0, 245, 255, 0.5), 0 0 60px rgba(255, 0, 255, 0.2); }
+        }
+
+        .search-inner {
+            background: var(--bg-dark);
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 20px 30px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            color: #fff;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            border: none;
+            padding: 18px 35px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #000;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+        }
+
+        /* ============ CATEGORY FILTERS ============ */
+        .filters-section {
+            max-width: 1400px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+
+        .filters-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .filter-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 12px 28px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .filter-btn:hover::before {
+            left: 100%;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.3), inset 0 0 20px rgba(0, 245, 255, 0.1);
+            color: var(--neon-cyan);
+        }
+
+        .filter-btn.active {
+            background: rgba(0, 245, 255, 0.1);
+        }
+
+        .filter-count {
+            display: inline-block;
+            background: var(--neon-cyan);
+            color: #000;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-weight: 700;
+        }
+
+        /* ============ DECKS GRID ============ */
+        .decks-section {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 20px 100px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 5px;
+            height: 40px;
+            background: linear-gradient(180deg, var(--neon-cyan), var(--neon-magenta));
+            border-radius: 5px;
+        }
+
+        .view-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            color: #fff;
+        }
+
+        .view-btn:hover, .view-btn.active {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 245, 255, 0.1);
+        }
+
+        .decks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+        }
+
+        .decks-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        /* ============ DECK CARD ============ */
+        .deck-card {
+            position: relative;
+            background: var(--bg-card);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            border: 1px solid var(--glass-border);
+        }
+
+        .deck-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta), var(--neon-purple));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .deck-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--neon-cyan);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(0, 245, 255, 0.15),
+                inset 0 0 60px rgba(0, 245, 255, 0.03);
+        }
+
+        .deck-card:hover::before {
+            opacity: 1;
+        }
+
+        .deck-card-inner {
+            padding: 30px;
+        }
+
+        .deck-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .deck-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .deck-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            filter: blur(15px);
+            opacity: 0.5;
+        }
+
+        .deck-icon span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .deck-badge {
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+            color: #000;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .deck-badge.new {
+            background: linear-gradient(135deg, var(--neon-orange), var(--neon-yellow));
+        }
+
+        .deck-badge.popular {
+            background: linear-gradient(135deg, var(--neon-magenta), var(--neon-purple));
+            color: #fff;
+        }
+
+        .deck-badge.pro {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+        }
+
+        .deck-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.3;
+            transition: color 0.3s;
+        }
+
+        .deck-card:hover .deck-title {
+            color: var(--neon-cyan);
+        }
+
+        .deck-description {
+            font-size: 0.95rem;
+            opacity: 0.7;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .deck-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+        }
+
+        .deck-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .deck-stat-icon {
+            font-size: 1.1rem;
+        }
+
+        .deck-stat-value {
+            font-weight: 700;
+            color: var(--neon-cyan);
+        }
+
+        .deck-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .deck-tag {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .deck-tag:hover {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 245, 255, 0.1);
+        }
+
+        .deck-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .deck-btn {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .deck-btn-primary {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+            color: #000;
+        }
+
+        .deck-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 245, 255, 0.4);
+        }
+
+        .deck-btn-secondary {
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        .deck-btn-secondary:hover {
+            background: rgba(0, 245, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+        }
+
+        /* Preview Modal Trigger Effect */
+        .deck-preview-trigger {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .deck-card:hover .deck-preview-trigger {
+            opacity: 1;
+        }
+
+        .deck-preview-trigger:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        /* ============ FEATURED DECK ============ */
+        .featured-section {
+            max-width: 1600px;
+            margin: 0 auto 80px;
+            padding: 0 20px;
+        }
+
+        .featured-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.05), rgba(255, 0, 255, 0.05));
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            overflow: hidden;
+        }
+
+        .featured-card::before {
+            content: 'FEATURED';
+            position: absolute;
+            top: 30px;
+            right: -40px;
+            background: linear-gradient(135deg, var(--neon-orange), var(--neon-yellow));
+            color: #000;
+            padding: 8px 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transform: rotate(45deg);
+            letter-spacing: 0.2em;
+        }
+
+        .featured-content h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .featured-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .featured-stats {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .featured-stat {
+            text-align: center;
+        }
+
+        .featured-stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+        }
+
+        .featured-stat-label {
+            font-size: 0.85rem;
+            opacity: 0.6;
+            text-transform: uppercase;
+        }
+
+        .featured-preview {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-stack {
+            position: relative;
+            width: 300px;
+            height: 200px;
+        }
+
+        .preview-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.5s ease;
+        }
+
+        .preview-card:nth-child(1) {
+            transform: rotate(-5deg) translateX(-20px);
+            z-index: 1;
+        }
+
+        .preview-card:nth-child(2) {
+            transform: rotate(0deg);
+            z-index: 2;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.2);
+        }
+
+        .preview-card:nth-child(3) {
+            transform: rotate(5deg) translateX(20px);
+            z-index: 1;
+        }
+
+        .preview-stack:hover .preview-card:nth-child(1) {
+            transform: rotate(-15deg) translateX(-50px);
+        }
+
+        .preview-stack:hover .preview-card:nth-child(3) {
+            transform: rotate(15deg) translateX(50px);
+        }
+
+        .preview-card-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--neon-cyan);
+            margin-bottom: 10px;
+        }
+
+        .preview-card-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* ============ MODAL ============ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            max-width: 900px;
+            width: 95%;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 30px 35px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.05), rgba(255, 0, 255, 0.05));
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .modal-close {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--neon-red);
+            border-color: var(--neon-red);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 35px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 25px 35px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        /* Preview Cards in Modal */
+        .preview-cards-grid {
+            display: grid;
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .preview-flashcard {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .preview-flashcard:hover {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 245, 255, 0.05);
+        }
+
+        .preview-flashcard-q {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--neon-cyan);
+        }
+
+        .preview-flashcard-a {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            padding-left: 15px;
+            border-left: 2px solid var(--neon-magenta);
+        }
+
+        /* ============ LOADING STATE ============ */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px;
+        }
+
+        .loader {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .loader::before,
+        .loader::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            animation: loaderPulse 1.5s ease-in-out infinite;
+        }
+
+        .loader::before {
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top-color: var(--neon-cyan);
+            border-bottom-color: var(--neon-magenta);
+            animation: loaderSpin 1s linear infinite;
+        }
+
+        .loader::after {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            border: 3px solid transparent;
+            border-left-color: var(--neon-green);
+            border-right-color: var(--neon-purple);
+            animation: loaderSpin 0.8s linear infinite reverse;
+        }
+
+        @keyframes loaderSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 30px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            color: var(--neon-cyan);
+            animation: loadingBlink 1s infinite;
+        }
+
+        @keyframes loadingBlink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.5; }
+        }
+
+        /* ============ EMPTY STATE ============ */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .empty-text {
+            opacity: 0.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* ============ FOOTER ============ */
+        footer {
+            background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.5));
+            padding: 60px 20px;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-text {
+            opacity: 0.5;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-link:hover {
+            text-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1024px) {
+            .featured-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .featured-stats {
+                justify-content: center;
+            }
+
+            .featured-preview {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .decks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-stats {
+                gap: 20px;
+            }
+
+            .header-stat {
+                padding: 15px 20px;
+            }
+
+            .search-btn {
+                padding: 15px 25px;
+            }
+
+            .featured-card {
+                padding: 30px;
+            }
+
+            .modal {
+                border-radius: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                letter-spacing: 0.1em;
+            }
+
+            .subtitle {
+                letter-spacing: 0.2em;
+                font-size: 0.9rem;
+            }
+
+            .deck-actions {
+                flex-direction: column;
+            }
+
+            .filters-container {
+                justify-content: flex-start;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 10px;
+            }
+
+            .filter-btn {
+                white-space: nowrap;
+            }
+        }
+
+        /* ============ CUSTOM SCROLLBAR ============ */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--neon-cyan), var(--neon-magenta));
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-cyan);
+        }
+
+        /* ============ ANIMATIONS ON SCROLL ============ */
+        .deck-card {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .deck-card:nth-child(1) { animation-delay: 0.1s; }
+        .deck-card:nth-child(2) { animation-delay: 0.2s; }
+        .deck-card:nth-child(3) { animation-delay: 0.3s; }
+        .deck-card:nth-child(4) { animation-delay: 0.4s; }
+        .deck-card:nth-child(5) { animation-delay: 0.5s; }
+        .deck-card:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Glitch text effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--neon-magenta);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitchAnim 2s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--neon-cyan);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitchAnim 2s infinite linear alternate-reverse;
+            animation-delay: -1s;
+        }
+
+        @keyframes glitchAnim {
+            0% { clip: rect(51px, 9999px, 28px, 0); }
+            10% { clip: rect(70px, 9999px, 63px, 0); }
+            20% { clip: rect(32px, 9999px, 94px, 0); }
+            30% { clip: rect(87px, 9999px, 23px, 0); }
+            40% { clip: rect(42px, 9999px, 78px, 0); }
+            50% { clip: rect(15px, 9999px, 55px, 0); }
+            60% { clip: rect(89px, 9999px, 32px, 0); }
+            70% { clip: rect(48px, 9999px, 72px, 0); }
+            80% { clip: rect(23px, 9999px, 85px, 0); }
+            90% { clip: rect(65px, 9999px, 41px, 0); }
+            100% { clip: rect(37px, 9999px, 67px, 0); }
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--neon-green);
+            border-radius: 15px;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 10001;
+            transform: translateX(150%);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.2);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-message {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-container">
+        <div class="grid-bg"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="particles" id="particles"></div>
+    </div>
+    <div class="scanlines"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <div class="logo-hex">
+                <span class="logo-icon">🧠</span>
+            </div>
+        </div>
+        <h1 class="main-title glitch" data-text="DECK STORE">DECK STORE</h1>
+        <p class="subtitle">// NEURAL KNOWLEDGE REPOSITORY //</p>
+        
+        <div class="header-stats">
+            <div class="header-stat">
+                <div class="stat-number" id="total-decks">0</div>
+                <div class="stat-label">Decks disponibles</div>
+            </div>
+            <div class="header-stat">
+                <div class="stat-number" id="total-cards">0</div>
+                <div class="stat-label">Flashcards</div>
+            </div>
+            <div class="header-stat">
+                <div class="stat-number" id="total-categories">0</div>
+                <div class="stat-label">Catégories</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search -->
+    <section class="search-section">
+        <div class="search-container">
+            <div class="search-inner">
+                <input type="text" class="search-input" id="search-input" placeholder="Rechercher un deck, un sujet, un mot-clé...">
+                <button class="search-btn" onclick="searchDecks()">🔍 Scanner</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters-section">
+        <div class="filters-container" id="filters-container">
+            <button class="filter-btn active" data-filter="all" onclick="filterDecks('all')">
+                Tous <span class="filter-count" id="count-all">0</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Featured Deck -->
+    <section class="featured-section" id="featured-section" style="display: none;">
+        <div class="featured-card">
+            <div class="featured-content">
+                <h2 id="featured-title">Deck Vedette</h2>
+                <p id="featured-description">Le deck le plus complet pour maîtriser ce sujet.</p>
+                <div class="featured-stats">
+                    <div class="featured-stat">
+                        <div class="featured-stat-value" id="featured-cards">82</div>
+                        <div class="featured-stat-label">Cartes</div>
+                    </div>
+                    <div class="featured-stat">
+                        <div class="featured-stat-value" id="featured-topics">6</div>
+                        <div class="featured-stat-label">Thèmes</div>
+                    </div>
+                    <div class="featured-stat">
+                        <div class="featured-stat-value" id="featured-difficulty">★★★</div>
+                        <div class="featured-stat-label">Niveau</div>
+                    </div>
+                </div>
+                <div class="deck-actions">
+                    <button class="deck-btn deck-btn-primary" id="featured-download">
+                        ⬇️ Télécharger
+                    </button>
+                    <button class="deck-btn deck-btn-secondary" id="featured-preview">
+                        👁️ Aperçu
+                    </button>
+                </div>
+            </div>
+            <div class="featured-preview">
+                <div class="preview-stack">
+                    <div class="preview-card">
+                        <div class="preview-card-label">Question</div>
+                        <div class="preview-card-text" id="preview-q1">Chargement...</div>
+                    </div>
+                    <div class="preview-card">
+                        <div class="preview-card-label">Question</div>
+                        <div class="preview-card-text" id="preview-q2">Chargement...</div>
+                    </div>
+                    <div class="preview-card">
+                        <div class="preview-card-label">Question</div>
+                        <div class="preview-card-text" id="preview-q3">Chargement...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Decks Grid -->
+    <section class="decks-section">
+        <div class="section-header">
+            <h2 class="section-title">Bibliothèque de Decks</h2>
+            <div class="view-options">
+                <button class="view-btn active" data-view="grid" onclick="setView('grid')">⊞</button>
+                <button class="view-btn" data-view="list" onclick="setView('list')">☰</button>
+            </div>
+        </div>
+        
+        <div id="decks-container">
+            <!-- Loading State -->
+            <div class="loading-container" id="loading">
+                <div class="loader"></div>
+                <div class="loading-text">Connexion aux serveurs neuraux...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">⚡ DECK STORE</div>
+        <p class="footer-text">Propulsé par la connaissance collective • Open Source</p>
+        <div class="footer-links">
+            <a href="https://github.com/ouaisfieu/1160" class="footer-link" target="_blank">
+                📂 Repository GitHub
+            </a>
+            <a href="#" class="footer-link" onclick="showInfo()">
+                ℹ️ À propos
+            </a>
+            <a href="#" class="footer-link" onclick="showContribute()">
+                ➕ Contribuer un deck
+            </a>
+        </div>
+    </footer>
+
+    <!-- Preview Modal -->
+    <div class="modal-overlay" id="modal-preview">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <span>👁️</span>
+                    <span id="modal-deck-title">Aperçu du Deck</span>
+                </h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-cards-grid" id="modal-cards-grid">
+                    <!-- Cards will be injected here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="deck-btn deck-btn-secondary" onclick="closeModal()">Fermer</button>
+                <button class="deck-btn deck-btn-primary" id="modal-download-btn">⬇️ Télécharger ce deck</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✅</span>
+        <span class="toast-message" id="toast-message">Action effectuée !</span>
+    </div>
+
+    <script>
+        // ============== CONFIGURATION ==============
+        const CONFIG = {
+            // GitHub repository info
+            owner: 'ouaisfieu',
+            repo: '1160',
+            branch: 'main',
+            path: 'job/job/job/store',
+            
+            // Deck metadata (can be extended)
+            deckMeta: {
+                'flashcards': {
+                    title: 'ECP & Gouvernement Arizona',
+                    description: 'Maîtrisez l\'Économie Contributive Provisionnée et les réformes du gouvernement Arizona belge.',
+                    icon: '🏛️',
+                    color: '#00f5ff',
+                    tags: ['Économie', 'Politique', 'Belgique', 'Social'],
+                    difficulty: 3,
+                    badge: 'popular'
+                },
+                'default': {
+                    title: 'Deck de Flashcards',
+                    description: 'Un ensemble de flashcards pour réviser efficacement.',
+                    icon: '📚',
+                    color: '#ff00ff',
+                    tags: ['Apprentissage'],
+                    difficulty: 2,
+                    badge: null
+                }
+            },
+            
+            // Category colors
+            categoryColors: {
+                'Économie': '#00f5ff',
+                'Politique': '#ff00ff',
+                'Belgique': '#00ff88',
+                'Social': '#ffff00',
+                'Fiscal': '#ff6b00',
+                'Tech': '#9d00ff',
+                'Apprentissage': '#0066ff',
+                'Science': '#00ff88',
+                'Histoire': '#ff6b00',
+                'Autre': '#888888'
+            }
+        };
+
+        // ============== STATE ==============
+        let allDecks = [];
+        let filteredDecks = [];
+        let currentFilter = 'all';
+        let currentView = 'grid';
+
+        // ============== INITIALIZATION ==============
+        document.addEventListener('DOMContentLoaded', () => {
+            initParticles();
+            loadDecks();
+            setupSearch();
+        });
+
+        // ============== PARTICLES ==============
+        function initParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (8 + Math.random() * 6) + 's';
+                
+                const colors = ['#00f5ff', '#ff00ff', '#00ff88', '#ffff00'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.boxShadow = `0 0 ${5 + Math.random() * 10}px ${particle.style.background}`;
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // ============== LOAD DECKS FROM GITHUB ==============
+        async function loadDecks() {
+            const container = document.getElementById('decks-container');
+            
+            try {
+                // Fetch directory listing from GitHub API
+                const apiUrl = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error('Repository non trouvé ou inaccessible');
+                }
+                
+                const files = await response.json();
+                
+                // Filter CSV files only
+                const csvFiles = files.filter(file => file.name.endsWith('.csv') && file.name !== 'index.html');
+                
+                if (csvFiles.length === 0) {
+                    showEmptyState();
+                    return;
+                }
+                
+                // Process each CSV file
+                allDecks = await Promise.all(csvFiles.map(async (file, index) => {
+                    const rawUrl = `https://raw.githubusercontent.com/${CONFIG.owner}/${CONFIG.repo}/${CONFIG.branch}/${CONFIG.path}/${file.name}`;
+                    
+                    try {
+                        const csvResponse = await fetch(rawUrl);
+                        const csvText = await csvResponse.text();
+                        const cards = parseCSV(csvText);
+                        
+                        const baseName = file.name.replace('.csv', '').replace(/_/g, ' ');
+                        const meta = findMeta(baseName);
+                        
+                        return {
+                            id: index,
+                            filename: file.name,
+                            name: baseName,
+                            title: meta.title || formatTitle(baseName),
+                            description: meta.description || `${cards.length} flashcards pour réviser ${formatTitle(baseName)}.`,
+                            icon: meta.icon || getRandomIcon(),
+                            color: meta.color || getRandomColor(),
+                            tags: meta.tags || extractTags(cards),
+                            difficulty: meta.difficulty || Math.ceil(Math.random() * 3),
+                            badge: meta.badge,
+                            cardCount: cards.length,
+                            cards: cards,
+                            downloadUrl: rawUrl,
+                            size: file.size
+                        };
+                    } catch (e) {
+                        console.error(`Erreur chargement ${file.name}:`, e);
+                        return null;
+                    }
+                }));
+                
+                // Filter out failed loads
+                allDecks = allDecks.filter(d => d !== null);
+                filteredDecks = [...allDecks];
+                
+                // Update UI
+                updateStats();
+                renderFilters();
+                renderDecks();
+                
+                // Show featured if we have decks
+                if (allDecks.length > 0) {
+                    showFeatured(allDecks[0]);
+                }
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                showErrorState(error.message);
+            }
+        }
+
+        // ============== CSV PARSING ==============
+        function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            const cards = [];
+            
+            lines.forEach((line, index) => {
+                // Handle quoted fields
+                let question, answer;
+                
+                if (line.startsWith('"')) {
+                    const match = line.match(/^"([^"]*(?:""[^"]*)*)"\s*,\s*(.*)$/);
+                    if (match) {
+                        question = match[1].replace(/""/g, '"');
+                        answer = match[2].replace(/^"|"$/g, '');
+                    }
+                } else {
+                    const parts = line.split(',');
+                    question = parts[0];
+                    answer = parts.slice(1).join(',');
+                }
+                
+                if (question && answer) {
+                    cards.push({
+                        id: index + 1,
+                        question: question.trim(),
+                        answer: answer.trim().replace(/^"|"$/g, '')
+                    });
+                }
+            });
+            
+            return cards;
+        }
+
+        // ============== METADATA HELPERS ==============
+        function findMeta(name) {
+            const lowerName = name.toLowerCase();
+            for (const [key, meta] of Object.entries(CONFIG.deckMeta)) {
+                if (lowerName.includes(key.toLowerCase())) {
+                    return meta;
+                }
+            }
+            return CONFIG.deckMeta.default;
+        }
+
+        function formatTitle(name) {
+            return name
+                .replace(/[-_]/g, ' ')
+                .replace(/\b\w/g, c => c.toUpperCase())
+                .replace(/\(\d+\)/g, '')
+                .trim();
+        }
+
+        function extractTags(cards) {
+            const tags = new Set();
+            const keywords = {
+                'ecp': 'Économie',
+                'économie': 'Économie',
+                'fiscal': 'Fiscal',
+                'taxe': 'Fiscal',
+                'gouvernement': 'Politique',
+                'arizona': 'Politique',
+                'belge': 'Belgique',
+                'belgique': 'Belgique',
+                'social': 'Social',
+                'solid': 'Tech',
+                'nyxo': 'Tech'
+            };
+            
+            const allText = cards.slice(0, 20).map(c => c.question + ' ' + c.answer).join(' ').toLowerCase();
+            
+            for (const [keyword, tag] of Object.entries(keywords)) {
+                if (allText.includes(keyword)) {
+                    tags.add(tag);
+                }
+            }
+            
+            return tags.size > 0 ? Array.from(tags) : ['Apprentissage'];
+        }
+
+        function getRandomIcon() {
+            const icons = ['📚', '🎓', '💡', '🔬', '📖', '🧪', '🌍', '💼', '⚡', '🎯'];
+            return icons[Math.floor(Math.random() * icons.length)];
+        }
+
+        function getRandomColor() {
+            const colors = ['#00f5ff', '#ff00ff', '#00ff88', '#ffff00', '#ff6b00', '#9d00ff'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // ============== RENDERING ==============
+        function renderDecks() {
+            const container = document.getElementById('decks-container');
+            
+            if (filteredDecks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <h3 class="empty-title">Aucun résultat</h3>
+                        <p class="empty-text">Aucun deck ne correspond à votre recherche.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="decks-grid ${currentView === 'list' ? 'list-view' : ''}" id="decks-grid">
+                    ${filteredDecks.map(deck => renderDeckCard(deck)).join('')}
+                </div>
+            `;
+        }
+
+        function renderDeckCard(deck) {
+            const stars = '★'.repeat(deck.difficulty) + '☆'.repeat(3 - deck.difficulty);
+            const badgeHTML = deck.badge ? `<span class="deck-badge ${deck.badge}">${getBadgeText(deck.badge)}</span>` : '';
+            
+            return `
+                <div class="deck-card" data-id="${deck.id}">
+                    <div class="deck-preview-trigger" onclick="previewDeck(${deck.id})" title="Aperçu rapide">👁️</div>
+                    <div class="deck-card-inner">
+                        <div class="deck-header">
+                            <div class="deck-icon" style="background: linear-gradient(135deg, ${deck.color}40, ${deck.color}10);">
+                                <span>${deck.icon}</span>
+                            </div>
+                            ${badgeHTML}
+                        </div>
+                        <h3 class="deck-title">${deck.title}</h3>
+                        <p class="deck-description">${deck.description}</p>
+                        <div class="deck-stats">
+                            <div class="deck-stat">
+                                <span class="deck-stat-icon">📄</span>
+                                <span class="deck-stat-value">${deck.cardCount}</span>
+                                <span>cartes</span>
+                            </div>
+                            <div class="deck-stat">
+                                <span class="deck-stat-icon">⭐</span>
+                                <span style="color: #ffd700;">${stars}</span>
+                            </div>
+                            <div class="deck-stat">
+                                <span class="deck-stat-icon">💾</span>
+                                <span>${formatSize(deck.size)}</span>
+                            </div>
+                        </div>
+                        <div class="deck-tags">
+                            ${deck.tags.map(tag => `<span class="deck-tag" style="border-color: ${CONFIG.categoryColors[tag] || '#888'}40;">${tag}</span>`).join('')}
+                        </div>
+                        <div class="deck-actions">
+                            <button class="deck-btn deck-btn-primary" onclick="downloadDeck(${deck.id})">
+                                ⬇️ Télécharger
+                            </button>
+                            <button class="deck-btn deck-btn-secondary" onclick="previewDeck(${deck.id})">
+                                👁️ Aperçu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getBadgeText(badge) {
+            const texts = {
+                'new': '✨ Nouveau',
+                'popular': '🔥 Populaire',
+                'pro': '👑 Premium'
+            };
+            return texts[badge] || badge;
+        }
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        // ============== FILTERS ==============
+        function renderFilters() {
+            const container = document.getElementById('filters-container');
+            const allTags = new Set();
+            
+            allDecks.forEach(deck => {
+                deck.tags.forEach(tag => allTags.add(tag));
+            });
+            
+            const tagCounts = {};
+            allTags.forEach(tag => {
+                tagCounts[tag] = allDecks.filter(d => d.tags.includes(tag)).length;
+            });
+            
+            container.innerHTML = `
+                <button class="filter-btn active" data-filter="all" onclick="filterDecks('all')">
+                    Tous <span class="filter-count">${allDecks.length}</span>
+                </button>
+                ${Array.from(allTags).map(tag => `
+                    <button class="filter-btn" data-filter="${tag}" onclick="filterDecks('${tag}')" style="--tag-color: ${CONFIG.categoryColors[tag] || '#888'}">
+                        ${tag} <span class="filter-count">${tagCounts[tag]}</span>
+                    </button>
+                `).join('')}
+            `;
+            
+            document.getElementById('count-all').textContent = allDecks.length;
+        }
+
+        function filterDecks(filter) {
+            currentFilter = filter;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            
+            if (filter === 'all') {
+                filteredDecks = [...allDecks];
+            } else {
+                filteredDecks = allDecks.filter(d => d.tags.includes(filter));
+            }
+            
+            renderDecks();
+        }
+
+        // ============== SEARCH ==============
+        function setupSearch() {
+            const input = document.getElementById('search-input');
+            let timeout;
+            
+            input.addEventListener('input', (e) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    searchDecks(e.target.value);
+                }, 300);
+            });
+            
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchDecks(input.value);
+                }
+            });
+        }
+
+        function searchDecks(query) {
+            if (!query) query = document.getElementById('search-input').value;
+            query = query.toLowerCase().trim();
+            
+            if (!query) {
+                filteredDecks = currentFilter === 'all' 
+                    ? [...allDecks] 
+                    : allDecks.filter(d => d.tags.includes(currentFilter));
+            } else {
+                filteredDecks = allDecks.filter(deck => {
+                    const searchText = `${deck.title} ${deck.description} ${deck.tags.join(' ')} ${deck.cards.map(c => c.question + ' ' + c.answer).join(' ')}`.toLowerCase();
+                    return searchText.includes(query);
+                });
+            }
+            
+            renderDecks();
+        }
+
+        // ============== VIEW OPTIONS ==============
+        function setView(view) {
+            currentView = view;
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.view === view);
+            });
+            
+            const grid = document.getElementById('decks-grid');
+            if (grid) {
+                grid.classList.toggle('list-view', view === 'list');
+            }
+        }
+
+        // ============== STATS ==============
+        function updateStats() {
+            document.getElementById('total-decks').textContent = allDecks.length;
+            document.getElementById('total-cards').textContent = allDecks.reduce((sum, d) => sum + d.cardCount, 0);
+            
+            const allTags = new Set();
+            allDecks.forEach(d => d.tags.forEach(t => allTags.add(t)));
+            document.getElementById('total-categories').textContent = allTags.size;
+        }
+
+        // ============== FEATURED ==============
+        function showFeatured(deck) {
+            const section = document.getElementById('featured-section');
+            section.style.display = 'block';
+            
+            document.getElementById('featured-title').textContent = deck.title;
+            document.getElementById('featured-description').textContent = deck.description;
+            document.getElementById('featured-cards').textContent = deck.cardCount;
+            document.getElementById('featured-topics').textContent = deck.tags.length;
+            document.getElementById('featured-difficulty').textContent = '★'.repeat(deck.difficulty) + '☆'.repeat(3 - deck.difficulty);
+            
+            // Preview cards
+            if (deck.cards.length >= 3) {
+                document.getElementById('preview-q1').textContent = deck.cards[0].question.substring(0, 80) + '...';
+                document.getElementById('preview-q2').textContent = deck.cards[1].question.substring(0, 80) + '...';
+                document.getElementById('preview-q3').textContent = deck.cards[2].question.substring(0, 80) + '...';
+            }
+            
+            document.getElementById('featured-download').onclick = () => downloadDeck(deck.id);
+            document.getElementById('featured-preview').onclick = () => previewDeck(deck.id);
+        }
+
+        // ============== PREVIEW MODAL ==============
+        function previewDeck(id) {
+            const deck = allDecks.find(d => d.id === id);
+            if (!deck) return;
+            
+            document.getElementById('modal-deck-title').textContent = deck.title;
+            
+            const grid = document.getElementById('modal-cards-grid');
+            grid.innerHTML = deck.cards.slice(0, 20).map(card => `
+                <div class="preview-flashcard">
+                    <div class="preview-flashcard-q">${card.question}</div>
+                    <div class="preview-flashcard-a">${card.answer}</div>
+                </div>
+            `).join('');
+            
+            if (deck.cards.length > 20) {
+                grid.innerHTML += `<div style="text-align: center; padding: 20px; opacity: 0.6;">+ ${deck.cards.length - 20} autres cartes...</div>`;
+            }
+            
+            document.getElementById('modal-download-btn').onclick = () => {
+                downloadDeck(id);
+                closeModal();
+            };
+            
+            document.getElementById('modal-preview').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-preview').classList.remove('active');
+        }
+
+        // Close modal on outside click
+        document.getElementById('modal-preview').addEventListener('click', (e) => {
+            if (e.target.id === 'modal-preview') {
+                closeModal();
+            }
+        });
+
+        // Close modal on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // ============== DOWNLOAD ==============
+        function downloadDeck(id) {
+            const deck = allDecks.find(d => d.id === id);
+            if (!deck) return;
+            
+            // Create download link
+            const a = document.createElement('a');
+            a.href = deck.downloadUrl;
+            a.download = deck.filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            showToast(`📥 Téléchargement de "${deck.title}" lancé !`);
+        }
+
+        // ============== TOAST NOTIFICATIONS ==============
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============== ERROR STATES ==============
+        function showEmptyState() {
+            const container = document.getElementById('decks-container');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <h3 class="empty-title">Aucun deck trouvé</h3>
+                    <p class="empty-text">Le dossier store est vide. Ajoutez vos fichiers CSV pour commencer !</p>
+                </div>
+            `;
+        }
+
+        function showErrorState(message) {
+            const container = document.getElementById('decks-container');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">⚠️</div>
+                    <h3 class="empty-title">Erreur de connexion</h3>
+                    <p class="empty-text">${message}<br><br>Vérifiez que le repository existe et est public.</p>
+                    <button class="deck-btn deck-btn-primary" onclick="loadDecks()" style="margin-top: 20px;">
+                        🔄 Réessayer
+                    </button>
+                </div>
+            `;
+        }
+
+        // ============== INFO MODALS ==============
+        function showInfo() {
+            alert('⚡ DECK STORE v1.0\n\nUne plateforme open-source pour partager et télécharger des decks de flashcards.\n\nDéveloppé avec 💜 pour la communauté.');
+        }
+
+        function showContribute() {
+            alert('➕ Contribuer un deck\n\n1. Créez votre fichier CSV (format: Question,Réponse)\n2. Fork le repository GitHub\n3. Ajoutez votre fichier dans le dossier store/\n4. Créez une Pull Request\n\nMerci pour votre contribution !');
+        }
+    </script>
+</body>
+</html>
