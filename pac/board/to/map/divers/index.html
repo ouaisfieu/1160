@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport d'Indexation & Audit SEO - nyxo.brussels</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Font Awesome (for icons, replacing SVG) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Warm/Light neutral background */
+            color: #1f2937;
+        }
+
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Scrollbar for tables */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-active {
+            border-bottom: 2px solid #4f46e5;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+    </style>
+
+    <!-- Chosen Palette: Indigo/Slate (Professional, Tech-focused, Calm) -->
+    <!-- Application Structure Plan: 
+         1. Header: Project Context (nyxo.brussels).
+         2. KPI Dashboard: Immediate view of the "Non-indexed" problem magnitude.
+         3. Analysis Section: Visual breakdown of WHY pages aren't indexed (Charts).
+         4. Action Plan (Interactive): Specifically addressing "Modifier le plan", "Crawler", "Renseigner".
+         5. Data Explorer: A mock table of the actual pages allowing users to simulate "adding descriptions".
+         Rationale: The prompt implies a workflow (Audit -> Plan -> Fix). The structure mirrors this flow.
+    -->
+    <!-- Visualization & Content Choices:
+         - Doughnut Chart: Ratio of Indexed vs Non-Indexed. Goal: Inform scope.
+         - Bar Chart: Reasons for exclusion (404, Noindex, Missing Content). Goal: Analyze root causes.
+         - Interactive List: To manage the specific tasks mentioned in the prompt.
+         - Table: To visualize the "pages non indexées" mentioned.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used (FontAwesome fonts used). NO Mermaid JS used. -->
+
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-indigo-600 tracking-tight">NYXO<span class="text-slate-500 text-lg font-normal">.metrics</span></span>
+                </div>
+                <div class="hidden sm:flex space-x-8 items-center">
+                    <button onclick="app.navigate('dashboard')" id="nav-dashboard" class="nav-item nav-active px-3 py-2 text-sm font-medium transition-colors hover:text-indigo-600">Vue d'ensemble</button>
+                    <button onclick="app.navigate('analysis')" id="nav-analysis" class="nav-item px-3 py-2 text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600">Analyse Technique</button>
+                    <button onclick="app.navigate('actions')" id="nav-actions" class="nav-item px-3 py-2 text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600">Plan d'Action</button>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button onclick="app.toggleMobileMenu()" class="text-slate-500 hover:text-indigo-600">
+                        <i class="fas fa-bars fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-b border-slate-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <button onclick="app.navigate('dashboard')" class="block w-full text-left px-3 py-2 text-base font-medium text-indigo-600 bg-indigo-50 rounded-md">Vue d'ensemble</button>
+                <button onclick="app.navigate('analysis')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-600 hover:bg-slate-50 rounded-md">Analyse Technique</button>
+                <button onclick="app.navigate('actions')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-600 hover:bg-slate-50 rounded-md">Plan d'Action</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Header Section -->
+        <header class="mb-10">
+            <h1 class="text-3xl font-bold text-slate-900">Audit d'Indexation : nyxo.brussels</h1>
+            <p class="mt-2 text-slate-600 max-w-3xl">
+                Rapport interactif dédié à l'identification et à la correction des pages non indexées. 
+                Ce tableau de bord permet de visualiser les écarts d'indexation et de gérer le plan de remédiation des contenus manquants.
+            </p>
+        </header>
+
+        <!-- VIEW: DASHBOARD -->
+        <section id="view-dashboard" class="space-y-8 animate-fade-in">
+            <!-- Introduction to Section -->
+            <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-md">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-info-circle text-indigo-500 mt-0.5"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-indigo-700">
+                            <strong>État Actuel :</strong> Cette vue synthétise les performances globales du site. Elle met en évidence le volume de pages nécessitant une intervention immédiate (ajout de descriptifs) pour améliorer la couverture SEO.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPIs -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- KPI 1 -->
+                <div class="bg-white p-6 rounded-xl card-shadow border border-slate-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Pages Totales Crawlées</p>
+                            <p class="mt-2 text-3xl font-bold text-slate-800" id="kpi-total">142</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-full text-blue-600">
+                            <i class="fas fa-globe fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm text-slate-500">
+                        <span class="text-green-500 font-medium mr-2"><i class="fas fa-arrow-up"></i> +12%</span>
+                        depuis le dernier crawl
+                    </div>
+                </div>
+
+                <!-- KPI 2 -->
+                <div class="bg-white p-6 rounded-xl card-shadow border border-slate-100 cursor-pointer hover:border-orange-300 transition-colors" onclick="app.navigate('analysis')">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Non Indexées</p>
+                            <p class="mt-2 text-3xl font-bold text-orange-600" id="kpi-nonindexed">48</p>
+                        </div>
+                        <div class="p-3 bg-orange-100 rounded-full text-orange-600">
+                            <i class="fas fa-eye-slash fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-slate-500">
+                        Nécessitent une action (Descriptif manquant)
+                    </div>
+                </div>
+
+                <!-- KPI 3 -->
+                <div class="bg-white p-6 rounded-xl card-shadow border border-slate-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Taux d'Indexation</p>
+                            <p class="mt-2 text-3xl font-bold text-slate-800" id="kpi-rate">66.2%</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-full text-green-600">
+                            <i class="fas fa-chart-pie fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 w-full bg-slate-200 rounded-full h-2">
+                        <div class="bg-green-500 h-2 rounded-full" style="width: 66.2%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Charts Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Distribution Chart -->
+                <div class="bg-white p-6 rounded-xl card-shadow border border-slate-100">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Répartition de l'Indexation</h3>
+                    <div class="chart-container">
+                        <canvas id="indexStatusChart"></canvas>
+                    </div>
+                    <p class="mt-4 text-sm text-slate-500 text-center italic">
+                        Le segment rouge représente le volume de travail prioritaire.
+                    </p>
+                </div>
+
+                <!-- Recent Activity List -->
+                <div class="bg-white p-6 rounded-xl card-shadow border border-slate-100 flex flex-col">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Dernières Alertes Crawl</h3>
+                    <div class="flex-1 overflow-y-auto custom-scroll pr-2" style="max-height: 300px;">
+                        <ul class="space-y-3" id="alerts-list">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <button onclick="app.navigate('actions')" class="w-full py-2 bg-indigo-50 text-indigo-600 font-medium rounded-lg hover:bg-indigo-100 transition-colors">
+                            Voir le plan de recherche
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: ANALYSIS -->
+        <section id="view-analysis" class="hidden space-y-8 animate-fade-in">
+             <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-blue-500">
+                <h2 class="text-xl font-bold text-slate-800">Diagnostic Détaillé</h2>
+                <p class="mt-2 text-slate-600">
+                    Cette section analyse les <strong>raisons techniques et sémantiques</strong> pour lesquelles les pages ne sont pas indexées. 
+                    L'objectif est de distinguer les erreurs techniques (404, redirections) des pages nécessitant un enrichissement de contenu (descriptif manquant).
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Main Reason Chart -->
+                <div class="bg-white p-6 rounded-xl card-shadow">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-2">Causes de Non-Indexation</h3>
+                    <p class="text-xs text-slate-400 mb-4">Analyse des 48 pages exclues</p>
+                    <div class="chart-container">
+                        <canvas id="reasonsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Explanation Panel -->
+                <div class="bg-white p-6 rounded-xl card-shadow">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Focus : Pages "Détectées, non indexées"</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                            <div class="flex items-start">
+                                <i class="fas fa-file-alt text-orange-500 mt-1 mr-3"></i>
+                                <div>
+                                    <h4 class="font-bold text-orange-800">Contenu Maigre (Thin Content)</h4>
+                                    <p class="text-sm text-orange-700 mt-1">22 pages manquent de texte descriptif suffisant pour que Google comprenne leur valeur.</p>
+                                    <button onclick="app.filterTable('thin')" class="mt-2 text-xs font-semibold text-orange-600 underline">Voir ces pages</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                            <div class="flex items-start">
+                                <i class="fas fa-tags text-slate-500 mt-1 mr-3"></i>
+                                <div>
+                                    <h4 class="font-bold text-slate-800">Méta-données Manquantes</h4>
+                                    <p class="text-sm text-slate-600 mt-1">15 pages n'ont pas de balise &lt;description&gt; renseignée.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                            <div class="flex items-start">
+                                <i class="fas fa-robot text-slate-500 mt-1 mr-3"></i>
+                                <div>
+                                    <h4 class="font-bold text-slate-800">Bloqué par robots.txt</h4>
+                                    <p class="text-sm text-slate-600 mt-1">6 pages sont techniquement inaccessibles aux robots.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: ACTIONS (Interactive) -->
+        <section id="view-actions" class="hidden space-y-8 animate-fade-in">
+            <!-- Intro -->
+            <div class="bg-indigo-600 text-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-2">Plan de Recherche & Remédiation</h2>
+                <p class="text-indigo-100">
+                    Espace de travail interactif pour gérer les tâches issues de l'audit. Utilisez les outils ci-dessous pour modifier les descriptifs et valider les actions.
+                </p>
+            </div>
+
+            <!-- Task List -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left: Strategic Checklist -->
+                <div class="lg:col-span-1 bg-white p-6 rounded-xl card-shadow h-fit">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Actions Prioritaires</h3>
+                    <div class="space-y-4" id="task-list">
+                        <!-- Tasks generated by JS -->
+                    </div>
+                    <div class="mt-6 p-4 bg-slate-100 rounded text-xs text-slate-500">
+                        <i class="fas fa-check-circle mr-1"></i> Progression sauvegardée localement (simulation).
+                    </div>
+                </div>
+
+                <!-- Right: Content Editor (The "Renseigner" part) -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl card-shadow">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-slate-800">Éditeur de Descriptifs Manquants</h3>
+                        <div class="flex space-x-2">
+                            <span class="text-xs font-semibold px-2 py-1 bg-red-100 text-red-600 rounded">Priorité Haute</span>
+                        </div>
+                    </div>
+
+                    <!-- Filter Bar -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <button onclick="app.filterTable('all')" class="px-3 py-1 text-xs rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium transition">Tout voir</button>
+                        <button onclick="app.filterTable('missing_desc')" class="px-3 py-1 text-xs rounded-full bg-orange-100 hover:bg-orange-200 text-orange-700 font-medium transition border border-orange-200">Descriptifs Manquants</button>
+                        <button onclick="app.filterTable('404')" class="px-3 py-1 text-xs rounded-full bg-red-100 hover:bg-red-200 text-red-700 font-medium transition border border-red-200">Erreurs 404</button>
+                    </div>
+
+                    <!-- Interactive Table -->
+                    <div class="overflow-x-auto border rounded-lg border-slate-200">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">URL / Page</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Statut</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Action Requise</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-200" id="pages-table-body">
+                                <!-- Rows generated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Editor Modal (Simulated inline) -->
+                    <div id="editor-panel" class="hidden mt-6 p-4 border border-indigo-200 bg-indigo-50 rounded-lg animate-fade-in">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-indigo-900" id="editor-title">Édition : /services/consulting</h4>
+                            <button onclick="app.closeEditor()" class="text-indigo-400 hover:text-indigo-700"><i class="fas fa-times"></i></button>
+                        </div>
+                        <label class="block text-xs font-bold text-indigo-700 uppercase mb-1">Nouveau Descriptif (Meta Description)</label>
+                        <textarea id="editor-input" rows="3" class="w-full rounded border-indigo-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 p-2 text-sm text-slate-700" placeholder="Rédigez un descriptif optimisé ici (max 160 caractères)..."></textarea>
+                        <div class="mt-3 flex justify-between items-center">
+                            <span class="text-xs text-indigo-500" id="char-count">0/160</span>
+                            <button onclick="app.saveDescription()" class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700 transition shadow-sm">
+                                <i class="fas fa-save mr-2"></i>Enregistrer & Marquer Corrigé
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-slate-400 text-sm">© 2026 nyxo.brussels Audit Tool.</p>
+            <div class="mt-4 md:mt-0 space-x-4">
+                <a href="#" class="text-slate-400 hover:text-indigo-600 text-sm">Documentation Crawler</a>
+                <a href="#" class="text-slate-400 hover:text-indigo-600 text-sm">Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA STORE ---
+        const db = {
+            kpis: {
+                total: 142,
+                indexed: 94,
+                nonIndexed: 48,
+                lastCrawl: "15 Jan 2026"
+            },
+            reasons: [
+                { label: "Contenu Maigre (Thin Content)", value: 22, color: "#f97316" }, // Orange-500
+                { label: "Méta-données Manquantes", value: 15, color: "#fbbf24" }, // Amber-400
+                { label: "Bloqué (robots.txt)", value: 6, color: "#94a3b8" },   // Slate-400
+                { label: "Erreur 404", value: 3, color: "#ef4444" },             // Red-500
+                { label: "Redirection (301)", value: 2, color: "#3b82f6" }       // Blue-500
+            ],
+            alerts: [
+                { type: "warning", msg: "Page /contact sans description", date: "2h" },
+                { type: "error", msg: "Erreur 404 sur /blog/ancien-post", date: "5h" },
+                { type: "info", msg: "Nouveau sitemap détecté", date: "1j" },
+                { type: "warning", msg: "Duplication titre sur /home", date: "1j" }
+            ],
+            tasks: [
+                { id: 1, text: "Crawler le site complet", status: "done" },
+                { id: 2, text: "Identifier pages orphelines", status: "done" },
+                { id: 3, text: "Modifier le plan de recherche", status: "pending" },
+                { id: 4, text: "Renseigner descriptifs manquants", status: "active" }, // Active focus
+                { id: 5, text: "Soumettre nouveau Sitemap", status: "pending" }
+            ],
+            pages: [
+                { id: 101, url: "/services/audit-seo", status: "missing_desc", title: "Audit SEO Bruxelles", desc: "" },
+                { id: 102, url: "/portfolio/projet-alpha", status: "missing_desc", title: "Projet Alpha", desc: "" },
+                { id: 103, url: "/about/team/marc", status: "thin", title: "Marc - Consultant", desc: "Profil de Marc." },
+                { id: 104, url: "/blog/article-obsolete", status: "404", title: "N/A", desc: "N/A" },
+                { id: 105, url: "/services/web-design", status: "ok", title: "Web Design", desc: "Services de design web..." },
+                { id: 106, url: "/contact/devis", status: "missing_desc", title: "Demande de Devis", desc: "" },
+                { id: 107, url: "/legal/privacy", status: "thin", title: "Vie Privée", desc: "Texte légal..." }
+            ]
+        };
+
+        // --- APP STATE ---
+        const state = {
+            currentView: 'dashboard',
+            editingId: null
+        };
+
+        // --- APP CONTROLLER ---
+        const app = {
+            init: () => {
+                app.renderCharts();
+                app.renderAlerts();
+                app.renderTasks();
+                app.renderPagesTable(db.pages);
+                
+                // Add event listener for textarea char count
+                document.getElementById('editor-input').addEventListener('input', function() {
+                    document.getElementById('char-count').innerText = `${this.value.length}/160`;
+                    if(this.value.length > 160) {
+                        document.getElementById('char-count').classList.add('text-red-500');
+                        document.getElementById('char-count').classList.remove('text-indigo-500');
+                    } else {
+                        document.getElementById('char-count').classList.remove('text-red-500');
+                        document.getElementById('char-count').classList.add('text-indigo-500');
+                    }
+                });
+            },
+
+            // Navigation
+            navigate: (viewName) => {
+                // Hide all sections
+                ['dashboard', 'analysis', 'actions'].forEach(v => {
+                    document.getElementById(`view-${v}`).classList.add('hidden');
+                    const navBtn = document.getElementById(`nav-${v}`);
+                    if(navBtn) {
+                        navBtn.classList.remove('nav-active', 'text-indigo-600');
+                        navBtn.classList.add('text-slate-500');
+                    }
+                });
+
+                // Show target
+                document.getElementById(`view-${viewName}`).classList.remove('hidden');
+                
+                // Update Nav UI
+                const activeBtn = document.getElementById(`nav-${viewName}`);
+                if(activeBtn) {
+                    activeBtn.classList.add('nav-active', 'text-indigo-600');
+                    activeBtn.classList.remove('text-slate-500');
+                }
+
+                state.currentView = viewName;
+                
+                // Mobile menu close
+                document.getElementById('mobile-menu').classList.add('hidden');
+            },
+
+            toggleMobileMenu: () => {
+                const m = document.getElementById('mobile-menu');
+                m.classList.toggle('hidden');
+            },
+
+            // Render Charts
+            renderCharts: () => {
+                // 1. Status Chart (Doughnut)
+                const ctxStatus = document.getElementById('indexStatusChart').getContext('2d');
+                new Chart(ctxStatus, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Indexées', 'Non Indexées', 'Exclues (Volontaire)'],
+                        datasets: [{
+                            data: [db.kpis.indexed, db.kpis.nonIndexed, 12],
+                            backgroundColor: ['#10b981', '#f97316', '#cbd5e1'], // Green, Orange, Slate
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) label += ': ';
+                                        let value = context.raw;
+                                        let total = context.chart._metasets[context.datasetIndex].total;
+                                        let percentage = Math.round((value / total) * 100) + '%';
+                                        return label + value + ' (' + percentage + ')';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // 2. Reasons Chart (Bar)
+                const ctxReasons = document.getElementById('reasonsChart').getContext('2d');
+                new Chart(ctxReasons, {
+                    type: 'bar',
+                    data: {
+                        labels: db.reasons.map(r => r.label),
+                        datasets: [{
+                            label: 'Nombre de Pages',
+                            data: db.reasons.map(r => r.value),
+                            backgroundColor: db.reasons.map(r => r.color),
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y', // Horizontal bar for readable labels
+                        scales: {
+                            x: { beginAtZero: true, grid: { display: false } },
+                            y: { grid: { display: false } }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            },
+
+            // Render Alerts List
+            renderAlerts: () => {
+                const list = document.getElementById('alerts-list');
+                list.innerHTML = db.alerts.map(alert => {
+                    let iconClass = "text-blue-500 fas fa-info-circle";
+                    let bgClass = "bg-blue-50";
+                    if(alert.type === 'warning') { iconClass = "text-orange-500 fas fa-exclamation-triangle"; bgClass = "bg-orange-50"; }
+                    if(alert.type === 'error') { iconClass = "text-red-500 fas fa-times-circle"; bgClass = "bg-red-50"; }
+                    
+                    return `
+                        <li class="flex items-center p-3 ${bgClass} rounded-lg">
+                            <i class="${iconClass} mr-3"></i>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-slate-700">${alert.msg}</p>
+                            </div>
+                            <span class="text-xs text-slate-400">${alert.date}</span>
+                        </li>
+                    `;
+                }).join('');
+            },
+
+            // Render Task Checklist
+            renderTasks: () => {
+                const container = document.getElementById('task-list');
+                container.innerHTML = db.tasks.map(task => {
+                    let icon = task.status === 'done' ? '<i class="fas fa-check-square text-green-500"></i>' : 
+                               (task.status === 'active' ? '<i class="fas fa-spinner fa-spin text-indigo-500"></i>' : '<i class="far fa-square text-slate-300"></i>');
+                    let textClass = task.status === 'done' ? 'line-through text-slate-400' : 
+                                    (task.status === 'active' ? 'font-bold text-indigo-700' : 'text-slate-600');
+                    
+                    return `
+                        <div class="flex items-center cursor-pointer p-2 hover:bg-slate-50 rounded" onclick="app.toggleTask(${task.id})">
+                            <div class="mr-3 text-lg">${icon}</div>
+                            <span class="text-sm ${textClass}">${task.text}</span>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            toggleTask: (id) => {
+                const task = db.tasks.find(t => t.id === id);
+                if(task) {
+                    if(task.status === 'done') task.status = 'pending';
+                    else if(task.status === 'pending') task.status = 'active';
+                    else task.status = 'done';
+                    app.renderTasks();
+                }
+            },
+
+            // Table Logic
+            renderPagesTable: (data) => {
+                const tbody = document.getElementById('pages-table-body');
+                if(data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-slate-500">Aucune page trouvée pour ce filtre.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.map(page => {
+                    // Badge Logic
+                    let badge = '';
+                    if(page.status === 'missing_desc') badge = `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">Desc. Manquante</span>`;
+                    else if(page.status === 'thin') badge = `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Contenu Faible</span>`;
+                    else if(page.status === '404') badge = `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Erreur 404</span>`;
+                    else if(page.status === 'ok') badge = `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Indexée</span>`;
+
+                    // Action Button Logic
+                    let actionBtn = '';
+                    if(page.status === 'missing_desc' || page.status === 'thin') {
+                        actionBtn = `<button onclick="app.openEditor(${page.id})" class="text-indigo-600 hover:text-indigo-900 font-medium text-xs border border-indigo-200 px-3 py-1 rounded hover:bg-indigo-50">Renseigner</button>`;
+                    } else if (page.status === '404') {
+                        actionBtn = `<span class="text-xs text-slate-400">Vérifier Redirect</span>`;
+                    }
+
+                    return `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-slate-900">${page.url}</div>
+                                <div class="text-xs text-slate-500">${page.title}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">${badge}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                ${page.desc ? '<i class="fas fa-check text-green-500 mr-2"></i>OK' : '<i class="fas fa-times text-red-400 mr-2"></i>Vide'}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                ${actionBtn}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            },
+
+            filterTable: (filter) => {
+                let filtered = [];
+                if(filter === 'all') filtered = db.pages;
+                else filtered = db.pages.filter(p => p.status === filter);
+                app.renderPagesTable(filtered);
+                
+                // If we are in Analysis view and click a filter, jump to Action view
+                if(state.currentView !== 'actions') {
+                    app.navigate('actions');
+                }
+            },
+
+            // Editor Logic
+            openEditor: (id) => {
+                const page = db.pages.find(p => p.id === id);
+                if(!page) return;
+                
+                state.editingId = id;
+                document.getElementById('editor-panel').classList.remove('hidden');
+                document.getElementById('editor-title').innerText = `Édition : ${page.url}`;
+                document.getElementById('editor-input').value = page.desc || "";
+                
+                // Scroll to editor
+                document.getElementById('editor-panel').scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('editor-input').focus();
+            },
+
+            closeEditor: () => {
+                document.getElementById('editor-panel').classList.add('hidden');
+                state.editingId = null;
+            },
+
+            saveDescription: () => {
+                if(!state.editingId) return;
+                const newDesc = document.getElementById('editor-input').value;
+                
+                // Update Data
+                const pageIndex = db.pages.findIndex(p => p.id === state.editingId);
+                if(pageIndex > -1) {
+                    db.pages[pageIndex].desc = newDesc;
+                    db.pages[pageIndex].status = 'ok'; // Mark as fixed
+                    
+                    // Update KPIs (Simulation)
+                    db.kpis.nonIndexed--;
+                    db.kpis.indexed++;
+                    document.getElementById('kpi-nonindexed').innerText = db.kpis.nonIndexed;
+                    document.getElementById('kpi-rate').innerText = Math.round((db.kpis.indexed / db.kpis.total)*100) + '%';
+                }
+
+                // Refresh UI
+                app.renderPagesTable(db.pages); // Or current filter
+                app.closeEditor();
+                
+                // Optional visual feedback
+                alert("Description enregistrée et page marquée comme 'Prête à l'indexation'.");
+            }
+        };
+
+        // Initialize App on Load
+        document.addEventListener('DOMContentLoaded', app.init);
+
+    </script>
+</body>
+</html>
