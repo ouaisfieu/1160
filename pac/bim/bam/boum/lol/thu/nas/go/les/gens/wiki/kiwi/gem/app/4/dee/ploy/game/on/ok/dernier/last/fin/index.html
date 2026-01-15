@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiDeborsu - Le Champion du Peuple</title>
+    <style>
+        :root {
+            --rtl-orange: #e1001a;
+            --wiki-grey: #f8f9fa;
+            --border: #a2a9b1;
+            --link: #3366cc;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #202122;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER WIKI STYLE --- */
+        .wiki-header {
+            border-bottom: 1px solid #a2a9b1;
+            padding: 10px 20px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+        }
+        .wiki-logo {
+            font-family: 'Times New Roman', serif;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+
+        /* --- CONTENT LAYOUT --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        @media(max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            border-bottom: 1px solid #a2a9b1;
+            padding-bottom: 10px;
+            font-size: 2rem;
+            margin-top: 0;
+        }
+        
+        p { line-height: 1.6; margin-bottom: 15px; }
+
+        /* --- HASHTAGS FOUS --- */
+        .tags-container {
+            margin: 10px 0;
+            line-height: 2;
+        }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-right: 5px;
+            color: white;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+            animation: wiggly 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes wiggly {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(2deg); }
+            75% { transform: rotate(-2deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* --- INFOBOX (La fiche technique) --- */
+        .infobox {
+            background: var(--wiki-grey);
+            border: 1px solid var(--border);
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+        .infobox-title {
+            background: #bfd7ff; /* Bleu roi belge */
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: -15px -15px 15px -15px;
+        }
+        .infobox-image {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            font-size: 3rem;
+        }
+        .infobox-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            border-bottom: 1px dotted #ccc;
+            padding-bottom: 4px;
+        }
+        .infobox-label { font-weight: bold; }
+
+        /* --- ALERTEZ-NOUS BUTTON --- */
+        .alertez-nous-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--rtl-orange);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 20px rgba(225, 0, 26, 0.6);
+            border: 4px solid white;
+            cursor: pointer;
+            z-index: 9999;
+            text-transform: uppercase;
+            animation: pulse 1.5s infinite;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alertez-nous-btn::before {
+            content: '⚠️';
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- POPUP VIRAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        .modal-content {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            max-width: 500px;
+            border: 5px solid var(--rtl-orange);
+        }
+        .flash-news {
+            background: var(--rtl-orange);
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            display: inline-block;
+            margin-bottom: 20px;
+            transform: rotate(-2deg);
+        }
+
+        /* --- Highlight Text --- */
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="wiki-header">
+        <div class="wiki-logo">🥔 WikiDeborsu</div>
+        <input type="text" placeholder="Rechercher un micro-trottoir..." style="padding: 5px; border: 1px solid #ccc;">
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <h1>Christophe Deborsu (Le GOAT)</h1>
+            <div style="font-size: 0.9em; color: grey;">De WikiDeborsu, l'encyclopédie libre des gens qui se lèvent tard le dimanche.</div>
+            
+            <div class="tags-container" id="hashtagZone">
+                <span class="tag">#champion</span>
+                <span class="tag">#bim</span>
+                <span class="tag">#lorem</span>
+                <span class="tag">#ipsum</span>
+                <span class="tag">#foo</span>
+                <span class="tag">#bar</span>
+                <span class="tag">#culx</span>
+                <span class="tag">#CestPasTousLesJoursDimanche</span>
+                <span class="tag">#RoiDuMicro</span>
+                <span class="tag">#CPAS_Power</span>
+            </div>
+
+            <p><b>Christophe "The Voice" Deborsu</b> est un journaliste, présentateur, et divinité vivante du paysage audiovisuel belge. Reconnu comme le <b>Saint Patron des BIM</b> (Bénéficiaires de l'Intervention Majorée), il est la seule raison pour laquelle la Belgique se réveille le dimanche midi.</p>
+
+            <p>Capable de switcher entre le français, le néerlandais et le "wallon profond" en moins de 0.4 secondes, il est l'idole absolue des CPAS de Wallonie et le cauchemar des politiciens qui n'ont pas bu leur café.</p>
+
+            <h2>1. Biographie Légendaire</h2>
+            <p>Né avec un micro dans une main et une frite dans l'autre, Christophe a rapidement compris que sa mission sur Terre était de poser les questions qui fâchent avec un sourire qui rassure. <span class="highlight">Il ne porte pas de cravate, c'est la cravate qui le porte.</span></p>
+            <p>Selon la prophétie #lorem #ipsum, il unifiera un jour la Wallonie et la Flandre grâce à un jeu de mot bilingue incompréhensible mais hilarant.</p>
+
+            <h2>2. Impact sur les Allocations & le Chômage</h2>
+            <p>Son émission dominicale est officiellement reconnue comme "Service d'Utilité Publique" par le syndicat des chômeurs professionnels. C'est le seul moment de la semaine où :</p>
+            <ul>
+                <li>Les #foo et les #bar se réconcilient.</li>
+                <li>Le taux d'audience dépasse le taux de chômage à Charleroi.</li>
+                <li>Les débats volent plus haut qu'un #culx de jatte dans un trampoline.</li>
+            </ul>
+
+            <h2>3. Le Style "Deborsu"</h2>
+            <p>Un mélange de brio intellectuel et de convivialité de friterie. Il peut citer du Kant tout en mangeant un boulet sauce lapin. C'est ça, la puissance #champion.</p>
+
+        </div>
+
+        <div class="infobox">
+            <div class="infobox-title">Christophe Deborsu</div>
+            <div class="infobox-image">👑🎤🇧🇪</div>
+            
+            <div class="infobox-row">
+                <span class="infobox-label">Surnom</span>
+                <span>Le King de Namur</span>
+            </div>
+            <div class="infobox-row">
+                <span class="infobox-label">Profession</span>
+                <span>Sauveur du Dimanche</span>
+            </div>
+            <div class="infobox-row">
+                <span class="infobox-label">Taille</span>
+                <span>Plus grand que la crise</span>
+            </div>
+            <div class="infobox-row">
+                <span class="infobox-label">Poids</span>
+                <span>Lourd (médiatiquement)</span>
+            </div>
+            <div class="infobox-row">
+                <span class="infobox-label">Fans</span>
+                <span>100% des BIM</span>
+            </div>
+            <div class="infobox-row">
+                <span class="infobox-label">Super-pouvoir</span>
+                <span>Parle flamand sans pleurer</span>
+            </div>
+            <div class="infobox-row">
+                <span class="infobox-label">Signe Astro</span>
+                <span>Microphone Ascendant Audience</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="alertez-nous-btn" onclick="triggerAlert()">
+        ALERTEZ-NOUS !
+    </div>
+
+    <div class="modal-overlay" id="alertModal">
+        <div class="modal-content">
+            <div class="flash-news">FLASH INFO SPECIAL</div>
+            <h2>MERCI DE VOTRE ALERTE !</h2>
+            <p>Votre message a été envoyé directement sur le smartphone de Christophe !</p>
+            <p style="font-size: 1.2em; font-weight: bold; color: var(--rtl-orange);">
+                "On va en parler dimanche, c'est promis !"
+            </p>
+            <hr>
+            <p>Statut : <span style="color:green">Validé par le CPAS</span></p>
+            <button onclick="closeAlert()" style="padding: 10px 20px; background: #333; color: white; border: none; cursor: pointer;">Retour au Culte</button>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIC FOR COLORFUL HASHTAGS ---
+        const tags = document.querySelectorAll('.tag');
+        const colors = ['#FF0000', '#FF7F00', '#e1001a', '#00FF00', '#0000FF', '#4B0082', '#9400D3', '#FF1493', '#00CED1'];
+
+        tags.forEach(tag => {
+            // Random color assignment
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            tag.style.backgroundColor = randomColor;
+            
+            // Random rotation on hover (extra chaotic)
+            tag.addEventListener('mouseover', () => {
+                tag.style.transform = `scale(1.2) rotate(${Math.random() * 20 - 10}deg)`;
+            });
+            tag.addEventListener('mouseout', () => {
+                tag.style.transform = 'scale(1) rotate(0deg)';
+            });
+        });
+
+        // --- ALERTEZ NOUS LOGIC ---
+        function triggerAlert() {
+            const modal = document.getElementById('alertModal');
+            modal.style.display = 'flex';
+            
+            // Shake effect on body
+            document.body.style.animation = "shake 0.5s";
+            setTimeout(() => { document.body.style.animation = ""; }, 500);
+        }
+
+        function closeAlert() {
+            document.getElementById('alertModal').style.display = 'none';
+        }
+
+        // Add shake animation style dynamically
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `
+            @keyframes shake {
+                0% { transform: translate(1px, 1px) rotate(0deg); }
+                10% { transform: translate(-1px, -2px) rotate(-1deg); }
+                20% { transform: translate(-3px, 0px) rotate(1deg); }
+                30% { transform: translate(3px, 2px) rotate(0deg); }
+                40% { transform: translate(1px, -1px) rotate(1deg); }
+                50% { transform: translate(-1px, 2px) rotate(-1deg); }
+                60% { transform: translate(-3px, 1px) rotate(0deg); }
+                70% { transform: translate(3px, 1px) rotate(-1deg); }
+                80% { transform: translate(-1px, -1px) rotate(1deg); }
+                90% { transform: translate(1px, 2px) rotate(0deg); }
+                100% { transform: translate(1px, -2px) rotate(-1deg); }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+    </script>
+</body>
+</html>
