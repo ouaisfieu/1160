@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jean-Michel TERRAIN | Le Champion du Peuple 🏆</title>
+    <meta name="description" content="Fan Club Officiel du Plus Grand Journaliste de Terrain de Tous les Temps">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rtl-red: #E30613;
+            --rtl-blue: #003B73;
+            --gold: #FFD700;
+            --neon-pink: #FF1493;
+            --neon-green: #39FF14;
+            --neon-cyan: #00FFFF;
+            --neon-orange: #FF6600;
+            --purple: #9B59B6;
+            --champion-gradient: linear-gradient(135deg, #FFD700, #FFA500, #FF6347);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* BREAKING NEWS BANNER */
+        .breaking-banner {
+            background: var(--rtl-red);
+            color: white;
+            padding: 0.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .breaking-content {
+            display: flex;
+            animation: scroll-left 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        .breaking-content span {
+            padding: 0 3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* HEADER RTL STYLE */
+        .header {
+            background: linear-gradient(180deg, var(--rtl-blue) 0%, #001f3f 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .logo {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 3px 3px 0 var(--rtl-red);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            background: var(--rtl-red);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            animation: pulse-logo 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-logo {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* ALERT BUTTON */
+        .alert-btn {
+            background: var(--rtl-red);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: shake 0.5s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(227, 6, 19, 0.5);
+            transition: all 0.3s;
+        }
+
+        .alert-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(227, 6, 19, 0.7);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        .alert-btn .icon {
+            font-size: 1.5rem;
+            animation: ring 1s ease-in-out infinite;
+        }
+
+        @keyframes ring {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-20deg); }
+        }
+
+        /* HERO CHAMPION */
+        .hero {
+            background: var(--champion-gradient);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '🏆 CHAMPION 🏆';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 15rem;
+            opacity: 0.1;
+            font-family: 'Bangers', cursive;
+            white-space: nowrap;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .champion-badge {
+            display: inline-block;
+            background: var(--rtl-red);
+            color: white;
+            padding: 0.5rem 2rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            border-radius: 50px;
+            margin-bottom: 1rem;
+            animation: glow-badge 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow-badge {
+            0% { box-shadow: 0 0 10px var(--rtl-red); }
+            100% { box-shadow: 0 0 30px var(--rtl-red), 0 0 60px var(--rtl-red); }
+        }
+
+        .hero-title {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(3rem, 10vw, 7rem);
+            color: white;
+            text-shadow: 
+                4px 4px 0 var(--rtl-blue),
+                8px 8px 0 rgba(0,0,0,0.2);
+            line-height: 1;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-subtitle {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.5rem;
+            color: var(--rtl-blue);
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* PHOTO SECTION */
+        .photo-section {
+            display: flex;
+            justify-content: center;
+            margin: -3rem auto 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .photo-frame {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--gold), var(--neon-orange), var(--rtl-red), var(--neon-pink));
+            padding: 8px;
+            animation: rotate-border 3s linear infinite;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        @keyframes rotate-border {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .photo-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* HASHTAGS EXPLOSION */
+        .hashtags-container {
+            background: white;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1000px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .hashtag {
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: bounce-in 0.5s ease-out both;
+            text-transform: uppercase;
+        }
+
+        .hashtag:hover {
+            transform: scale(1.2) rotate(-5deg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .hashtag:nth-child(1) { background: var(--rtl-red); color: white; animation-delay: 0.1s; }
+        .hashtag:nth-child(2) { background: var(--neon-green); color: black; animation-delay: 0.15s; }
+        .hashtag:nth-child(3) { background: var(--neon-pink); color: white; animation-delay: 0.2s; }
+        .hashtag:nth-child(4) { background: var(--gold); color: black; animation-delay: 0.25s; }
+        .hashtag:nth-child(5) { background: var(--neon-cyan); color: black; animation-delay: 0.3s; }
+        .hashtag:nth-child(6) { background: var(--purple); color: white; animation-delay: 0.35s; }
+        .hashtag:nth-child(7) { background: var(--neon-orange); color: white; animation-delay: 0.4s; }
+        .hashtag:nth-child(8) { background: var(--rtl-blue); color: white; animation-delay: 0.45s; }
+        .hashtag:nth-child(9) { background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); color: white; animation-delay: 0.5s; text-shadow: 1px 1px 2px black; }
+        .hashtag:nth-child(10) { background: black; color: var(--neon-green); border: 3px solid var(--neon-green); animation-delay: 0.55s; }
+
+        @keyframes bounce-in {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            60% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+
+        /* WIKIPEDIA STYLE CONTENT */
+        .wiki-content {
+            max-width: 900px;
+            margin: 2rem auto;
+            background: white;
+            border: 1px solid #a2a9b1;
+            padding: 2rem;
+        }
+
+        .wiki-header {
+            border-bottom: 1px solid #a2a9b1;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wiki-title {
+            font-family: 'Linux Libertine', Georgia, serif;
+            font-size: 2rem;
+            font-weight: normal;
+        }
+
+        .wiki-edit {
+            font-size: 0.8rem;
+            color: #0645ad;
+            cursor: pointer;
+        }
+
+        .wiki-infobox {
+            float: right;
+            width: 300px;
+            margin: 0 0 1rem 1.5rem;
+            border: 1px solid #a2a9b1;
+            background: #f8f9fa;
+            font-size: 0.9rem;
+        }
+
+        .infobox-header {
+            background: var(--rtl-red);
+            color: white;
+            padding: 0.75rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .infobox-image {
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--gold), var(--neon-orange));
+            font-size: 6rem;
+        }
+
+        .infobox-row {
+            display: flex;
+            border-bottom: 1px solid #a2a9b1;
+        }
+
+        .infobox-row:last-child {
+            border-bottom: none;
+        }
+
+        .infobox-label {
+            background: #eaecf0;
+            padding: 0.5rem;
+            width: 40%;
+            font-weight: 500;
+        }
+
+        .infobox-value {
+            padding: 0.5rem;
+            width: 60%;
+        }
+
+        .wiki-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .wiki-section-title {
+            font-family: 'Linux Libertine', Georgia, serif;
+            font-size: 1.4rem;
+            border-bottom: 1px solid #a2a9b1;
+            padding-bottom: 0.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .wiki-section p {
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .wiki-link {
+            color: #0645ad;
+            cursor: pointer;
+        }
+
+        .wiki-link:hover {
+            text-decoration: underline;
+        }
+
+        .wiki-ref {
+            color: #0645ad;
+            font-size: 0.75rem;
+            vertical-align: super;
+            cursor: pointer;
+        }
+
+        .wiki-quote {
+            border-left: 4px solid var(--rtl-red);
+            padding: 1rem;
+            margin: 1rem 0;
+            background: #f8f9fa;
+            font-style: italic;
+        }
+
+        .wiki-quote cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-style: normal;
+            font-weight: 700;
+            color: var(--rtl-red);
+        }
+
+        /* STATS CARDS */
+        .stats-section {
+            background: linear-gradient(135deg, var(--rtl-blue) 0%, #001f3f 100%);
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+        }
+
+        .stats-title {
+            text-align: center;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 0 var(--rtl-red);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--champion-gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) rotate(-2deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: var(--rtl-red);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* CITATIONS CULTES */
+        .citations-section {
+            background: var(--gold);
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .citations-title {
+            text-align: center;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--rtl-blue);
+            margin-bottom: 2rem;
+        }
+
+        .citations-carousel {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            padding: 1rem;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .citation-card {
+            flex: 0 0 350px;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            scroll-snap-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .citation-card::before {
+            content: '"';
+            font-family: Georgia, serif;
+            font-size: 6rem;
+            color: var(--rtl-red);
+            opacity: 0.2;
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            line-height: 1;
+        }
+
+        .citation-text {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .citation-context {
+            font-size: 0.85rem;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+        }
+
+        /* ALERT MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            animation: fade-in 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            overflow: hidden;
+            animation: modal-in 0.4s var(--ease-out-back);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modal-in {
+            from { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+            to { transform: scale(1) rotate(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: var(--rtl-red);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .modal-header h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-body p {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--rtl-blue);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--rtl-red);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.2);
+        }
+
+        .modal-footer {
+            padding: 1rem 2rem 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.primary {
+            background: var(--rtl-red);
+            color: white;
+        }
+
+        .modal-btn.primary:hover {
+            background: #c00;
+            transform: scale(1.05);
+        }
+
+        .modal-btn.secondary {
+            background: #eee;
+            color: #333;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #ddd;
+        }
+
+        /* SUCCESS ANIMATION */
+        .success-animation {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .success-animation.show {
+            display: block;
+            animation: success-bounce 0.5s ease;
+        }
+
+        @keyframes success-bounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-text {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: var(--neon-green);
+        }
+
+        /* FAN COUNTER */
+        .fan-counter {
+            background: linear-gradient(90deg, var(--neon-pink), var(--purple), var(--neon-cyan));
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .fan-counter-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .fan-counter-value {
+            font-family: 'Bangers', cursive;
+            font-size: 4rem;
+            color: white;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+            animation: counter-pulse 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes counter-pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--rtl-blue);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .footer-disclaimer {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.75rem;
+            opacity: 0.5;
+        }
+
+        /* FLOATING ELEMENTS */
+        .floating-emoji {
+            position: fixed;
+            font-size: 2rem;
+            animation: float-around 10s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.8;
+        }
+
+        @keyframes float-around {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, -20px) rotate(10deg); }
+            50% { transform: translate(-10px, 10px) rotate(-5deg); }
+            75% { transform: translate(15px, 15px) rotate(5deg); }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .wiki-infobox {
+                float: none;
+                width: 100%;
+                margin: 0 0 1.5rem 0;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .alert-btn {
+                font-size: 0.9rem;
+                padding: 0.75rem 1.5rem;
+            }
+        }
+
+        /* EASTER EGG */
+        .konami-activated {
+            animation: rainbow-bg 2s linear infinite;
+        }
+
+        @keyframes rainbow-bg {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BREAKING NEWS BANNER -->
+    <div class="breaking-banner">
+        <div class="breaking-content">
+            <span>🔴 BREAKING NEWS</span>
+            <span>🏆 Le Champion du Peuple fait encore parler de lui</span>
+            <span>📺 Audiences record pour le reportage sur les poubelles mal triées</span>
+            <span>🎤 "Vous pouvez répéter la question ?" - Citation de l'année</span>
+            <span>🔴 BREAKING NEWS</span>
+            <span>🏆 Le Champion du Peuple fait encore parler de lui</span>
+            <span>📺 Audiences record pour le reportage sur les poubelles mal triées</span>
+            <span>🎤 "Vous pouvez répéter la question ?" - Citation de l'année</span>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">RTL</span>
+            <span>INFO FANS</span>
+        </div>
+        <button class="alert-btn" onclick="openModal()">
+            <span class="icon">🚨</span>
+            ALERTEZ-NOUS !
+        </button>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <div class="champion-badge">⭐ FAN CLUB OFFICIEL ⭐</div>
+        <h1 class="hero-title">JEAN-MICHEL TERRAIN</h1>
+        <p class="hero-subtitle">Le Journaliste Préféré de Ceux Qui N'ont Pas le Choix 📺</p>
+    </section>
+
+    <!-- PHOTO -->
+    <div class="photo-section">
+        <div class="photo-frame">
+            <div class="photo-inner">🎤</div>
+        </div>
+    </div>
+
+    <!-- HASHTAGS -->
+    <div class="hashtags-container">
+        <div class="hashtags" id="hashtags">
+            <span class="hashtag">#CHAMPION</span>
+            <span class="hashtag">#BIM</span>
+            <span class="hashtag">#ONESTLA</span>
+            <span class="hashtag">#ALERTEZNOUS</span>
+            <span class="hashtag">#TERRAIN</span>
+            <span class="hashtag">#VÉRITÉVRAIE</span>
+            <span class="hashtag">#MICROTROTTOIR</span>
+            <span class="hashtag">#ENQUÊTE</span>
+            <span class="hashtag">#FIERTÉ</span>
+            <span class="hashtag">#LÉGENDE</span>
+        </div>
+    </div>
+
+    <!-- FAN COUNTER -->
+    <div class="fan-counter">
+        <div class="fan-counter-title">🏆 NOMBRE DE FANS OFFICIELS 🏆</div>
+        <div class="fan-counter-value" id="fanCount">0</div>
+    </div>
+
+    <!-- WIKIPEDIA STYLE CONTENT -->
+    <article class="wiki-content">
+        <header class="wiki-header">
+            <h1 class="wiki-title">Jean-Michel Terrain</h1>
+            <span class="wiki-edit">[modifier | modifier le code]</span>
+        </header>
+
+        <aside class="wiki-infobox">
+            <div class="infobox-header">Jean-Michel Terrain</div>
+            <div class="infobox-image">🎤</div>
+            <div class="infobox-row">
+                <div class="infobox-label">Profession</div>
+                <div class="infobox-value">Journaliste de terrain (le vrai terrain, pas celui des autres)</div>
+            </div>
+            <div class="infobox-row">
+                <div class="infobox-label">Spécialité</div>
+                <div class="infobox-value">Micro-trottoir, confrontation polie, sourcils expressifs</div>
+            </div>
+            <div class="infobox-row">
+                <div class="infobox-label">Signature</div>
+                <div class="infobox-value">"Vous confirmez ?"</div>
+            </div>
+            <div class="infobox-row">
+                <div class="infobox-label">Zone d'action</div>
+                <div class="infobox-value">Parkings de supermarché, halls de gare, sorties de maternité</div>
+            </div>
+            <div class="infobox-row">
+                <div class="infobox-label">Fans déclarés</div>
+                <div class="infobox-value">∞ (en croissance)</div>
+            </div>
+            <div class="infobox-row">
+                <div class="infobox-label">Ennemis</div>
+                <div class="infobox-value">Les gens pressés, les parapluies, les "no comment"</div>
+            </div>
+        </aside>
+
+        <section class="wiki-section">
+            <h2 class="wiki-section-title">Biographie</h2>
+            <p>
+                <strong>Jean-Michel Terrain</strong> (né un jour, quelque part, probablement un mardi) est un 
+                <span class="wiki-link">journaliste de terrain</span> belge, considéré par ses fans comme 
+                « le plus grand enquêteur depuis <span class="wiki-link">Hercule Poirot</span>, mais en plus accessible »
+                <span class="wiki-ref">[1]</span>. Reconnaissable à son micro tendu avec une détermination sans faille 
+                et à sa capacité à surgir aux moments les plus inattendus, il est devenu une figure incontournable 
+                du <span class="wiki-link">paysage audiovisuel belge</span>.
+            </p>
+            <p>
+                Surnommé affectueusement « Le Champion » par sa communauté grandissante de fans, il incarne 
+                l'archétype du journaliste proche du peuple, celui qui n'hésite pas à aller là où ça se passe 
+                vraiment : devant les portes fermées, derrière les grilles, et parfois même dans les files 
+                d'attente de la Poste<span class="wiki-ref">[2]</span>.
+            </p>
+        </section>
+
+        <section class="wiki-section">
+            <h2 class="wiki-section-title">Style journalistique</h2>
+            <p>
+                Le style de Jean-Michel Terrain se caractérise par plusieurs éléments distinctifs qui ont fait 
+                sa renommée :
+            </p>
+            <div class="wiki-quote">
+                « Monsieur, monsieur ! Une réaction ? Juste un mot ? Un petit mot pour nos téléspectateurs ? 
+                Vous confirmez que vous n'avez rien à dire ? C'est noté. »
+                <cite>— Jean-Michel Terrain, devant n'importe quelle porte</cite>
+            </div>
+            <p>
+                Sa technique d'approche, baptisée par les universitaires « la Méthode Terrain »<span class="wiki-ref">[3]</span>, 
+                consiste à apparaître au moment précis où la personne interviewée s'y attend le moins, 
+                généralement entre deux gorgées de café ou en sortant des toilettes d'une station-service.
+            </p>
+        </section>
+
+        <section class="wiki-section">
+            <h2 class="wiki-section-title">Réception et impact culturel</h2>
+            <p>
+                Jean-Michel Terrain jouit d'une popularité particulièrement forte auprès de certaines 
+                catégories de la population belge, notamment :
+            </p>
+            <ul style="margin: 1rem 0 1rem 2rem; line-height: 2;">
+                <li>Les personnes qui regardent le JT en mangeant</li>
+                <li>Les habitués des salles d'attente (médecins, CPAS, etc.)</li>
+                <li>Les retraités qui commentent l'actualité avec leur chat</li>
+                <li>Les travailleurs en pause qui ont oublié leurs écouteurs</li>
+                <li>Absolument tout le monde, en fait</li>
+            </ul>
+            <p>
+                Son impact sur la culture populaire est tel que l'expression « faire un Terrain » est 
+                entrée dans le langage courant pour désigner l'action de poser une question gênante 
+                à quelqu'un qui n'a manifestement pas envie d'y répondre<span class="wiki-ref">[4]</span>.
+            </p>
+        </section>
+
+        <section class="wiki-section">
+            <h2 class="wiki-section-title">Distinctions et records</h2>
+            <p>
+                Au cours de sa carrière exceptionnelle, Jean-Michel Terrain a accumulé de nombreuses 
+                distinctions non-officielles mais unanimement reconnues par sa communauté :
+            </p>
+            <ul style="margin: 1rem 0 1rem 2rem; line-height: 2;">
+                <li>🏆 Record du monde du "Vous confirmez ?" prononcé en une seule journée (47 fois)</li>
+                <li>🥇 Champion toutes catégories du micro-trottoir sous la pluie</li>
+                <li>🎖️ Médaille d'or de la persévérance face aux "no comment"</li>
+                <li>👑 Roi incontesté du parking de supermarché</li>
+                <li>⭐ Étoile d'honneur de la file d'attente</li>
+            </ul>
+        </section>
+    </article>
+
+    <!-- STATS SECTION -->
+    <section class="stats-section">
+        <h2 class="stats-title">📊 LES CHIFFRES DU CHAMPION 📊</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🎤</div>
+                <div class="stat-value" data-target="12847">0</div>
+                <div class="stat-label">Micros tendus</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚪</div>
+                <div class="stat-value" data-target="3621">0</div>
+                <div class="stat-label">Portes fermées au nez</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🙊</div>
+                <div class="stat-value" data-target="8459">0</div>
+                <div class="stat-label">"No comment" reçus</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">☔</div>
+                <div class="stat-value" data-target="742">0</div>
+                <div class="stat-label">Reportages sous la pluie</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CITATIONS CULTES -->
+    <section class="citations-section">
+        <h2 class="citations-title">💬 CITATIONS CULTES 💬</h2>
+        <div class="citations-carousel">
+            <div class="citation-card">
+                <p class="citation-text">"Monsieur, monsieur ! Une réaction ?"</p>
+                <p class="citation-context">📍 Devant le siège d'une entreprise en faillite, 7h du matin</p>
+            </div>
+            <div class="citation-card">
+                <p class="citation-text">"Vous confirmez que vous n'avez rien à déclarer ?"</p>
+                <p class="citation-context">📍 Sortie du tribunal, sous une pluie battante</p>
+            </div>
+            <div class="citation-card">
+                <p class="citation-text">"Les riverains sont excédés. Rencontre avec Josiane, 73 ans."</p>
+                <p class="citation-context">📍 Reportage sur les crottes de chien, 18h45</p>
+            </div>
+            <div class="citation-card">
+                <p class="citation-text">"On peut voir derrière moi que la situation est tendue."</p>
+                <p class="citation-context">📍 Devant un magasin en rupture de stock de papier toilette</p>
+            </div>
+            <div class="citation-card">
+                <p class="citation-text">"Le bourgmestre refuse de s'exprimer. Nous l'attendrons."</p>
+                <p class="citation-context">📍 Parking de la maison communale, 6 heures d'attente</p>
+            </div>
+            <div class="citation-card">
+                <p class="citation-text">"Un mot pour nos téléspectateurs ? Un seul ?"</p>
+                <p class="citation-context">📍 N'importe où, n'importe quand, pour toujours</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>🏆 FAN CLUB OFFICIEL DE JEAN-MICHEL TERRAIN 🏆</p>
+        <p>Parce que tout le monde mérite son Champion</p>
+        <div class="footer-disclaimer">
+            Ceci est une page parodique et humoristique. Jean-Michel Terrain est un personnage fictif 
+            représentant l'archétype du journaliste de terrain. Toute ressemblance avec des personnes 
+            existantes serait purement fortuite et involontaire. Fait avec ❤️ et beaucoup de second degré.
+        </div>
+    </footer>
+
+    <!-- MODAL ALERTEZ-NOUS -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>🚨 ALERTEZ-NOUS ! 🚨</h2>
+            </div>
+            <div class="modal-body" id="modalForm">
+                <p>Vous avez vu Jean-Michel Terrain dans votre quartier ? Signalez-le !</p>
+                <div class="form-group">
+                    <label>Type d'alerte</label>
+                    <select>
+                        <option>🎤 Il tend son micro à quelqu'un</option>
+                        <option>🚪 Il attend devant une porte</option>
+                        <option>☔ Il est sous la pluie</option>
+                        <option>🏃 Il court après quelqu'un</option>
+                        <option>🅿️ Il est dans un parking</option>
+                        <option>🤷 Autre apparition légendaire</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Lieu de l'observation</label>
+                    <input type="text" placeholder="Ex: Parking du Delhaize de Molenbeek">
+                </div>
+                <div class="form-group">
+                    <label>Décrivez la scène</label>
+                    <textarea rows="3" placeholder="Ex: Il demandait une réaction à une dame avec un caddie..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Votre nom de fan</label>
+                    <input type="text" placeholder="Ex: ChampionFan1987">
+                </div>
+            </div>
+            <div class="success-animation" id="successAnimation">
+                <div class="success-icon">🏆</div>
+                <div class="success-text">MERCI CHAMPION !</div>
+                <p style="margin-top: 1rem;">Votre alerte a été transmise au QG des Fans !</p>
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <button class="modal-btn secondary" onclick="closeModal()">Annuler</button>
+                <button class="modal-btn primary" onclick="submitAlert()">📨 Envoyer l'alerte !</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING EMOJIS -->
+    <div class="floating-emoji" style="top: 20%; left: 5%;">🏆</div>
+    <div class="floating-emoji" style="top: 40%; right: 8%; animation-delay: -2s;">🎤</div>
+    <div class="floating-emoji" style="bottom: 30%; left: 3%; animation-delay: -4s;">📺</div>
+    <div class="floating-emoji" style="top: 60%; right: 4%; animation-delay: -6s;">⭐</div>
+
+    <script>
+        // ============================================
+        // CONFETTI GENERATOR
+        // ============================================
+        function createConfetti() {
+            const hero = document.getElementById('hero');
+            const colors = ['#FFD700', '#E30613', '#FF1493', '#39FF14', '#00FFFF', '#9B59B6'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                hero.appendChild(confetti);
+            }
+        }
+        createConfetti();
+
+        // ============================================
+        // ANIMATED COUNTERS
+        // ============================================
+        function animateCounter(element, target) {
+            const duration = 2000;
+            const start = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 4);
+                const current = Math.round(target * eased);
+                
+                element.textContent = current.toLocaleString('fr-FR');
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // Counter observer
+        const statValues = document.querySelectorAll('.stat-value[data-target]');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.dataset.target);
+                    animateCounter(entry.target, target);
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statValues.forEach(el => counterObserver.observe(el));
+
+        // Fan counter
+        const fanCount = document.getElementById('fanCount');
+        let currentFans = 847523;
+        
+        function updateFanCount() {
+            currentFans += Math.floor(Math.random() * 3) + 1;
+            fanCount.textContent = currentFans.toLocaleString('fr-FR');
+        }
+        
+        // Initial animation
+        animateCounter(fanCount, currentFans);
+        
+        // Increment every few seconds
+        setInterval(updateFanCount, 2000 + Math.random() * 3000);
+
+        // ============================================
+        // MODAL FUNCTIONS
+        // ============================================
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+            document.getElementById('modalForm').style.display = 'block';
+            document.getElementById('successAnimation').classList.remove('show');
+            document.getElementById('modalFooter').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        function submitAlert() {
+            document.getElementById('modalForm').style.display = 'none';
+            document.getElementById('modalFooter').style.display = 'none';
+            document.getElementById('successAnimation').classList.add('show');
+            
+            // Increment fan count
+            currentFans += 1;
+            fanCount.textContent = currentFans.toLocaleString('fr-FR');
+            
+            // Close after 3 seconds
+            setTimeout(() => {
+                closeModal();
+            }, 3000);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // ============================================
+        // HASHTAG CLICK EFFECTS
+        // ============================================
+        document.querySelectorAll('.hashtag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                this.style.animation = 'none';
+                this.offsetHeight; // Trigger reflow
+                this.style.animation = 'bounce-in 0.5s ease-out';
+                
+                // Create floating copy
+                const float = this.cloneNode(true);
+                float.style.position = 'fixed';
+                float.style.left = this.getBoundingClientRect().left + 'px';
+                float.style.top = this.getBoundingClientRect().top + 'px';
+                float.style.zIndex = '9999';
+                float.style.pointerEvents = 'none';
+                float.style.animation = 'float-up 1s ease-out forwards';
+                document.body.appendChild(float);
+                
+                setTimeout(() => float.remove(), 1000);
+            });
+        });
+
+        // Add float-up animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float-up {
+                0% { transform: scale(1); opacity: 1; }
+                100% { transform: scale(1.5) translateY(-100px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ============================================
+        // KONAMI CODE EASTER EGG
+        // ============================================
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    document.body.classList.add('konami-activated');
+                    alert('🏆 MODE CHAMPION ULTIME ACTIVÉ ! 🏆\n\nVous êtes maintenant un vrai fan !');
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+
+        // ============================================
+        // WIKI REFS HOVER
+        // ============================================
+        document.querySelectorAll('.wiki-ref').forEach(ref => {
+            ref.addEventListener('click', function() {
+                alert('📚 Source : Institut Supérieur de Journalisme de Terrain (ISJT), édition ' + (2020 + Math.floor(Math.random() * 5)));
+            });
+        });
+
+        // ============================================
+        // RANDOM BREAKING NEWS
+        // ============================================
+        const breakingNews = [
+            "🔴 BREAKING: Jean-Michel Terrain aperçu devant une boulangerie",
+            "🏆 Le Champion bat son record de \"vous confirmez\" en une journée",
+            "📺 Audiences historiques pour le reportage sur les nids de poule",
+            "🎤 Un passant accepte ENFIN de répondre à une question",
+            "☔ Alerte météo : Jean-Michel Terrain sous la pluie, comme d'habitude",
+            "🚨 EXCLUSIF : Le Champion a trouvé quelqu'un qui avait quelque chose à dire",
+        ];
+
+        // ============================================
+        // CONSOLE EASTER EGG
+        // ============================================
+        console.log('%c🏆 BIENVENUE AU FAN CLUB ! 🏆', 'font-size: 24px; font-weight: bold; color: #E30613;');
+        console.log('%cVous confirmez que vous regardez la console ?', 'font-size: 14px; color: #003B73;');
+        console.log('%c#CHAMPION #BIM #TERRAIN', 'font-size: 12px; color: #FFD700; font-weight: bold;');
+    </script>
+</body>
+</html>
