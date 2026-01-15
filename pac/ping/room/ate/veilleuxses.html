@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔴 OPÉRATION VESDRE — ARG Arpentage PAC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Crimson+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red: #C41E3A;
+            --red-dark: #8B1428;
+            --black: #0D0D0D;
+            --gray-dark: #1A1A1A;
+            --gray: #2D2D2D;
+            --gray-light: #E8E8E8;
+            --white: #FAFAFA;
+            --gold: #D4AF37;
+            --green: #2E7D32;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            background: var(--black);
+            color: var(--gray-light);
+            line-height: 1.7;
+            font-size: 18px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Header classified */
+        .classified-header {
+            background: repeating-linear-gradient(
+                45deg,
+                var(--red) 0px,
+                var(--red) 10px,
+                var(--red-dark) 10px,
+                var(--red-dark) 20px
+            );
+            padding: 3px;
+            margin-bottom: 2rem;
+        }
+        
+        .classified-inner {
+            background: var(--black);
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .classified-stamp {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--red);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        
+        .mission-title {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mission-subtitle {
+            font-size: 1.25rem;
+            color: var(--gold);
+            font-style: italic;
+        }
+        
+        /* Sections */
+        .section {
+            background: var(--gray-dark);
+            border-left: 4px solid var(--red);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .section-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--red);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-title::before {
+            content: '▶';
+            font-size: 0.75rem;
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            color: var(--white);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            color: var(--gold);
+            margin: 1.5rem 0 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        /* Day cards */
+        .day-grid {
+            display: grid;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .day-card {
+            background: var(--gray);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .day-card:hover {
+            border-color: var(--red);
+            transform: translateX(5px);
+        }
+        
+        .day-card.bonus {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, var(--gray) 0%, rgba(212, 175, 55, 0.1) 100%);
+        }
+        
+        .day-card.verviers {
+            border-color: var(--green);
+            background: linear-gradient(135deg, var(--gray) 0%, rgba(46, 125, 50, 0.15) 100%);
+        }
+        
+        .day-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--red);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .day-card.bonus .day-number { color: var(--gold); }
+        .day-card.verviers .day-number { color: var(--green); }
+        
+        .day-title {
+            font-size: 1.25rem;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .day-theme {
+            font-style: italic;
+            color: var(--gray-light);
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+        
+        .day-content {
+            font-size: 0.95rem;
+        }
+        
+        .day-content ul {
+            list-style: none;
+            margin: 0.5rem 0;
+        }
+        
+        .day-content li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+        
+        .day-content li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--red);
+        }
+        
+        .day-card.bonus li::before { color: var(--gold); }
+        .day-card.verviers li::before { color: var(--green); }
+        
+        /* Tags */
+        .tag {
+            display: inline-block;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tag-lecture { background: var(--red); color: white; }
+        .tag-reflexion { background: #1565C0; color: white; }
+        .tag-ecriture { background: #6A1B9A; color: white; }
+        .tag-collectif { background: #00695C; color: white; }
+        .tag-bonus { background: var(--gold); color: black; }
+        .tag-verviers { background: var(--green); color: white; }
+        
+        /* Timeline connector */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--red), var(--gold), var(--green));
+        }
+        
+        .timeline .day-card {
+            position: relative;
+        }
+        
+        .timeline .day-card::before {
+            content: '';
+            position: absolute;
+            left: -2.5rem;
+            top: 1.5rem;
+            width: 12px;
+            height: 12px;
+            background: var(--red);
+            border-radius: 50%;
+            border: 2px solid var(--black);
+        }
+        
+        .timeline .day-card.bonus::before { background: var(--gold); }
+        .timeline .day-card.verviers::before { background: var(--green); }
+        
+        /* Quote block */
+        .quote-block {
+            background: var(--black);
+            border-left: 3px solid var(--gold);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+        
+        .quote-source {
+            font-style: normal;
+            font-size: 0.875rem;
+            color: var(--gold);
+            margin-top: 0.75rem;
+            display: block;
+        }
+        
+        /* Alert boxes */
+        .alert {
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .alert-mission {
+            background: rgba(196, 30, 58, 0.2);
+            border: 1px solid var(--red);
+        }
+        
+        .alert-intel {
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid var(--gold);
+        }
+        
+        .alert-verviers {
+            background: rgba(46, 125, 50, 0.15);
+            border: 1px solid var(--green);
+        }
+        
+        /* Code blocks */
+        code {
+            font-family: 'Space Mono', monospace;
+            background: var(--black);
+            padding: 0.2rem 0.4rem;
+            font-size: 0.85rem;
+            color: var(--gold);
+        }
+        
+        /* Links */
+        a {
+            color: var(--gold);
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-underline-offset: 3px;
+        }
+        
+        a:hover {
+            color: var(--white);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--gray);
+            margin-top: 3rem;
+        }
+        
+        .footer-logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            color: var(--red);
+            margin-bottom: 1rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container { padding: 1rem; }
+            .section { padding: 1.5rem 1rem; }
+            .timeline { padding-left: 1.5rem; }
+        }
+        
+        /* Print styles */
+        @media print {
+            body { background: white; color: black; }
+            .section { border-color: black; background: #f5f5f5; }
+            .day-card { border-color: #ccc; background: white; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header class="classified-header">
+            <div class="classified-inner">
+                <div class="classified-stamp">/// Document interne PAC — Diffusion restreinte ///</div>
+                <h1 class="mission-title">Opération Vesdre</h1>
+                <p class="mission-subtitle">ARG Arpentage collectif • Team Building • 9 jours</p>
+            </div>
+        </header>
+
+        <!-- BRIEFING -->
+        <section class="section">
+            <div class="section-title">Briefing de mission</div>
+            <h2>Contexte opérationnel</h2>
+            
+            <p>Le 7 novembre 2025, RTL-TVI diffuse <strong>"Sans boulot : tous fraudeurs ?"</strong> de Christophe Deborsu. Tourné rue de Dison à Verviers — "la rue la plus pauvre de Belgique" — le documentaire déclenche une tempête médiatique. Plus de 100 plaintes au CSA. Le CDJ saisi. Gaëlle Denys, présidente du CPAS de Verviers, dénonce la manipulation de ses propos.</p>
+            
+            <div class="quote-block">
+                "Ces personnes ne fraudent pas, elles sont piégées par un système qui les maintient dans cette situation."
+                <span class="quote-source">— Christophe Deborsu, VRT, 10 décembre 2025</span>
+            </div>
+            
+            <p>Pendant ce temps, dans nos archives dort le <strong>Cahier n°38 de l'Éducation Permanente</strong> : <em>"Images et usages de la pauvreté dans les champs médiatiques, politiques, sociaux et culturels"</em>. Publié en 2011, ce document analysait déjà exactement les mécanismes à l'œuvre 14 ans plus tard.</p>
+            
+            <div class="alert alert-mission">
+                <strong>🎯 Mission :</strong> Arpenter collectivement ce cahier en 9 jours, en mode asynchrone et distanciel, pour produire une analyse critique articulée avec le documentaire Deborsu. Verviers est au cœur de l'opération.
+            </div>
+        </section>
+
+        <!-- LE CAHIER 38 -->
+        <section class="section">
+            <div class="section-title">L'ouvrage</div>
+            <h2>Cahier 38 — Images et usages de la pauvreté</h2>
+            
+            <p><strong>Actes du colloque du 14 décembre 2010</strong><br>
+            Centre culturel de Seraing</p>
+            
+            <p>Ce recueil rassemble les interventions de chercheurs, professionnels de l'action sociale et culturelle autour de questions fondamentales :</p>
+            
+            <ul style="list-style: none; margin: 1rem 0;">
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">①</span> Le pauvre se doit-il d'être un citoyen parfait ?</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">②</span> Qu'est-ce que la participation des pauvres et à quoi participent-ils ?</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">③</span> Comment la pauvreté est-elle mise en scène dans les médias ?</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">④</span> Comment le monde politique perçoit-il la problématique ?</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">⑤</span> Quelles images du pauvre dans les politiques publiques depuis 60 ans ?</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">⑥</span> L'éducation populaire peut-elle lutter contre les images dominantes ?</li>
+            </ul>
+            
+            <p><strong>📚 Obtenir l'ouvrage :</strong> <a href="https://boutique.pac-g.be" target="_blank">boutique.pac-g.be</a> ou contacter votre régionale.</p>
+        </section>
+
+        <!-- PARTICIPANTS -->
+        <section class="section">
+            <div class="section-title">Effectifs</div>
+            <h2>Qui participe ?</h2>
+            
+            <p><strong>Tout le mouvement PAC</strong> — c'est un team building, pas une formation interne !</p>
+            
+            <ul style="list-style: none; margin: 1rem 0;">
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <strong>Employé·es</strong> du siège et des régionales</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <strong>Administrateur·trices</strong> et membres des CA</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <strong>Bénévoles</strong> des sections locales</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <strong>Écrivain·es public·ques</strong> du réseau</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <strong>Militant·es</strong> des locales</li>
+            </ul>
+            
+            <div class="alert alert-verviers">
+                <strong>🏔️ Verviers à l'honneur :</strong> La régionale de Verviers (Isabel Martin, Priscilla Cimetta et les équipes) joue un rôle central dans cette opération. C'est leur territoire qui est au cœur de la polémique Deborsu.
+            </div>
+        </section>
+
+        <!-- MÉCANIQUES ARG -->
+        <section class="section">
+            <div class="section-title">Mécaniques de jeu</div>
+            <h2>Fonctionnement de l'ARG</h2>
+            
+            <h3>Principe de l'arpentage</h3>
+            <p>L'arpentage est une méthode de lecture collective issue de l'éducation populaire. Le texte est découpé en parts égales, chaque participant·e lit sa partie, puis restitue à l'ensemble du groupe. Personne ne lit tout, mais tout le monde sait tout.</p>
+            
+            <h3>Mode asynchrone distanciel</h3>
+            <p>Chaque jour, une mission est débloquée. Les participant·es ont <strong>24h</strong> pour accomplir leur tâche et déposer leur contribution sur la plateforme collaborative (pad partagé, Miro, Notion, ou le canal choisi).</p>
+            
+            <h3>Répartition des équipes</h3>
+            <p>Les participant·es sont réparti·es en <strong>11 équipes</strong> correspondant aux régionales :</p>
+            <ul style="list-style: none; margin: 1rem 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.5rem;">
+                <li><code>BRABANÇONNE</code></li>
+                <li><code>BRUXELLES</code></li>
+                <li><code>CENTRE</code></li>
+                <li><code>CHARLEROI</code></li>
+                <li><code>DINANT-PHIL.</code></li>
+                <li><code>HUY-WAREMME</code></li>
+                <li><code>LIÈGE</code></li>
+                <li><code>MONS-BOR.</code></li>
+                <li><code>NAMUR</code></li>
+                <li><code style="background: var(--green); color: white;">VERVIERS ★</code></li>
+                <li><code>WAPI</code></li>
+            </ul>
+            
+            <h3>Système de points</h3>
+            <ul style="list-style: none; margin: 1rem 0;">
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> Chaque mission accomplie = <strong>100 pts</strong></li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--gold);">→</span> Mission bonus = <strong>200 pts</strong></li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--green);">→</span> Connexion Deborsu validée = <strong>+50 pts</strong></li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> Contribution inter-régionale = <strong>+25 pts</strong></li>
+            </ul>
+        </section>
+
+        <!-- PLANNING 9 JOURS -->
+        <section class="section">
+            <div class="section-title">Chronologie des opérations</div>
+            <h2>Les 9 jours de mission</h2>
+            
+            <div class="timeline day-grid">
+                
+                <!-- JOUR 1 -->
+                <div class="day-card">
+                    <div class="day-number">Jour 1 — Lundi</div>
+                    <h3 class="day-title">Infiltration</h3>
+                    <p class="day-theme">"Entrer dans le sujet"</p>
+                    <div class="day-content">
+                        <span class="tag tag-lecture">Lecture</span>
+                        <span class="tag tag-reflexion">Réflexion</span>
+                        
+                        <p><strong>Mission principale :</strong></p>
+                        <ul>
+                            <li>Chaque équipe reçoit les <strong>premières pages</strong> du Cahier 38 (introduction, sommaire, avant-propos)</li>
+                            <li>Lecture individuelle (15-20 min)</li>
+                            <li>Déposer sur le pad : <em>"Ce qui m'a surpris / Ce que je savais déjà / Ce que je veux approfondir"</em></li>
+                        </ul>
+                        
+                        <p><strong>🔗 Connexion Deborsu :</strong> Visionner le teaser/extraits du documentaire "Sans boulot : tous fraudeurs ?" et noter les premières impressions.</p>
+                    </div>
+                </div>
+                
+                <!-- JOUR 2 -->
+                <div class="day-card">
+                    <div class="day-number">Jour 2 — Mardi</div>
+                    <h3 class="day-title">Cartographie</h3>
+                    <p class="day-theme">"Le pauvre doit-il être un citoyen parfait ?"</p>
+                    <div class="day-content">
+                        <span class="tag tag-lecture">Lecture</span>
+                        <span class="tag tag-ecriture">Écriture</span>
+                        
+                        <p><strong>Thématique :</strong> Les exigences morales imposées aux personnes en situation de pauvreté</p>
+                        
+                        <p><strong>Mission principale :</strong></p>
+                        <ul>
+                            <li>Chaque équipe arpente une section du chapitre correspondant</li>
+                            <li>Extraire <strong>3 citations clés</strong> + les reformuler avec vos mots</li>
+                            <li>Identifier : Quels "tests de moralité" sont imposés aux pauvres ?</li>
+                        </ul>
+                        
+                        <p><strong>🔗 Connexion Deborsu :</strong> Dans le reportage, Laetitia est-elle jugée sur sa situation ou sur sa "moralité" ? Exemples concrets.</p>
+                    </div>
+                </div>
+                
+                <!-- JOUR 3 -->
+                <div class="day-card verviers">
+                    <div class="day-number">Jour 3 — Mercredi • Verviers à l'honneur</div>
+                    <h3 class="day-title">Terrain</h3>
+                    <p class="day-theme">"La participation des pauvres"</p>
+                    <div class="day-content">
+                        <span class="tag tag-lecture">Lecture</span>
+                        <span class="tag tag-verviers">Verviers</span>
+                        
+                        <p><strong>Thématique :</strong> À quoi participent réellement les personnes en précarité ?</p>
+                        
+                        <p><strong>Mission principale :</strong></p>
+                        <ul>
+                            <li>Arpentage du chapitre sur la participation</li>
+                            <li>Chaque équipe produit une <strong>mind map</strong> des formes de participation identifiées</li>
+                        </ul>
+                        
+                        <p><strong>🏔️ Mission Verviers :</strong> L'équipe Verviers partage un témoignage terrain : comment les habitant·es de Hodimont/Dison participent-ils à la vie citoyenne ? Quelles actions PAC Verviers mène dans ce quartier ?</p>
+                        
+                        <p><strong>🔗 Connexion Deborsu :</strong> Le reportage montre-t-il une quelconque forme de participation citoyenne des personnes interviewées ?</p>
+                    </div>
+                </div>
+                
+                <!-- JOUR 4 -->
+                <div class="day-card">
+                    <div class="day-number">Jour 4 — Jeudi</div>
+                    <h3 class="day-title">Décryptage</h3>
+                    <p class="day-theme">"La mise en scène médiatique de la pauvreté"</p>
+                    <div class="day-content">
+                        <span class="tag tag-lecture">Lecture</span>
+                        <span class="tag tag-reflexion">Réflexion</span>
+                        
+                        <p><strong>Thématique :</strong> Comment les médias représentent-ils la pauvreté ?</p>
+                        
+                        <p><strong>Mission principale :</strong></p>
+                        <ul>
+                            <li>Arpentage du chapitre sur la médiatisation</li>
+                            <li>Créer un <strong>tableau comparatif</strong> : représentations dominantes VS réalités documentées</li>
+                            <li>Identifier les "figures types" du pauvre dans les médias</li>
+                        </ul>
+                        
+                        <p><strong>🔗 Connexion Deborsu :</strong> Analyse séquence par séquence — quels procédés narratifs ? Quelles figures ? Comment Gaëlle Denys dit-elle avoir été "montée" par le montage ?</p>
+                    </div>
+                </div>
+                
+                <!-- JOUR 5 -->
+                <div class="day-card bonus">
+                    <div class="day-number">Jour 5 — Vendredi • Mission Bonus</div>
+                    <h3 class="day-title">Écoute</h3>
+                    <p class="day-theme">"Donner la parole aux concerné·es"</p>
+                    <div class="day-content">
+                        <span class="tag tag-bonus">Bonus</span>
+                        <span class="tag tag-collectif">Collectif</span>
+                        
+                        <p><strong>⭐ Mission Bonus (optionnelle mais recommandée) :</strong></p>
+                        <ul>
+                            <li>Chaque équipe contacte <strong>une personne</strong> en situation de précarité (via les écrivain·es publics, les permanences sociales, les partenaires)</li>
+                            <li>Question simple : <em>"Comment vous sentez-vous représenté·e dans les médias ?"</em></li>
+                            <li>Retranscrire anonymement la réponse</li>
+                        </ul>
+                        
+                        <p><strong>Alternative :</strong> Recueillir le témoignage d'un·e travailleur·se social·e sur le reportage Deborsu.</p>
+                        
+                        <p><strong>🔗 Connexion Deborsu :</strong> Comparer ces témoignages avec la façon dont Laetitia dit avoir été représentée VS comment elle se voit elle-même.</p>
+                    </div>
+                </div>
+                
+                <!-- JOUR 6 -->
+                <div class="day-card">
+                    <div class="day-number">Jour 6 — Samedi</div>
+                    <h3 class="day-title">Politiques</h3>
+                    <p class="day-theme">"La perception politique de la pauvreté"</p>
+                    <div class="day-content">
+                        <span class="tag tag-lecture">Lecture</span>
+                        <span class="tag tag-reflexion">Réflexion</span>
+                        
+                        <p><strong>Thématique :</strong> Comment les politiques publiques façonnent l'image du pauvre</p>
+                        
+                        <p><strong>Mission principale :</strong></p>
+                        <ul>
+                            <li>Arpentage du chapitre sur les politiques publiques (60 ans d'évolution)</li>
+                            <li>Créer une <strong>frise chronologique</strong> des changements de paradigme</li>
+                            <li>Identifier : de "l'assisté méritant" au "fraudeur potentiel"</li>
+                        </ul>
+                        
+                        <p><strong>🔗 Connexion Deborsu :</strong> Les réactions politiques au reportage (Magnette, Bouchez, Demir) — quelle vision de la pauvreté chacun défend ?</p>
+                    </div>
+                </div>
+                
+                <!-- JOUR 7 -->
+                <div class="day-card verviers">
+                    <div class="day-number">Jour 7 — Dimanche • Verviers à l'honneur</div>
+                    <h3 class="day-title">Résistance</h3>
+                    <p class="day-theme">"L'éducation populaire contre les images dominantes"</p>
+                    <div class="day-content">
+                        <span class="tag tag-lecture">Lecture</span>
+                        <span class="tag tag-verviers">Verviers</span>
+                        <span class="tag tag-ecriture">Écriture</span>
+                        
+                        <p><strong>Thématique :</strong> Le rôle de l'éducation populaire dans la déconstruction des stéréotypes</p>
+                        
+                        <p><strong>Mission principale :</strong></p>
+                        <ul>
+                            <li>Arpentage du chapitre sur l'éducation populaire</li>
+                            <li>Lister <strong>5 actions concrètes</strong> que PAC peut mener pour contrer ces représentations</li>
+                        </ul>
+                        
+                        <p><strong>🏔️ Mission Verviers :</strong> Présentation du travail des écrivain·es publics de Verviers dans le quartier Hodimont. Comment l'accompagnement individuel peut-il déconstruire la honte ?</p>
+                        
+                        <p><strong>🔗 Connexion Deborsu :</strong> Si PAC avait dû produire un contre-reportage, qu'aurait-il montré ?</p>
+                    </div>
+                </div>
+                
+                <!-- JOUR 8 -->
+                <div class="day-card">
+                    <div class="day-number">Jour 8 — Lundi</div>
+                    <h3 class="day-title">Synthèse</h3>
+                    <p class="day-theme">"Assembler les pièces"</p>
+                    <div class="day-content">
+                        <span class="tag tag-collectif">Collectif</span>
+                        <span class="tag tag-ecriture">Écriture</span>
+                        
+                        <p><strong>Mission principale :</strong></p>
+                        <ul>
+                            <li>Chaque équipe rédige une <strong>synthèse de 500 mots</strong> de ses découvertes</li>
+                            <li>Format imposé : 
+                                <ul style="margin-left: 1rem; margin-top: 0.5rem;">
+                                    <li>Ce que le Cahier 38 nous apprend (200 mots)</li>
+                                    <li>Ce que Deborsu illustre/contredit (200 mots)</li>
+                                    <li>Ce que PAC peut faire (100 mots)</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        
+                        <p><strong>🔗 Connexion Deborsu :</strong> Chaque synthèse doit contenir au moins <strong>2 références</strong> au documentaire.</p>
+                    </div>
+                </div>
+                
+                <!-- JOUR 9 -->
+                <div class="day-card bonus">
+                    <div class="day-number">Jour 9 — Mardi • Grande finale</div>
+                    <h3 class="day-title">Convergence</h3>
+                    <p class="day-theme">"Mise en commun générale"</p>
+                    <div class="day-content">
+                        <span class="tag tag-collectif">Collectif</span>
+                        <span class="tag tag-bonus">Synchrone</span>
+                        <span class="tag tag-verviers">Verviers</span>
+                        
+                        <p><strong>🎯 Seul moment synchrone de l'opération</strong></p>
+                        
+                        <p><strong>Format :</strong> Visioconférence de 2h (ou présentiel pour celles et ceux qui peuvent)</p>
+                        
+                        <p><strong>Programme :</strong></p>
+                        <ul>
+                            <li><strong>0-30 min :</strong> Chaque régionale présente sa synthèse (3 min max)</li>
+                            <li><strong>30-60 min :</strong> Débat croisé sur les connexions Deborsu</li>
+                            <li><strong>60-90 min :</strong> <em style="color: var(--green);">Intervention spéciale Verviers</em> — témoignages du terrain</li>
+                            <li><strong>90-120 min :</strong> Rédaction collective de la <strong>position PAC</strong> (à publier ?)</li>
+                        </ul>
+                        
+                        <p><strong>Livrables finaux :</strong></p>
+                        <ul>
+                            <li>Document de synthèse collective</li>
+                            <li>Proposition de carte blanche ou communiqué</li>
+                            <li>Idées d'actions pour 2026</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OUTILS -->
+        <section class="section">
+            <div class="section-title">Équipement</div>
+            <h2>Outils et ressources</h2>
+            
+            <h3>📚 Document source</h3>
+            <ul style="list-style: none; margin: 1rem 0;">
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <strong>Cahier 38</strong> — Images et usages de la pauvreté (PAC, 2011)</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <a href="https://www.pac-g.be/cahier-38-images-et-usages-de-la-pauvrete-dans-les-champs-mediatiques-politiques-sociaux-et-culturels/" target="_blank">Page de présentation</a></li>
+            </ul>
+            
+            <h3>🎬 Documentaire</h3>
+            <ul style="list-style: none; margin: 1rem 0;">
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <strong>"Sans boulot : tous fraudeurs ?"</strong> — Christophe Deborsu, RTL-TVI, 7 novembre 2025</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> Extraits disponibles sur RTL Play (selon disponibilité)</li>
+            </ul>
+            
+            <h3>📰 Articles de contexte</h3>
+            <ul style="list-style: none; margin: 1rem 0; font-size: 0.9rem;">
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <em>Alter Échos</em> — "Sans-boulot : tous suspects ?" (3 déc. 2025)</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <em>La Libre</em> — Réaction de Laetitia (13 nov. 2025)</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <em>L'Avenir</em> — Conseil communal de Verviers (25 nov. 2025)</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">→</span> <em>7sur7</em> — Deborsu sur VRT (10 déc. 2025)</li>
+            </ul>
+            
+            <h3>🛠️ Plateforme collaborative</h3>
+            <p>À définir selon vos habitudes internes :</p>
+            <ul style="list-style: none; margin: 1rem 0;">
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--gold);">•</span> Pad collaboratif (Framapad, HedgeDoc)</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--gold);">•</span> Tableau visuel (Miro, Mural)</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--gold);">•</span> Espace de travail (Notion, Basecamp)</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--gold);">•</span> Canal de discussion (Signal, Telegram, Slack)</li>
+            </ul>
+        </section>
+
+        <!-- CONTACTS VERVIERS -->
+        <section class="section">
+            <div class="section-title">QG Verviers</div>
+            <h2>Contact régionale Verviers</h2>
+            
+            <div class="alert alert-verviers">
+                <p><strong>PAC Verviers</strong><br>
+                Crapaurue, 7 — 4800 Verviers</p>
+                
+                <p style="margin-top: 1rem;"><strong>Équipe :</strong><br>
+                Isabel Martin — Coordinatrice — 0498/10.30.40<br>
+                Priscilla Cimetta — Animatrice adjointe — 087/33.75.33</p>
+                
+                <p style="margin-top: 1rem;"><strong>Email :</strong> pac.verviers@skynet.be</p>
+                
+                <p style="margin-top: 1rem;"><strong>Co-présidence :</strong> Yohann Frederic & Aurélie Kaye</p>
+            </div>
+            
+            <p>La régionale Verviers est particulièrement active sur :</p>
+            <ul style="list-style: none; margin: 1rem 0;">
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--green);">→</span> Les <strong>permanences d'écrivain·es publics</strong> (Hodimont, Mangombroux, Relais social)</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--green);">→</span> Les <strong>cafés politiques</strong> avec le CEPAG</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--green);">→</span> Le jeu <strong>"Merci l'impôt ?"</strong></li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--green);">→</span> Les <strong>ateliers d'écriture collective</strong></li>
+            </ul>
+        </section>
+
+        <!-- OBJECTIFS -->
+        <section class="section">
+            <div class="section-title">Débriefing anticipé</div>
+            <h2>Ce qu'on espère en retirer</h2>
+            
+            <h3>Pour le mouvement</h3>
+            <ul style="list-style: none; margin: 1rem 0;">
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">✓</span> Réappropriation collective d'une publication PAC fondamentale</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">✓</span> Team building transversal (siège + régionales + bénévoles)</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">✓</span> Affirmation de l'expertise PAC sur ces questions</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--red);">✓</span> Production d'une analyse actualisée (14 ans après)</li>
+            </ul>
+            
+            <h3>Pour Verviers</h3>
+            <ul style="list-style: none; margin: 1rem 0;">
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--green);">✓</span> Valorisation du travail de terrain de la régionale</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--green);">✓</span> Contre-récit face à la stigmatisation médiatique</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--green);">✓</span> Mise en lumière des actions positives sur le territoire</li>
+            </ul>
+            
+            <h3>Livrables potentiels</h3>
+            <ul style="list-style: none; margin: 1rem 0;">
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--gold);">★</span> <strong>Carte blanche</strong> collective (Le Soir, La Libre ?)</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--gold);">★</span> <strong>Article Agir par la Culture</strong></li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--gold);">★</span> <strong>Fiche outil</strong> pour les animateur·trices</li>
+                <li style="padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;"><span style="position: absolute; left: 0; color: var(--gold);">★</span> <strong>Formation</strong> "Décrypter les médias sur la pauvreté"</li>
+            </ul>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-logo">PAC</div>
+            <p>Présence et Action Culturelles<br>
+            Mouvement écosocialiste d'Éducation permanente</p>
+            <p style="margin-top: 1rem; font-size: 0.875rem; opacity: 0.7;">
+                Rue Lambert Crickx 5, 1070 Bruxelles<br>
+                02/545 79 11 — info@pac-g.be
+            </p>
+            <p style="margin-top: 2rem; font-family: 'Space Mono', monospace; font-size: 0.75rem; letter-spacing: 0.1em; opacity: 0.5;">
+                /// FIN DE TRANSMISSION ///
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
