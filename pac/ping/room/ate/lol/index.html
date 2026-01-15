@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL OPÉRATION V.</title>
+    <style>
+        /* Style Hacker / Terminal */
+        body { background-color: #0c0c0c; color: #33ff00; font-family: 'Courier New', monospace; padding: 2rem; }
+        .terminal { max-width: 800px; margin: 0 auto; border: 2px solid #33ff00; padding: 20px; box-shadow: 0 0 20px rgba(51, 255, 0, 0.2); }
+        h1 { text-align: center; border-bottom: 1px dashed #33ff00; padding-bottom: 10px; }
+        .hidden { display: none; }
+        .cursor { animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        
+        input[type="text"], textarea { background: #000; border: 1px solid #33ff00; color: #33ff00; padding: 10px; width: 100%; margin-top: 10px; font-family: inherit; }
+        button { background: #33ff00; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; margin-top: 10px; font-family: inherit; }
+        button:hover { background: #fff; }
+
+        .mission-log { margin-top: 20px; border-top: 1px solid #334433; padding-top: 10px; }
+        .day-badge { background: #33ff00; color: #000; padding: 2px 6px; font-size: 0.8em; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="terminal">
+        <h1>> OPÉRATION V. <span class="cursor">_</span></h1>
+        
+        <div id="login-screen">
+            <p>> VEUILLEZ VOUS IDENTIFIER AGENT.</p>
+            <p>> LE DOCUMENTAIRE DE DEBORSU SUR LES "FRAUDEURS" VA SORTIR DANS 9 JOURS.</p>
+            <p>> NOUS DEVONS LE CONTRER.</p>
+            <input type="text" id="agent-name" placeholder="Entrez votre nom de code...">
+            <button onclick="startMission()">ACCÉDER AU RÉSEAU</button>
+        </div>
+
+        <div id="dashboard" class="hidden">
+            <p>> BIENVENUE, <span id="display-name"></span>.</p>
+            <p>> STATUT : <span id="status-text">ANALYSIS EN COURS...</span></p>
+            
+            <div id="daily-mission"></div>
+
+            <div class="mission-log">
+                <p>> PROGRESSION GLOBALE DU MOUVEMENT :</p>
+                <progress id="global-progress" value="10" max="100" style="width:100%"></progress>
+            </div>
+        </div>
+    </div>
+
+    <script src="arg-engine.js"></script>
+</body>
+</html>
