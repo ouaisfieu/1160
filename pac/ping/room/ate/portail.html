@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Site de soutien et d'action culturelle - Structure indépendante">
+    <title>PAC-G Fan Club | L'Alternative Indépendante</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Merriweather:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <div class="logo-area">
+                <span class="logo-icon">📢</span>
+                <span class="logo-text">PAC-G <small>Fan Club</small></span>
+            </div>
+            
+            <button class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+                <span class="hamburger"></span>
+            </button>
+
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#accueil" class="active">Accueil</a></li>
+                    <li><a href="#mission">Notre Mission</a></li>
+                    <li><a href="#agenda">Agenda</a></li>
+                    <li><a href="#rejoindre" class="btn-cta">Nous Rejoindre</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <section id="accueil" class="hero">
+            <div class="container hero-content">
+                <h1>Agir pour la culture,<br>soutenir le mouvement.</h1>
+                <p>La structure indépendante qui dynamise l'engagement citoyen. Plus rapide, plus proche, plus fort.</p>
+                <div class="hero-actions">
+                    <a href="#mission" class="btn btn-primary">Découvrir le projet</a>
+                    <a href="#agenda" class="btn btn-outline">Prochains événements</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="mission" class="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Une vision commune, une technique moderne</h2>
+                    <p>Nous corrigeons les erreurs du passé pour construire l'avenir.</p>
+                </div>
+                <div class="grid-3">
+                    <article class="card">
+                        <h3>⚡ Performance</h3>
+                        <p>Fini les chargements lents. Ce site est conçu en code pur pour une rapidité d'exécution maximale, respectant le temps de nos visiteurs.</p>
+                    </article>
+                    <article class="card">
+                        <h3>📱 100% Mobile</h3>
+                        <p>Une interface qui s'adapte parfaitement à tous les écrans. L'action culturelle se vit aussi sur smartphone.</p>
+                    </article>
+                    <article class="card">
+                        <h3>🤝 Indépendant</h3>
+                        <p>Une structure autonome prête à sceller un partenariat officiel avec l'organisation mère pour amplifier la portée des messages.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="agenda" class="agenda-section">
+            <div class="container">
+                <h2>L'Agenda Citoyen</h2>
+                <div class="agenda-grid">
+                    <div class="event-card">
+                        <div class="date-badge">
+                            <span class="day">15</span>
+                            <span class="month">JAN</span>
+                        </div>
+                        <div class="event-details">
+                            <h3>Débat : L'avenir de l'éducation permanente</h3>
+                            <p>Liège &bull; 19:00</p>
+                            <a href="#" class="link-arrow">En savoir plus &rarr;</a>
+                        </div>
+                    </div>
+                    <div class="event-card">
+                        <div class="date-badge">
+                            <span class="day">22</span>
+                            <span class="month">JAN</span>
+                        </div>
+                        <div class="event-details">
+                            <h3>Atelier : Écriture et Résistance</h3>
+                            <p>Namur &bull; 14:00</p>
+                            <a href="#" class="link-arrow">En savoir plus &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="rejoindre" class="cta-section">
+            <div class="container">
+                <h2>Prêt à officialiser le lien ?</h2>
+                <p>Ce site est une démonstration de notre capacité à innover.</p>
+                <form class="simple-form" onsubmit="event.preventDefault(); alert('Merci ! Ceci est une démo.');">
+                    <input type="email" placeholder="Votre email pour le contact..." required>
+                    <button type="submit" class="btn btn-primary">Initier le partenariat</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2024 PAC-G Fan Club - Indépendant & Solidaire.</p>
+            <p><small>Ce site est une initiative indépendante et n'est pas (encore) le site officiel.</small></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
